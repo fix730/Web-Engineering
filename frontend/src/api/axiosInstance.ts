@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with default options
 const axiosInstance = axios.create({
-  baseURL: process.env.BACKEND_BASE_URL,
+  baseURL: "http://localhost:8000",
   withCredentials: true,
 });
 

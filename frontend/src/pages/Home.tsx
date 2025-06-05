@@ -19,7 +19,7 @@ function Home() {
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
-            navigate("/login");
+            navigate("api/auth/logout");
         } catch (e) {
             console.error(e);
         }

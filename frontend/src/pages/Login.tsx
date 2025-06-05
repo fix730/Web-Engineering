@@ -4,8 +4,8 @@ import { login } from "../slices/authSlice";
 
 function Login() {
     const dispatch = useAppDispatch();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("1");
+    const [password, setPassword] = useState("test123");
 
     const handleLogin = async () => {
         // This is only a basic validation of inputs. Improve this as needed.
@@ -26,7 +26,10 @@ function Login() {
     };
 
     return (
-        <div>Login</div>
+        <>
+            <div>Login</div>
+            <button onClick={handleLogin}>Login</button>
+        </>
     )
 }
 export default Login;

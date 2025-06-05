@@ -5,10 +5,10 @@ import { register } from "../slices/authSlice";
 function Register() {
     const dispatch = useAppDispatch();
 
-    const [name, setName] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [name, setName] = useState("1");
+    const [firstName, setFirstName] = useState("1");
+    const [email, setEmail] = useState("1");
+    const [password, setPassword] = useState("test123");
     const [birthday, setBirthday] = useState<Date>(new Date());
 
     const handleRegister = async () => {
@@ -34,7 +34,10 @@ function Register() {
 
 
     return (
-        <div>Registrieren</div>
+        <>
+            <div>Registrieren</div>
+            <button onClick={handleRegister}>Reg</button>
+        </>
     );
 }
 export default Register;
