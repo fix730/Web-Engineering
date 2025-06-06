@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
     const dispatch = useAppDispatch();
@@ -11,8 +12,9 @@ function Register() {
     const [password, setPassword] = useState("test123");
     const [birthday, setBirthday] = useState<Date>(new Date());
 
+    const navigate = useNavigate();
+
     const handleRegister = async () => {
-        // This is only a basic validation of inputs. Improve this as needed.
         if (name && email && password && birthday) {
             try {
                 await dispatch(
@@ -24,6 +26,7 @@ function Register() {
                         birthday
                 })
                 ).unwrap();
+                navigate("/");
             } catch (e) {
                 console.error(e);
             }
