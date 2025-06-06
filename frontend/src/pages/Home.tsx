@@ -1,25 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
+import { useAppDispatch} from "../hooks/redux-hooks";
 import { useEffect } from "react";
 import { getUser, logout } from "../slices/authSlice";
+import axiosInstance from "../api/axiosInstance";
 
 function Home() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
-    const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
+    const callProtectedRoute = async () => {
+        try {
+            const response = await axiosInstance.get("/api/protected");
+            console.log("Protected content:", response.data);
+        } catch (error: any) {
+            console.error("Zugriff verweigert:", error.response?.data || error.message);
+        }
+    };
 
     useEffect(() => {
-        if (basicUserInfo) {
-            dispatch(getUser(basicUserInfo.id));
-        }
-    }, [basicUserInfo]);
+        callProtectedRoute();
+    }, []);
 
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
-            navigate("api/auth/logout");
+            navigate("/logout");
         } catch (e) {
             console.error(e);
         }
@@ -27,8 +32,7 @@ function Home() {
     return (
         <>
             <h1>Home</h1>
-            <h4>Name: {userProfileInfo?.name}</h4>
-            <h4>Email: {userProfileInfo?.email}</h4>
+            <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
             <button onClick={handleLogout}>
                 Logout
             </button>
