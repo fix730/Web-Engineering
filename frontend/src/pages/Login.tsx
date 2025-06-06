@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { login } from "../slices/authSlice";
+import{Button} frm
 
 function Login() {
     const dispatch = useAppDispatch();
@@ -24,11 +25,18 @@ function Login() {
             // Show an error message.
         }
     };
+    const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+    };
+
+    
 
     return (
         <>
             <div>Login</div>
+            <input onChange={handleChnceEmail} value={email} type="text" placeholder="Email" />
             <button onClick={handleLogin}>Login</button>
+            
         </>
     )
 }
