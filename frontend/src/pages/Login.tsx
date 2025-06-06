@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { login } from "../slices/authSlice";
-import{Button} frm
+import Button from "./components/Button";
+
 
 function Login() {
     const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ function Login() {
             <div>Login</div>
             <input onChange={handleChnceEmail} value={email} type="text" placeholder="Email" />
             <button onClick={handleLogin}>Login</button>
-            
+            <Button />
         </>
     )
 }
