@@ -10,6 +10,7 @@ import Register from './pages/Register';
 function App() {
   return (
     <>
+      <link href="./output.css" rel="stylesheet"></link>
       <Routes>
         <Route>
           <Route path="/login" element={<Login />} />
