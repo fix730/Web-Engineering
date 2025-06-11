@@ -31,6 +31,7 @@ function Home() {
     };
     return (
         <>
+            <h1 className="text-4xl text-blue-600 font-bold">Tailwind funktioniert 🎉</h1>
             <h1>Home</h1>
             <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
             <button onClick={handleLogout}>
