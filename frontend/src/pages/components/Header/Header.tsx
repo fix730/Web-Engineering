@@ -35,8 +35,6 @@ const Header = () => {
           <AllNavigationLinks className="border-b pb-2" />
         </div>
       )}
-
-
     </header>
   );
 };
