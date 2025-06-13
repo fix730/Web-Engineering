@@ -13,16 +13,16 @@ function Home() {
     // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
     const dummyPosts = [
         {
-    id: 1,
-    title: "Sonnenuntergang am See",
-    description: "Wunderschöner Sonnenuntergang am nächsten See",
-    location: "München",
-    imageUrl: "https://ih1.redbubble.net/image.4665578724.8271/raf,360x360,075,t,fafafa:ca443f4786.jpg",
-  },
-  {
-    id: 2,
-    title: "Städtetrip nach Berlin",
-    description: "Cooler Trip mit vielen Sehenswürdigkeiten",
+            id: 1,
+            title: "Sonnenuntergang am Sewee",
+            description: "Wunderschöner Sonnenuntergang am nächsten Sewee",
+            location: "München",
+            imageUrl: "https://ih1.redbubble.net/image.4665578724.8271/raf,360x360,075,t,fafafa:ca443f4786.jpg",
+        },
+        {
+            id: 2,
+            title: "Städtetrip nach Berlin",
+            description: "Cooler Trip mit vielen Sehenswürdigkeiten",
     location: "Berlin",
     imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1XrdeEkDoqLOfAoDB5ZqEeVxZ4PS6D1qV_g&s",
   },
@@ -72,27 +72,33 @@ function Home() {
     <Header />
 
     {dummyPosts.map((post) => (
-      <div
-        key={post.id}
-        className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 cursor-pointer"
-        onClick={() => setCurrentPost(post)}
-      >
-        <img
-          src={post.imageUrl}
-          alt={post.title}
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <h2 className="text-xl font-bold text-gray-900">{post.title}</h2>
-          <p className="text-gray-700 mt-2">{post.description}</p>
-          <p className="text-gray-500 mt-1">Location: {post.location}</p>
-        </div>
-      </div>
+              <div
+            key={post.id}
+            className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 cursor-pointer flex flex-col md:flex-row border border-gray-200"
+            onClick={() => setCurrentPost(post)}
+          >
+            {/* Image on the left */}
+            <div className="md:w-1/3 w-full">
+              <img
+                src={post.imageUrl}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Text content on the right */}
+            <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
+              <p className="text-gray-700 mb-2">{post.description}</p>
+              <p className="text-gray-500">Location: {post.location}</p>
+            </div>
+          </div>
     ))}
     {/* Für das Anschauen von den Posts / draufclicken */}
     {currentPost && (
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+
+        className="fixed inset-0 pady-5 bg-black bg-opacity-50 flex items-center justify-center z-50"
         onClick={() => setCurrentPost(null)} // Klick auf Overlay schließt Modal
       >
         <div
@@ -105,7 +111,7 @@ function Home() {
           <img
             src={currentPost.imageUrl}
             alt={currentPost.title}
-            className="w-full h-full object-cover mt-4"
+            className="w-2/3 object-cover mt-4"
           />
           <button
             onClick={() => setCurrentPost(null)}
