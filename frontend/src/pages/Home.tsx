@@ -22,6 +22,12 @@ function Home() {
         callProtectedRoute();
     }, []);
 
+    const goToLogin = () => {
+        navigate("/login");
+    };
+    const goToRegister = () => {
+        navigate("/register");
+    };
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
