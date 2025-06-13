@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { MultiSelectCity } from "./elements"; 
 import { SearchInput } from "./elements";
-
+import { OptionType } from "./elements"; 
 
 export function SearchBar() {
     const [searchValue, setSearchValue] = useState('');
+    const [selectedCities, setSelectedCities] = useState<OptionType[]>([]);
+
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
     };
 
+    const handleCityChange = (cities: OptionType[]) => {
+        setSelectedCities(cities);
+        //console.log("Ausgewählte Städte:", cities); 
+    };
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        alert(`Suche gestartet mit: ${searchValue}`);
+        alert(`Suche gestartet mit: ${searchValue} und Städten: ${selectedCities.map(city => city.label).join(', ')}`);
     }
 
     return (
@@ -41,6 +48,8 @@ export function SearchBar() {
                 " // <- Die sm:rounded-none-Klasse wird hier direkt angewendet
                 roundedLeft={false} 
                 roundedRight={false} 
+                value={selectedCities}
+                onChange={handleCityChange}
             />
 
             {/* Button: rechts abgerundet, links keine Rundung */}

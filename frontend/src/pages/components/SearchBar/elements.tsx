@@ -2,10 +2,17 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import React from 'react';
 import Select from 'react-select';
 
+export interface OptionType {
+    value: string;
+    label: string;
+}
+
 interface MultiSelectCityProps {
     className?: string; 
     roundedLeft?: boolean; 
     roundedRight?: boolean;
+    value?: OptionType[];
+    onChange?: (selectedOptions: OptionType[]) => void;
 }
 
 interface SearchInputProps {
@@ -13,7 +20,6 @@ interface SearchInputProps {
     value?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     className?: string;
-    // Hinzugefügte Props für Rundung
     roundedLeft?: boolean;
     roundedRight?: boolean;
 }
@@ -23,8 +29,8 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     value,
     onChange,
     className,
-    roundedLeft = false, // Standardmäßig keine Rundung, wird von Parent gesteuert
-    roundedRight = false // Standardmäßig keine Rundung, wird von Parent gesteuert
+    roundedLeft = false,
+    roundedRight = false 
 }) => {
     // Dynamische Rundungs-Klassen basierend auf Props
     const getRoundedClasses = () => {
@@ -59,7 +65,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
 
 
-export function MultiSelectCity({ className, roundedLeft = false, roundedRight = false }: MultiSelectCityProps) {
+export function MultiSelectCity({ className, roundedLeft = false, roundedRight = false, onChange, value }: MultiSelectCityProps) {
     const options = [
         { value: '1', label: 'München' },
         { value: '2', label: 'Stuttgart' },
@@ -71,6 +77,12 @@ export function MultiSelectCity({ className, roundedLeft = false, roundedRight =
         if (roundedLeft) return 'rounded-l-full';
         if (roundedRight) return 'rounded-r-full';
         return 'rounded-none'; // Keine Rundung, wenn beides false ist
+    };
+    const handleChange = (selectedOptions: any) => {
+        const selectedValues = (selectedOptions || []) as OptionType[];
+        if (onChange) {
+            onChange(selectedValues);
+        }
     };
 
     return (
@@ -86,6 +98,8 @@ export function MultiSelectCity({ className, roundedLeft = false, roundedRight =
                     focus:outline-none focus:ring-2 focus:ring-blue-500 // Fokus-Stile
                     sm:${getRoundedClasses()} // Dynamische Rundung
                 `}
+                onChange={handleChange}
+                value={value}
                 classNamePrefix="select"
                 placeholder="Ort auswählen"
                 // Stil-Anpassungen für React-Select, um die Rundungen zu überschreiben
