@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { Dialog } from "@headlessui/react";
+
 
 function Register() {
   const dispatch = useAppDispatch();
@@ -12,6 +14,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
