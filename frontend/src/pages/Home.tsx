@@ -3,6 +3,7 @@ import { useAppDispatch} from "../hooks/redux-hooks";
 import { useEffect } from "react";
 import { getUser, logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
+import Header from "./components/Header/Header";
 
 function Home() {
     const dispatch = useAppDispatch();
@@ -31,6 +32,7 @@ function Home() {
     };
     return (
         <>
+            <Header />	
             <h1 className="text-4xl text-blue-600 font-bold">Tailwind funktioniert 🎉</h1>
             <h1>Home</h1>
             <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
