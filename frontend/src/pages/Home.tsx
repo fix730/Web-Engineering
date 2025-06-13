@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { getUser, logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
+import { SearchBar } from "./components/SearchBar/SearchBar";
 
 function Home() {
     const dispatch = useAppDispatch();
@@ -22,12 +23,6 @@ function Home() {
         callProtectedRoute();
     }, []);
 
-    const goToLogin = () => {
-        navigate("/login");
-    };
-    const goToRegister = () => {
-        navigate("/register");
-    };
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
@@ -39,6 +34,8 @@ function Home() {
     return (
         <>
             <Header />	
+            <SearchBar />
+            
             <h1 className="text-4xl text-blue-600 font-bold">Tailwind funktioniert 🎉</h1>
             <h1>Home</h1>
             <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
