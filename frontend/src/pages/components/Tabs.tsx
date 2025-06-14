@@ -12,9 +12,30 @@ import {
   Cog6ToothIcon,
 } from "@heroicons/react/24/solid";
 
-export function TabsWithIcon() {
-  const [activeTab, setActiveTab] = React.useState("dashboard");
+type TabDataItem = {
+  label: string;
+  value: string;
+  icon: React.ElementType; 
+  desc: React.ReactNode; 
+}
 
+
+type TabDataArray = TabDataItem[];
+
+
+type TabsWithIconProps ={
+  
+  tabContent: TabDataArray;
+ 
+}
+
+export function TabsWithIcon({tabContent}: TabsWithIconProps) {
+  const [activeTab, setActiveTab] = React.useState( "0");
+
+  
+  const data = tabContent;
+
+ /*
   const data = [
     {
       label: "Passwort",
@@ -35,7 +56,7 @@ export function TabsWithIcon() {
       desc: `We're not always in the position that we want to be at. We're constantly growing.`,
     },
   ];
-
+*/
   return (
     <div className="w-full max-w-md mx-auto py-8">
       <Tabs
