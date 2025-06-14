@@ -17,7 +17,7 @@ export function TabsWithIcon() {
 
   const data = [
     {
-      label: "Dashboard",
+      label: "Passwort",
       value: "dashboard",
       icon: Square3Stack3DIcon,
       desc: `It really matters and then like it really doesn't matter. What matters is the people who are sparked by it.`,
