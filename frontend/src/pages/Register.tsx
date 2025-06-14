@@ -50,31 +50,31 @@ function Register() {
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
             <LabelOverInput>Vorname</LabelOverInput>
-            <Text handleChnceText={(e) => setFirstName(e.target.value)} text={firstName} />
+            <Text handleChnceText={(e:any) => setFirstName(e.target.value)} text={firstName} />
           </div>
           <div>
             <LabelOverInput>Nachname</LabelOverInput>
-            <Text handleChnceText={(e) => setName(e.target.value)} text={name} />
+            <Text handleChnceText={(e:any) => setName(e.target.value)} text={name} />
           </div>
           <div>
             <LabelOverInput>E-Mail</LabelOverInput>
-            <Email handleChnceEmail={(e) => setEmail(e.target.value)} email={email} />
+            <Email handleChnceEmail={(e:any) => setEmail(e.target.value)} email={email} />
           </div>
           <div>
             <LabelOverInput>Passwort</LabelOverInput>
-            <Paasswort handleChncePassword={(e) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
+            <Paasswort handleChncePassword={(e:any)=> setPassword(e.target.value)} password={password} autoComplete="new-password" />
           </div>
           <div>
             <LabelOverInput>Passwort bestätigen</LabelOverInput>
             <Paasswort
-              handleChncePassword={(e) => setPasswordConfirm(e.target.value)}
+              handleChncePassword={(e:any) => setPasswordConfirm(e.target.value)}
               password={passwordConfirm}
               autoComplete="new-password"
             />
           </div>
           <div>
             <LabelOverInput>Geburtsdatum</LabelOverInput>
-            <DateInput handleChnceDate={(e) => setBirthday(e.target.value)} date={birthday} />
+            <DateInput handleChnceDate={(e:any) => setBirthday(e.target.value)} date={birthday} />
           </div>
           <button
             type="submit"
