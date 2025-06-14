@@ -5,21 +5,25 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
+import { ThemeProvider } from "@material-tailwind/react";
 
 function App() {
   return (
     <>
-      <link href="./output.css" rel="stylesheet"></link>
-      <Routes>
-        <Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-        <Route>
-          <Route path="/" element={<Home />} />
-        </Route>
-      </Routes>
+      <ThemeProvider>
+        <link href="./output.css" rel="stylesheet"></link>
+        <Routes>
+          <Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+          <Route>
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+
+      </ThemeProvider>
+
     </>
   );
 }
