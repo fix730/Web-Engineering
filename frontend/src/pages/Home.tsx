@@ -1,11 +1,17 @@
+"use client";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch} from "../hooks/redux-hooks";
-import { useEffect } from "react";
+import { useAppDispatch } from "../hooks/redux-hooks";
+import React from "react";
+import { useEffect, useState } from "react";
 import { getUser, logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
+import { SearchBar } from "./components/SearchBar/SearchBar";
+import DialogAlert from "../Pop-Up-Window/alert";
+
 
 function Home() {
+    const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -22,12 +28,6 @@ function Home() {
         callProtectedRoute();
     }, []);
 
-    const goToLogin = () => {
-        navigate("/login");
-    };
-    const goToRegister = () => {
-        navigate("/register");
-    };
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
@@ -36,15 +36,30 @@ function Home() {
             console.error(e);
         }
     };
+
+
+
     return (
         <>
-            <Header />	
+            <Header />
+            <SearchBar />
+
             <h1 className="text-4xl text-blue-600 font-bold">Tailwind funktioniert 🎉</h1>
             <h1>Home</h1>
             <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
             <button onClick={handleLogout}>
                 Logout
             </button>
+            <button onClick={() => setIsOpenAlertDialog(true)}>
+                Test Pop-Up
+            </button>
+            <DialogAlert
+                open={isOpenAlertDialog}
+                isOpen={() => setIsOpenAlertDialog(false)}
+                header="Info"
+                content="Dies ist ein einfaches Pop-up-Fenster."
+                buttonText="Schließen"
+            />
         </>
     )
 }

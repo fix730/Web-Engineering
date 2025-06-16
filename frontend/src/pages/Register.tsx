@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { Dialog } from "@headlessui/react";
+import { LabelOverInput } from "./components/Label";
+import { Text, Email, Paasswort, DateInput } from "./components/Inputs";
+
 
 function Register() {
   const dispatch = useAppDispatch();
@@ -11,11 +15,13 @@ function Register() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [birthday, setBirthday] = useState("");
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && firstName && email && password && birthday) {
+    if (name && firstName && email && password && birthday && passwordConfirm && password === passwordConfirm) {
       try {
         await dispatch(
           register({
@@ -43,54 +49,32 @@ function Register() {
         </div>
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Vorname</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+            <LabelOverInput>Vorname</LabelOverInput>
+            <Text handleChnceText={(e:any) => setFirstName(e.target.value)} text={firstName} />
+          </div>
+          <div>
+            <LabelOverInput>Nachname</LabelOverInput>
+            <Text handleChnceText={(e:any) => setName(e.target.value)} text={name} />
+          </div>
+          <div>
+            <LabelOverInput>E-Mail</LabelOverInput>
+            <Email handleChnceEmail={(e:any) => setEmail(e.target.value)} email={email} />
+          </div>
+          <div>
+            <LabelOverInput>Passwort</LabelOverInput>
+            <Paasswort handleChncePassword={(e:any)=> setPassword(e.target.value)} password={password} autoComplete="new-password" />
+          </div>
+          <div>
+            <LabelOverInput>Passwort bestätigen</LabelOverInput>
+            <Paasswort
+              handleChncePassword={(e:any) => setPasswordConfirm(e.target.value)}
+              password={passwordConfirm}
+              autoComplete="new-password"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nachname</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">E-Mail</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Passwort</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Geburtsdatum</label>
-            <input
-              type="date"
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-              className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
+            <LabelOverInput>Geburtsdatum</LabelOverInput>
+            <DateInput handleChnceDate={(e:any) => setBirthday(e.target.value)} date={birthday} />
           </div>
           <button
             type="submit"

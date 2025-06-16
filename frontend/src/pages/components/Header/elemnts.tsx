@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigationLink } from "./compnents";
 import { logout } from "../../../slices/authSlice";
 import profile from "../../../icons/user.png";
 import settingIcon from "../../../icons/setting.png";
 import logoutIcon from "../../../icons/logout.png";
+import axiosInstance from "../../../api/axiosInstance";
+import { useAppDispatch } from "../../../hooks/redux-hooks";
+import { useNavigate } from "react-router-dom";
+import Settings from "../../../Pop-Up-Window/Settings";
 
 type AllNavigationLinksProps = {
     className?: string;
@@ -21,8 +25,34 @@ export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
 
 export const ProfileMenu = () => {
     const [open, setOpen] = useState(false);
+    const [isOpenSettings, setIsOpenSettings] = useState(false);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const callProtectedRoute = async () => {
+        try {
+            const response = await axiosInstance.get("/api/protected");
+            console.log("Protected content:", response.data);
+        } catch (error: any) {
+            console.error("Zugriff verweigert:", error.response?.data || error.message);
+        }
+    };
+
+    useEffect(() => {
+        callProtectedRoute();
+    }, []);
+
+    const handleLogout = async () => {
+            try {
+                await dispatch(logout()).unwrap();
+                navigate("/logout");
+            } catch (e) {
+                console.error(e);
+            }
+    };
 
     return (
+        <>
         <div className="relative">
             <button
                 onClick={() => setOpen(!open)}
@@ -33,13 +63,13 @@ export const ProfileMenu = () => {
 
             {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-                    <a href="/einstellungen" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <button onClick={()=>setIsOpenSettings(true)} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                         <div className="flex items-center space-x-2"> {/* flex-Container für horizontale Anordnung */}
                             <img src={settingIcon} className="w-5 h-5" />
                             <span>Einstellungen</span>
                         </div>
-                    </a>
-                    <button onClick={() => logout()} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    </button>
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                         <div className="flex items-center space-x-2">
                             <img src={logoutIcon} className="w-5 h-5" />
                             <span>Logout</span>
@@ -48,5 +78,8 @@ export const ProfileMenu = () => {
                 </div>
             )}
         </div>
+        <Settings open={isOpenSettings} isOpen={() => setIsOpenSettings(false)} />
+    </>
     );
 };
+
