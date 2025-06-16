@@ -1,5 +1,7 @@
 import React from "react";
-import settingIcon from "../../../icons/heart.png";
+import heartNotLiked from "../../../icons/heart.png";
+import heartLiked from "../../../icons/heartLiked.png";
+import { useState } from "react";
 
 type PostObject = {
   id: number; // GUID später??
@@ -9,14 +11,21 @@ type PostObject = {
   imageUrl: string;
 };
 
+
 type PostProps = {
   post: PostObject;
   onClick?: (post: PostObject) => void;
 };
 
+
+
 const Post = ({ post, onClick }: PostProps) => {
   
+  const[liked, setLiked] = useState(false);
 
+function toggleLike() {
+  setLiked(!liked); 
+}
   return (
     <div
       key={post.id}
@@ -38,7 +47,7 @@ const Post = ({ post, onClick }: PostProps) => {
                 <p className="text-gray-700 mb-2">{post.description}</p>
                 <p className="text-gray-500">Location: {post.location}</p>
 
-                <img className="absolute bottom-2 right-2 w-12 h-12"  src={settingIcon} alt="Placeholder" />
+                <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12"  src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
 
               </div>
             </div>
