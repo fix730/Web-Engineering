@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { ThemeProvider } from "@material-tailwind/react";
+import PostNew from './pages/PostNew';
+import Einstellungen from './pages/Einstellungen';
 
 function App() {
   return (
@@ -14,16 +16,18 @@ function App() {
         <link href="./output.css" rel="stylesheet"></link>
         <Routes>
           <Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
-          <Route>
-            <Route path="/" element={<Home />} />
-          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/posts/new" element={<PostNew />} />
+          <Route path="/einstellungen" element={<Einstellungen />} />
+
+        </Route>
+        <Route>
+          <Route path="/" element={<Home />} />
+        </Route>
         </Routes>
 
       </ThemeProvider>
-
     </>
   );
 }

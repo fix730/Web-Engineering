@@ -37,7 +37,6 @@ const Header = () => {
         </div>
       )}
     </header>
-
   );
 };
 
