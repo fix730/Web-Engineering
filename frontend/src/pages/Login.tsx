@@ -87,7 +87,7 @@ function Login() {
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
                         Hast du schon ein Benutzerkonto?{' '}
-                        <a onClick={navigateToRegister} className="font-semibold text-indigo-600 hover:text-indigo-500">
+                        <a href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
                             Registrie dich
                         </a>
                     </p>
