@@ -3,15 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux'; // Stellen Sie sicher, dass dieser Import oben ist
-import store from './store'; // Stellen Sie sicher, dass dieser Import oben ist
-import { BrowserRouter } from 'react-router-dom'; // Stellen Sie sicher, dass dieser Import oben ist
+import { Provider } from 'react-redux'; 
+import store from './store'; 
+import { BrowserRouter } from 'react-router-dom'; 
 
-// --- Hinzufügen des ThemeProvider Imports ---
+
 import { ThemeProvider } from "@material-tailwind/react";
-// --- Ende des Hinzufügens ---
 
-//dotenv.config(); // Diese Zeile ist normalerweise nicht hier im Frontend notwendig
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -19,11 +17,9 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        {/* --- Hinzufügen des ThemeProviders um Ihre App --- */}
         <ThemeProvider>
           <App />
         </ThemeProvider>
-        {/* --- Ende des Hinzufügens --- */}
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

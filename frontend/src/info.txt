@@ -4,10 +4,10 @@ rm -rf node_modules package-lock.json
 npm install
 npm start
 
-#tailwindcss
+Wenn Tailwindccs nicht funktioniert:
 npx tailwindcss -i ./src/index.css -o ./src/output.css
 
-
+Bei einem neuen Pull am besten das durchführen:
 npm cache clean --force
 Remove-Item -Recurse -Force node_modules
 Remove-Item package-lock.json
