@@ -3,3 +3,12 @@ npm install react@18.2.0 react-dom@18.2.0
 rm -rf node_modules package-lock.json
 npm install
 npm start
+
+#tailwindcss
+npx tailwindcss -i ./src/index.css -o ./src/output.css
+
+
+npm cache clean --force
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+npm install
