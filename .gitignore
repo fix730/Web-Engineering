@@ -27,4 +27,4 @@ yarn-error.log*
 .eslintcache
 
 # TypeScript build info
-tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo+

@@ -9,6 +9,8 @@ type PostObject = {
   description: string;
   location: string;
   imageUrl: string;
+
+  
 };
 
 
