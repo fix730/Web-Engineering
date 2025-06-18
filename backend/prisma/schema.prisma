@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Model für die Tabelle `image`
+model Image {
+  idimage     Int      @id @default(autoincrement()) // idimage ist PK und auto-increment
+  name        String?  @db.VarChar(45)
+  image_data  Bytes?   @db.LongBlob // LONGBLOB entspricht Bytes in Prisma
+  type        String?  @db.VarChar(45)
+
+  users       User[]   // Eine Image kann von mehreren Usern referenziert werden (z.B. Profilbilder)
+  posts       Post[]   // Eine Image kann von mehreren Posts referenziert werden
+  
+  @@map("image") // Stellt sicher, dass das Model der Datenbanktabelle 'image' zugeordnet wird
+}
+
+// Model für die Tabelle `user`
+model User {
+  iduser        Int       @id @default(autoincrement()) // iduser ist PK und auto-increment
+  name          String?   @db.VarChar(45)
+  firstName     String?   @db.VarChar(45)
+  birthday      DateTime? @db.Date
+  passwort      String?   @db.VarChar(255) // In Produktion IMMER gehasht speichern!
+  email         String?   @unique @db.VarChar(100) // Email sollte einzigartig sein
+  image_idimage Int       // Fremdschlüssel zu Image
+
+  image         Image     @relation(fields: [image_idimage], references: [idimage]) // Beziehung zu Image
+
+  posts         Post[]    // Ein User kann viele Posts haben
+  likes         Like[]    // Ein User kann viele Likes haben
+
+  @@map("user") // Stellt sicher, dass das Model der Datenbanktabelle 'user' zugeordnet wird
+}
+
+// Model für die Tabelle `location`
+model Location {
+  idlocation Int     @id @default(autoincrement()) // idlocation ist PK und auto-increment
+  name       String? @db.VarChar(45)
+
+  posts      Post[]  // Eine Location kann viele Posts haben
+
+  @@map("location") // Stellt sicher, dass das Model der Datenbanktabelle 'location' zugeordnet wird
+}
+
+// Model für die Tabelle `post`
+model Post {
+  idpost            Int       @id @default(autoincrement()) // idpost ist PK und auto-increment
+  title             String?   @db.VarChar(45)
+  description       String?   @db.Text
+  location_idlocation Int
+  image_idimage     Int
+  user_iduser       Int
+
+  location          Location  @relation(fields: [location_idlocation], references: [idlocation])
+  image             Image     @relation(fields: [image_idimage], references: [idimage])
+  user              User      @relation(fields: [user_iduser], references: [iduser])
+
+  likes             Like[]    // Ein Post kann viele Likes haben
+
+  @@map("post") // Stellt sicher, dass das Model der Datenbanktabelle 'post' zugeordnet wird
+}
+
+// Model für die Tabelle `like` (Beachten Sie den zusammengesetzten Primärschlüssel)
+model Like {
+  idlike      Int       @default(autoincrement()) // **@id REMOVED here**
+  date        DateTime? @db.Date
+  user_iduser Int
+  post_idpost Int
+
+  user        User      @relation(fields: [user_iduser], references: [iduser])
+  post        Post      @relation(fields: [post_idpost], references: [idpost])
+
+  @@id([idlike, user_iduser, post_idpost]) // This correctly defines the composite PK
+  @@map("like")
+}
