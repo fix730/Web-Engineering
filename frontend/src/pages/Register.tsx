@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/frontendRumtesten
 import { LabelOverInput } from "./components/Label";
 import { Text, Email, Paasswort, DateInput } from "./components/Inputs";
 
@@ -37,6 +41,7 @@ function Register() {
       }
     } else {
       alert("Bitte alle Felder ausfüllen.");
+      
     }
   };
 

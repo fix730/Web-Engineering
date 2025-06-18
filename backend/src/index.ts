@@ -15,6 +15,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRouter);
+app.use("/api/user");
 app.use("/api", protectedRouter);
 
 app.listen(port, () => {
