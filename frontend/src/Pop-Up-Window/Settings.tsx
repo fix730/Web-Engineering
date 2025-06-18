@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TabsWithIcon } from "../pages/components/Tabs";
 import {
   Square3Stack3DIcon,
@@ -23,6 +23,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
   const [password, setPassword] = React.useState("");
   const [passwordConfirm, setPasswordConfirm] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [image, setImage] = useState<File | null>(null);
   const handleChangePasswort = () => {
   
     if (password !== passwordConfirm) {
@@ -93,11 +94,11 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
       )
     },
     {
-      label: "Settings",
+      label: "Profilbild",
       value: "2",
-      icon: Cog6ToothIcon,
-      desc: `We're not always in the position that we want to be at. We're constantly growing.`,
-    },
+      icon: UserCircleIcon,
+      desc: "",
+    }
   ];
 
   if (!open) return null;

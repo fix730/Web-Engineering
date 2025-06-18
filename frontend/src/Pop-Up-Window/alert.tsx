@@ -5,10 +5,10 @@ type DialogAlertProps = {
   isOpen: () => void;
   header: string;
   content: string;
-  buttonText: string;
+  buttonText?: string;
 };
 
-const DialogAlert: React.FC<DialogAlertProps> = ({open,isOpen,header,content,buttonText}) => {
+const DialogAlert: React.FC<DialogAlertProps> = ({open,isOpen,header,content,buttonText="Schliesen"}) => {
   if (!open) return null;
 
   return (

@@ -72,3 +72,14 @@ export function DateInput({ date, handleChnceDate }: DateProps) {
         />
     );
 }
+
+export function PictureInput({ onChange }: { onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+    return (
+        <input
+            type="file"
+            accept="image/*"
+            onChange={onChange}
+            className="mt-1 w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+    );
+}
