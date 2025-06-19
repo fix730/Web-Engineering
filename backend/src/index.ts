@@ -20,23 +20,10 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api", protectedRouter);
 
-// // Beispiel für eine Route, die auf die Datenbank zugreift
-// app.get("/", async (req, res) => {
-//     try {
-//         // Führe eine einfache Abfrage aus
-//         const [rows] = await db.query('SELECT * FROM user LIMIT 1') as [any[], any];
-//         res.status(200).json({backend: 'Herzlich Willkommen im Backend', message: 'Datenbankverbindung erfolgreich!', user: rows[0] });
-//     } catch (error) {
-//         console.error('Fehler beim Abrufen von Daten:', error);
-//         const errorMessage = (error instanceof Error) ? error.message : String(error);
-//         res.status(500).json({ message: 'Fehler beim Abrufen von Daten', error: errorMessage });
-//     }
-// });
 
 app.get("/", async (req, res) => {
     try {
         // Nutze den Prisma Client, um auf deine 'user'-Tabelle zuzugreifen
-        // TypeScript bietet hier Autovervollständigung für 'user' und dessen Felder!
         const user = await prisma.user.findFirst(); // Findet den ersten Benutzer
         res.status(200).json({ backend: 'Herzlich Willkommen im Backend', message: 'Datenbankverbindung erfolgreich (Prisma)!', user: user });
     } catch (error) {
