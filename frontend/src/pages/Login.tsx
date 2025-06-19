@@ -6,30 +6,48 @@ import { useNavigate } from "react-router-dom";
 import LogInIcon from "../icons/login.png";
 import { Email, Paasswort } from "./components/Inputs";
 import { LabelOverInput } from "./components/Label";
+import DialogAlert from "../Pop-Up-Window/alert";
+import { AxiosError } from "axios";
 
 
 function Login() {
     const dispatch = useAppDispatch();
-    const [email, setEmail] = useState("1");
-    const [password, setPassword] = useState("test123");
-
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [titleAlertWindow, setTitleAlertWindow] = useState("");
+    const [textAlertWindow, setTextAlertWindow] = useState("");
+    const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
-        // This is only a basic validation of inputs. Improve this as needed.
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        //alert("Login button clicked" + email + " " + password);
         if (email && password) {
             try {
-                await dispatch(
-                    login({
-                        email,
-                        password,
-                    })
-                ).unwrap();
-            } catch (e) {
-                console.error(e);
+                const resultAction = await dispatch(login({ email, password })).unwrap();
+                navigate('/');
+            } catch (e: any) {
+                console.error("Login fehlgeschlagen:", e);
+
+                let errorTitle = "Login fehlgeschlagen";
+                let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+
+                // Da rejectWithValue jetzt die Backend-Daten direkt weitergibt,
+                // sollte `e` direkt das Objekt `{ message: "..." }` sein.
+                if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+                    errorMessage = e.message;
+                } else {
+                    errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
+                }
+
+                setTitleAlertWindow(errorTitle);
+                setTextAlertWindow(errorMessage);
+                setIsOpenAlertDialog(true); 
             }
         } else {
-            // Show an error message.
+            setTitleAlertWindow("Login fehlgeschlagen");
+            setTextAlertWindow("Bitte fülle alle Felder aus.");
+            setIsOpenAlertDialog(true);
         }
     };
     const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +64,7 @@ function Login() {
 
 
 
-        
+
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -58,7 +76,7 @@ function Login() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form action="#" method="POST" className="space-y-6">
+                    <form onSubmit={handleLogin} className="space-y-6">
                         <div>
                             <LabelOverInput>E-Mail</LabelOverInput>
                             <div className="mt-2">
@@ -81,7 +99,7 @@ function Login() {
                         </div>
 
                         <div>
-                            <SubmitButton onClick={handleLogin}>Sign in</SubmitButton>
+                            <SubmitButton>Sign in</SubmitButton>
                         </div>
                     </form>
 
@@ -93,6 +111,7 @@ function Login() {
                     </p>
                 </div>
             </div>
+            <DialogAlert open={isOpenAlertDialog} isOpen={() =>setIsOpenAlertDialog(false)} header={titleAlertWindow}  content={textAlertWindow}/>
         </>
 
     )

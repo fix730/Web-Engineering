@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch} from "../hooks/redux-hooks";
 import { useEffect } from "react";
-import { getUser, logout } from "../slices/authSlice";
+//import { getUser, logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import React from "react";
 import { useEffect, useState } from "react";
-import { getUser, logout } from "../slices/authSlice";
+import {logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
 import { SearchBar } from "./components/SearchBar/SearchBar";
