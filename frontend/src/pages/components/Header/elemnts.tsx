@@ -47,7 +47,7 @@ export const ProfileMenu = () => {
     // Funktion zum Abrufen des Profilbilds vom Backend
     const fetchProfileImage = async (imageId: number) => {
         try {
-            const response = await axiosInstance.get(`/api/user/image/${imageId}`, {
+            const response = await axiosInstance.get(`/api/image/${imageId}`, {
                 responseType: 'blob' // um Binärdaten zu erhalten
             });
             if (response.status === 200) {

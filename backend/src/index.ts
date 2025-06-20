@@ -8,6 +8,7 @@ import db from './config/db';
 import prisma from './config/prisma';
 import post from './routes/post';
 import user from './routes/user';
+import image from './routes/image'
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/post",post);
 app.use("/api/user", user);
+app.use("/api/image", image);
 app.use("/api", protectedRouter);
 
 

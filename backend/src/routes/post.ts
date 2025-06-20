@@ -1,15 +1,21 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addLocation } from "../utils/dbQuery";
+import { addLocation, getAllLocation } from "../utils/dbQuery";
 
 const router = express.Router();
 
-router.post("/location",protect, (req:any, res:any)=>{
-    const locationName = req.body;
-    if(!locationName){
-        return res.status(400).json({message: "locationName muss angegeben werden"});
+router.get("/location",protect, async (req:any, res:any)=>{
+   try {
+        const locations = await getAllLocation();
+        return res.status(200).json(locations);
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Locations:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen der Locations." });
     }
-    //await addLocation(locationName);
+});
+
+router.post("/new",protect, async(req:any, res:any)=>{
+    
 });
 
 

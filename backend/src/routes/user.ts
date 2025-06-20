@@ -2,9 +2,8 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path'; // Wird weiterhin für die Dateierweiterung benötigt
-// Pfade zu Ihren Middleware- und DB-Abfrage-Dateien anpassen
 import { AuthenticatedRequest, protect } from '../middleware/protect';
-import { updateImageById, getProfileImageById } from '../utils/dbQuery'; // Importieren Sie Ihre DB-Funktionen
+import { updateImageById, getImageById } from '../utils/dbQuery'; // Importieren Sie Ihre DB-Funktionen
 
 const router = express.Router();
 
@@ -58,33 +57,6 @@ router.post('/upload-profile-image', protect, upload.single('profileImage'), asy
     }
 });
 
-
-
-router.get('/image/:imageId', protect, async (req: any, res: any) => {
-    const imageId = parseInt(req.params.imageId, 10); // Extrahieren und Parsen der Bild-ID aus der URL
-
-    if (isNaN(imageId)) {
-        return res.status(400).json({ message: "Ungültige Bild-ID." });
-    }
-
-    try {
-        const image = await getProfileImageById(imageId); // Bilddaten aus der DB abrufen
-
-        if (!image) {
-            return res.status(404).json({ message: "Bild nicht gefunden." });
-        }
-
-        // Setzen Sie den 'Content-Type'-Header auf den MIME-Typ des Bildes,
-        // damit der Browser das Bild korrekt interpretieren kann.
-        res.setHeader('Content-Type', image.mimeType);
-        // Senden Sie die Binärdaten des Bildes als Antwort
-        res.send(image.imageData);
-
-    } catch (error) {
-        console.error("Fehler beim Abrufen des Bildes:", error);
-        const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler beim Bild-Abruf.";
-        res.status(500).json({ message: "Fehler beim Abrufen des Bildes.", error: errorMessage });
-    }
-});
-
 export default router;
+
+
