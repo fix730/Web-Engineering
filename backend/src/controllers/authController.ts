@@ -89,7 +89,7 @@ export const authenticateUser: RequestHandler = async (req: any, res: any) => {
     return res.status(400).json({ message: 'E-Mail und Passwort sind erforderlich.' });
   }
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { email: email }
     });
     if (!user) {

@@ -1,6 +1,6 @@
 import { timeStamp } from "console";
 import prisma from "../config/prisma";
-import { Post, Location as PrismaLocation } from '@prisma/client';
+import { Post, Location as PrismaLocation, comment } from '@prisma/client';
 
 
 
@@ -160,4 +160,30 @@ async function findLocationTitlePosts(locationId: number[], title: string) :Prom
         }
     });
     return posts;
+}
+
+export async function addComment(postId:number, userId:number, text:string) :Promise<comment>{
+    //console.log(userId);
+    const comment = await prisma.comment.create({
+        data: {
+            text: text,
+            post_idpost:postId,
+            user_iduser: userId,
+            date: new Date(),
+        }
+    });
+    return comment;
+    
+}
+
+export async function getPostComment(postId:number):Promise<any[]>{
+    const comments = await prisma.comment.findMany({
+            where: {
+                post_idpost: postId
+            },
+            orderBy: {
+                date: 'asc'
+            }
+        });
+    return comments;
 }

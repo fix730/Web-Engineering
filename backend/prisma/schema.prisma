@@ -61,3 +61,15 @@ model Like {
   @@index([user_iduser], map: "fk_like_user1_idx")
   @@map("like")
 }
+
+model comment {
+  idcomment   Int       @id @default(autoincrement())
+  text        String?   @db.Text
+  date        DateTime? @db.Date
+  commentcol  String?   @db.VarChar(45)
+  user_iduser Int
+  post_idpost Int
+
+  @@index([post_idpost], map: "fk_comment_post1_idx")
+  @@index([user_iduser], map: "fk_comment_user1_idx")
+}

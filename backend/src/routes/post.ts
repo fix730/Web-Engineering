@@ -1,8 +1,9 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addLocation, getAllLocation, newPost, showAllPosts, showFilterPosts } from "../utils/dbQuery";
+import { addComment, addLocation, getAllLocation, getPostComment, newPost, showAllPosts, showFilterPosts } from "../utils/dbQuery";
 import { upload } from "./user";
 import { timeStamp } from "console";
+import { text } from "stream/consumers";
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.post("/new", protect, upload.single('imagePost'), async (req: any, res: a
         res.status(200).json({
             message: "neuer Post erfolgreich in DB gespeichert",
             idPost: post.idpost
-        })
+        });
 
     } catch (error) {
         console.error("Fehler beim Hochladen des Posts:", error);
@@ -88,6 +89,53 @@ router.get("/search", protect, async (req: any, res: any) => {
         console.error("Fehler beim Abrufen der Posts:", error);
         return res.status(500).json({ message: "Interner Serverfehler beim Abrufen der Posts." });
     }
+});
+
+router.post("/comment", protect, async (req: any, res: any) => {
+    const user = req.user;
+
+    if (!user || !user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
+    }
+    //console.log(user.iduser);
+    const { postId, text } = req.body;
+
+    if (!postId || !text) {
+        return res.status(404).json({ message: "Fehlende Übergabeparameter im Body" });
+    }
+    const numUserId = Number(user.iduser);
+    const numPostId = Number(postId);
+
+    try {
+        const comment = await addComment(numPostId, numUserId, text);
+
+        res.status(200).json({
+            message: "neuer Kommentar erfolgreich in DB gespeichert",
+            idComment: comment.idcomment
+        });
+    } catch (error) {
+        console.error("Fehler beim Erstelen des Kommentars:", error);
+        return res.status(500).json({ message: "Interner Serverfehler Erstelen des Kommentars." });
+    }
+});
+
+router.get("/comment", protect, async (req: any, res: any) => {
+    const { postId } = req.query;
+    if (!postId) {
+        return res.status(404).json({ message: "Fehlende Übergabeparameter bei den Paramertern (postId fehlt)" });
+    }
+
+    const numPostId = Number(postId);
+    try {
+        const comments = await getPostComment(numPostId);
+        res.status(200).json({
+            comments: comments
+        });
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Kommentare:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen der Kommentare." });
+    }
+
 });
 
 
