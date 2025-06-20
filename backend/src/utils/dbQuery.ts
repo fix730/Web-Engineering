@@ -1,6 +1,6 @@
 import { timeStamp } from "console";
 import prisma from "../config/prisma";
-import { Location as PrismaLocation } from '@prisma/client';
+import { Post, Location as PrismaLocation } from '@prisma/client';
 
 
 
@@ -101,7 +101,8 @@ export const newPost = async (userId: number, locationName: string, title: strin
                 description: description,
                 location_idlocation: locationId,
                 image_idimage: newImage.idimage,
-                user_iduser: userId
+                user_iduser: userId,
+                
             }
         });
         return newPost;
@@ -109,4 +110,9 @@ export const newPost = async (userId: number, locationName: string, title: strin
         console.error("Fehler bei neuen Post erstellen", error);
         throw new Error("Post konnte nicht erstellt werden.");
     }
+}
+
+export async function showAllPosts():Promise<Post[]>{
+    const posts = await prisma.post.findMany();
+    return posts;
 }

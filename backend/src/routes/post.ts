@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addLocation, getAllLocation, newPost } from "../utils/dbQuery";
+import { addLocation, getAllLocation, newPost, showAllPosts } from "../utils/dbQuery";
 import { upload } from "./user";
 import { timeStamp } from "console";
 
@@ -52,6 +52,19 @@ router.post("/new", protect, upload.single('imagePost'), async (req: any, res:an
 
     }
 });
+
+router.get("/all",protect, async (req:any, res:any)=>{
+    try{
+        const posts = await showAllPosts();
+
+        res.status(200).json({
+            posts: posts
+        });
+    }catch(error){
+        console.error("Fehler beim Abrufen der Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen der Posts." });
+    }
+})
 
 
 export default router;
