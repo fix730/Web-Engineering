@@ -22,12 +22,15 @@ export function SearchBar() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        alert(`Suche gestartet mit: ${searchValue} und Städten: ${selectedCities.map(city => city.label).join(', ')}`);
+        //alert(`Suche gestartet mit: ${searchValue} und Städten: ${selectedCities.map(city => city.label).join(', ')}`);
         try{
-            axiosInstance.post('/api/post/search', {
-                title: searchValue,
-                cities: selectedCities.map(city => city.value) // Senden der IDs der ausgewählten Städte
+            const posts = axiosInstance.get('/api/post/search', {
+                params: {
+                    title: searchValue,
+                    locations: selectedCities.map(city => city.value) 
+                }
             });
+
         } catch (error) {
             console.error("Fehler beim Senden der Suchanfrage:", error);
             alert("Fehler beim Senden der Suchanfrage. Bitte versuche es später erneut.");

@@ -117,12 +117,14 @@ export async function showAllPosts(): Promise<Post[]> {
     return posts;
 }
 
-export async function showFilterPosts(location: string, title: string): Promise<Post[]> {
+export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
     let posts;
-    if (location.length == 0) {
+    if (locationId.length == 0) {
         posts = findTitlePosts(title);
     }else if(title.length == 0){
-        
+        posts = findLocationPosts(locationId);
+    }else{
+        posts = findLocationTitlePosts(locationId,title);
     }
     return posts;
 }
@@ -131,6 +133,29 @@ export async function showFilterPosts(location: string, title: string): Promise<
 async function findTitlePosts(title: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
+            title: {contains: title}
+        }
+    });
+    return posts;
+}
+
+async function findLocationPosts(locationId: number[]):Promise<Post[]>{
+    const posts = await prisma.post.findMany({
+        where: {
+            location_idlocation:{
+                in: locationId
+            }
+        }
+    });
+    return posts;
+}
+
+async function findLocationTitlePosts(locationId: number[], title: string) :Promise<Post[]>{
+    const posts = await prisma.post.findMany({
+        where: {
+            location_idlocation:{
+                in: locationId
+            },
             title: {contains: title}
         }
     });
