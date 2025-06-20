@@ -92,9 +92,10 @@ export const newPost = async (userId: number, locationName: string, title: strin
             select: {
                 idimage: true,
             }
+
         });
         await updateImageById(newImage.idimage, imageData, imageMimeType, imageName);
-        await prisma.post.create({
+        const newPost = await prisma.post.create({
             data: {
                 title: title,
                 description: description,
@@ -103,6 +104,7 @@ export const newPost = async (userId: number, locationName: string, title: strin
                 user_iduser: userId
             }
         });
+        return newPost;
     } catch (error) {
         console.error("Fehler bei neuen Post erstellen", error);
         throw new Error("Post konnte nicht erstellt werden.");

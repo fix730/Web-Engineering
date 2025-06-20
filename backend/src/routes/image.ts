@@ -17,7 +17,7 @@ router.get('/:imageId', protect, async (req: any, res: any) => {
             return res.status(404).json({ message: "Bild nicht gefunden." });
         }
 
-        // Setzen Sie den 'Content-Type'-Header auf den MIME-Typ des Bildes,
+        // Setzt den 'Content-Type'-Header auf den MIME-Typ des Bildes,
         // damit der Browser das Bild korrekt interpretieren kann.
         res.setHeader('Content-Type', image.mimeType);
         res.send(image.imageData);

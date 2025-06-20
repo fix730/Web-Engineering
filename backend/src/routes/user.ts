@@ -8,8 +8,8 @@ import { updateImageById, getImageById } from '../utils/dbQuery'; // Importieren
 const router = express.Router();
 
 // Multer-Konfiguration: Speichert die Datei im Arbeitsspeicher als Buffer.
-const storage = multer.memoryStorage();
-const upload = multer({
+export const storage = multer.memoryStorage();
+export const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // Dateigrößenlimit: 5 MB
     fileFilter: (req, file, cb) => {
