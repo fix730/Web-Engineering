@@ -25,7 +25,7 @@ async function isLocationInDB(locationName: string): Promise<number> {
             name: locationName
         }
     });
-    if(location != null){
+    if (location != null) {
         return location.idlocation;
     }
     return -1;
@@ -102,7 +102,7 @@ export const newPost = async (userId: number, locationName: string, title: strin
                 location_idlocation: locationId,
                 image_idimage: newImage.idimage,
                 user_iduser: userId,
-                
+
             }
         });
         return newPost;
@@ -112,7 +112,27 @@ export const newPost = async (userId: number, locationName: string, title: strin
     }
 }
 
-export async function showAllPosts():Promise<Post[]>{
+export async function showAllPosts(): Promise<Post[]> {
     const posts = await prisma.post.findMany();
+    return posts;
+}
+
+export async function showFilterPosts(location: string, title: string): Promise<Post[]> {
+    let posts;
+    if (location.length == 0) {
+        posts = findTitlePosts(title);
+    }else if(title.length == 0){
+        
+    }
+    return posts;
+}
+    
+
+async function findTitlePosts(title: string): Promise<Post[]> {
+    const posts = await prisma.post.findMany({
+        where: {
+            title: {contains: title}
+        }
+    });
     return posts;
 }

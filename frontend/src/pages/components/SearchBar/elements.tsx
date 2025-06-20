@@ -1,9 +1,11 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import React from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import axiosInstance from "../../../api/axiosInstance";
 
 export interface OptionType {
-    value: string;
+    value: number;
     label: string;
 }
 
@@ -66,11 +68,18 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
 
 export function MultiSelectCity({ className, roundedLeft = false, roundedRight = false, onChange, value }: MultiSelectCityProps) {
-    const options = [
-        { value: '1', label: 'München' },
-        { value: '2', label: 'Stuttgart' },
-        { value: '3', label: 'Mannheim' }
-    ];
+    const [options, setOptions] = useState<OptionType[]>([]);
+    useEffect(() => {
+        axiosInstance.get('/api/post/location').then((response) => {
+            const fetchedOptions = response.data.map((location: any) => ({
+                value: location.idlocation,
+                label: location.name
+            }));
+            setOptions(fetchedOptions);
+        }).catch((error) => {
+            console.error("Fehler beim Abrufen der Standorte:", error);
+        });
+    }, []);
 
     const getRoundedClasses = () => {
         if (roundedLeft && roundedRight) return 'rounded-full';

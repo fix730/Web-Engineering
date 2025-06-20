@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { MultiSelectCity } from "./elements"; 
 import { SearchInput } from "./elements";
 import { OptionType } from "./elements"; 
+import axios from "axios";
+import axiosInstance from "../../../api/axiosInstance";
+import { title } from "process";
 
 export function SearchBar() {
     const [searchValue, setSearchValue] = useState('');
@@ -20,6 +23,15 @@ export function SearchBar() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         alert(`Suche gestartet mit: ${searchValue} und Städten: ${selectedCities.map(city => city.label).join(', ')}`);
+        try{
+            axiosInstance.post('/api/post/search', {
+                title: searchValue,
+                cities: selectedCities.map(city => city.value) // Senden der IDs der ausgewählten Städte
+            });
+        } catch (error) {
+            console.error("Fehler beim Senden der Suchanfrage:", error);
+            alert("Fehler beim Senden der Suchanfrage. Bitte versuche es später erneut.");
+        }
     }
 
     return (
