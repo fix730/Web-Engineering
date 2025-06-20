@@ -4,6 +4,7 @@ import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { LabelOverInput } from "./components/Label";
 import { Text, Email, Paasswort, DateInput } from "./components/Inputs";
+import DialogAlert from "../Pop-Up-Window/alert";
 
 
 function Register() {
@@ -16,7 +17,9 @@ function Register() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [birthday, setBirthday] = useState("");
-
+  const [titleAlertWindow, setTitleAlertWindow] = useState("");
+  const [textAlertWindow, setTextAlertWindow] = useState("");
+  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +36,28 @@ function Register() {
         ).unwrap();
         navigate("/");
       } catch (e) {
-        console.error(e);
+        console.error("Registrieren fehlgeschlagen:", e);
+
+        let errorTitle = "Registrieren fehlgeschlagen";
+        let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+
+        // Da rejectWithValue jetzt die Backend-Daten direkt weitergibt,
+        // sollte `e` direkt das Objekt `{ message: "..." }` sein.
+        if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+          errorMessage = e.message;
+        } else {
+          errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
+        }
+
+        setTitleAlertWindow(errorTitle);
+        setTextAlertWindow(errorMessage);
+        setIsOpenAlertDialog(true);
       }
     } else {
-      alert("Bitte alle Felder ausfüllen.");
-      
+      setTitleAlertWindow("Registrieren fehlgeschlagen");
+      setTextAlertWindow("Bitte fülle alle Felder aus.");
+      setIsOpenAlertDialog(true);
+
     }
   };
 
@@ -50,31 +70,31 @@ function Register() {
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
             <LabelOverInput>Vorname</LabelOverInput>
-            <Text handleChnceText={(e:any) => setFirstName(e.target.value)} text={firstName} />
+            <Text handleChnceText={(e: any) => setFirstName(e.target.value)} text={firstName} />
           </div>
           <div>
             <LabelOverInput>Nachname</LabelOverInput>
-            <Text handleChnceText={(e:any) => setName(e.target.value)} text={name} />
+            <Text handleChnceText={(e: any) => setName(e.target.value)} text={name} />
           </div>
           <div>
             <LabelOverInput>E-Mail</LabelOverInput>
-            <Email handleChnceEmail={(e:any) => setEmail(e.target.value)} email={email} />
+            <Email handleChnceEmail={(e: any) => setEmail(e.target.value)} email={email} />
           </div>
           <div>
             <LabelOverInput>Passwort</LabelOverInput>
-            <Paasswort handleChncePassword={(e:any)=> setPassword(e.target.value)} password={password} autoComplete="new-password" />
+            <Paasswort handleChncePassword={(e: any) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
           </div>
           <div>
             <LabelOverInput>Passwort bestätigen</LabelOverInput>
             <Paasswort
-              handleChncePassword={(e:any) => setPasswordConfirm(e.target.value)}
+              handleChncePassword={(e: any) => setPasswordConfirm(e.target.value)}
               password={passwordConfirm}
               autoComplete="new-password"
             />
           </div>
           <div>
             <LabelOverInput>Geburtsdatum</LabelOverInput>
-            <DateInput handleChnceDate={(e:any) => setBirthday(e.target.value)} date={birthday} />
+            <DateInput handleChnceDate={(e: any) => setBirthday(e.target.value)} date={birthday} />
           </div>
           <button
             type="submit"
@@ -93,6 +113,7 @@ function Register() {
           </span>
         </p>
       </div>
+      <DialogAlert open={isOpenAlertDialog} isOpen={() => setIsOpenAlertDialog(false)} header={titleAlertWindow} content={textAlertWindow} />
     </div>
   );
 }

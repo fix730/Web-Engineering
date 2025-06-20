@@ -5,3 +5,14 @@
     "password": "password", 
     "birthday": "2000-01-01"
 }
+
+"user": {
+        "iduser": 2,
+        "name": "2",
+        "firstName": "1",
+        "birthday": "2000-01-01T00:00:00.000Z",
+        "passwort": "$2b$10$SAjTZ/pEc1jCXDPblIeypuJUtQXqmd5lyaUcI9SgejMa4qHy4mLAW",
+        "email": "test@example.com",
+        "image_idimage": 1
+    }
+hans.martin@example.com; password

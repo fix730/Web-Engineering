@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { NavigationLink } from "./compnents"; // Pfad überprüfen
-import { logout } from "../../../slices/authSlice"; // Pfad überprüfen
-import profilePlaceholder from "../../../icons/user.png"; // Standard-Platzhalterbild für den Fall, dass kein Bild geladen werden kann
-import settingIcon from "../../../icons/setting.png"; // Pfad überprüfen
-import logoutIcon from "../../../icons/logout.png"; // Pfad überprüfen
-import axiosInstance from "../../../api/axiosInstance"; // Pfad überprüfen
-import { useAppDispatch } from "../../../hooks/redux-hooks"; // Pfad überprüfen
+import { NavigationLink } from "./compnents"; 
+import { logout } from "../../../slices/authSlice"; 
+import profilePlaceholder from "../../../icons/user.png";
+import settingIcon from "../../../icons/setting.png"; 
+import logoutIcon from "../../../icons/logout.png"; 
+import axiosInstance from "../../../api/axiosInstance"; 
+import { useAppDispatch } from "../../../hooks/redux-hooks";
 import { useNavigate } from "react-router-dom";
-import Settings from "../../../Pop-Up-Window/Settings"; // Pfad überprüfen
+import Settings from "../../../Pop-Up-Window/Settings"; 
 
 type AllNavigationLinksProps = {
     className?: string;

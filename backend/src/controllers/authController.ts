@@ -34,12 +34,20 @@ export const registerUser: RequestHandler = async (req: any, res: any) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
+    const newUserImage = await prisma.image.create({
+      data: {
+        image_data: null,
+      },
+      select: {
+        idimage: true,
+      }
+    });
     const newUser = await prisma.user.create({
       data: {
         name: name || null,
         firstName: firstName || null,
         birthday: birthday ? new Date(birthday) : null,
-        image_idimage: 1,
+        image_idimage: newUserImage.idimage,
         passwort: hashPassword,
         email: email
       },
