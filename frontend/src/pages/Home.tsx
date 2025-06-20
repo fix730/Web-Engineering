@@ -66,7 +66,6 @@ function Home() {
   const [currentPost, setCurrentPost] = useState<any>(null);
 
 
-  ;
   const callProtectedRoute = async () => {
     try {
       const response = await axiosInstance.get("/api/protected");

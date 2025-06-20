@@ -55,16 +55,16 @@ export const protect = async (req: AuthenticatedRequest, res: Response, next: Ne
         });
 
         if (!user) {
-            res.status(401).json({ message: "Not authenticated: User not found" });
+            res.status(401).json({ message: "Nicht Authentiert, User nicht gefunden" });
             return;
         }
 
         // 3. Den vollständigen Benutzer (ohne Passwort) dem Request-Objekt hinzufügen
         req.user = user;
 
-        next(); // Weiter zur nächsten Middleware/Route
+        next(); // Weiter zur Route
     } catch (error) {
         console.error("Token verification error:", error);
-        res.status(401).json({ message: "Not authenticated: Invalid or expired token" });
+        res.status(401).json({ message: "Nicht Authentiert, User nicht gefunden" });
     }
 };

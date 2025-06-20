@@ -6,6 +6,8 @@ import authRouter from "./routes/authRouter";
 import protectedRouter from "./routes/protectedRouter";
 import db from './config/db'; 
 import prisma from './config/prisma';
+import post from './routes/post';
+import user from './routes/user';
 
 dotenv.config();
 
@@ -18,7 +20,10 @@ app.use(express.json());
 
 // Routen
 app.use("/api/auth", authRouter);
+app.use("/api/post",post);
+app.use("/api/user", user);
 app.use("/api", protectedRouter);
+
 
 
 app.get("/", async (req, res) => {

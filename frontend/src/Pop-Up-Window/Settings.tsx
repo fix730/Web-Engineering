@@ -1,42 +1,157 @@
-import React, { useState } from "react";
-import { TabsWithIcon } from "../pages/components/Tabs";
+import React, { useRef, useState, useEffect } from "react";
+import { TabsWithIcon } from "../pages/components/Tabs"; // Pfad überprüfen
 import {
-  Square3Stack3DIcon,
   UserCircleIcon,
-  Cog6ToothIcon,
   KeyIcon,
   EnvelopeIcon,
-  
 } from "@heroicons/react/24/solid";
-import keyImage from "../assets/key.png";
-import { LabelOverInput } from "../pages/components/Label";
-import { Email, Paasswort } from "../pages/components/Inputs";
-import { SubmitButton } from "../pages/components/Button";
+import { LabelOverInput } from "../pages/components/Label"; // Pfad überprüfen
+import { Email, Paasswort } from "../pages/components/Inputs"; // Pfade überprüfen
+import { SubmitButton } from "../pages/components/Button"; // Pfad überprüfen
+import axiosInstance from "../api/axiosInstance"; // Importieren Sie Ihre Axios-Instanz
+import DialogAlert from "./alert"; // <-- Importieren Sie Ihre DialogAlert Komponente
 
 type DialogAlertProps = {
   open: boolean;
   isOpen: () => void;
+  currentImageId: number | null;
+  onImageUploadSuccess?: (newImageId: number) => void;
 };
 
-const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
-  const [currentPassword, setCurrentPassword] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirm, setPasswordConfirm] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [image, setImage] = useState<File | null>(null);
+const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, onImageUploadSuccess }) => {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [email, setEmail] = useState("");
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [displayedImageUrl, setDisplayedImageUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // States für das DialogAlert-Fenster
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertHeader, setAlertHeader] = useState("");
+  const [alertContent, setAlertContent] = useState("");
+
+  // Hilfsfunktion zum Anzeigen des Alerts
+  const showAlert = (header: string, content: string) => {
+    setAlertHeader(header);
+    setAlertContent(content);
+    setIsAlertOpen(true);
+  };
+
+  // Callback zum Schließen des Alerts
+  const closeAlert = () => {
+    setIsAlertOpen(false);
+    setAlertHeader("");
+    setAlertContent("");
+  };
+
+  // Effekt, um das vorhandene Profilbild des Benutzers zu laden
+  useEffect(() => {
+    const fetchCurrentImage = async () => {
+      if (open && currentImageId) {
+        try {
+          const response = await axiosInstance.get(`/api/user/image/${currentImageId}`, {
+            responseType: 'blob'
+          });
+
+          if (response.status === 200) {
+            const blob = response.data;
+            const objectUrl = URL.createObjectURL(blob);
+            setDisplayedImageUrl(objectUrl);
+          } else {
+            console.error("Fehler beim Laden des aktuellen Profilbilds:", response.status, response.data);
+            setDisplayedImageUrl(null);
+          }
+        } catch (error: any) {
+          console.error("Netzwerkfehler beim Laden des Profilbilds:", error.response?.data || error.message);
+          setDisplayedImageUrl(null);
+        }
+      } else if (open && !currentImageId) {
+        setDisplayedImageUrl(null);
+      }
+    };
+
+    fetchCurrentImage();
+
+    return () => {
+      if (displayedImageUrl) {
+        URL.revokeObjectURL(displayedImageUrl);
+      }
+    };
+  }, [currentImageId, open]);
+
+  // Handler für Passwortänderung
   const handleChangePasswort = () => {
-  
     if (password !== passwordConfirm) {
-      alert("Die Passwörter stimmen nicht überein.");
+      showAlert("Fehler", "Die neuen Passwörter stimmen nicht überein.");
       return;
     }
-    // Hier sollte die Logik zum Ändern des Passworts implementiert werden
-    console.log("Passwort geändert:", currentPassword, password);
-    // Nach erfolgreicher Änderung das Formular zurücksetzen
-    setCurrentPassword("");
-    setPassword("");
-    setPasswordConfirm("");
-  }
+    console.log("Passwort ändern Logik: Aktuell:", currentPassword, "Neu:", password);
+    // Simulierter API-Aufruf
+    setTimeout(() => {
+      showAlert("Erfolg", "Passwort erfolgreich geändert!");
+      setCurrentPassword("");
+      setPassword("");
+      setPasswordConfirm("");
+    }, 1000);
+  };
+
+  // Handler für E-Mail-Änderung (Beispiel)
+  const handleChangeEmail = () => {
+    console.log("E-Mail ändern Logik:", email);
+    // Simulierter API-Aufruf
+    setTimeout(() => {
+      showAlert("Erfolg", "E-Mail-Adresse erfolgreich geändert!");
+      setEmail("");
+    }, 1000);
+  };
+
+  // Handler für Bild-Upload (mit Axios)
+  const handleImageUpload = async () => {
+    if (!selectedImageFile) {
+      showAlert("Fehler", "Bitte wählen Sie ein Bild zum Hochladen aus.");
+      return;
+    }
+
+    showAlert("Information", "Bild wird hochgeladen..."); // Info-Nachricht beim Start des Uploads
+    const formData = new FormData();
+    formData.append("profileImage", selectedImageFile);
+
+    try {
+      const response = await axiosInstance.post("/api/user/upload-profile-image", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const data = response.data;
+
+      if (response.status === 200) {
+        showAlert("Erfolg", data.message || "Profilbild erfolgreich hochgeladen!");
+        if (data.imageId) {
+            setDisplayedImageUrl(URL.createObjectURL(selectedImageFile));
+            if (onImageUploadSuccess) {
+                onImageUploadSuccess(data.imageId);
+            }
+        }
+        setSelectedImageFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } else {
+        showAlert("Fehler", data.message || "Fehler beim Hochladen des Profilbilds.");
+        console.error("Upload Fehler:", data);
+      }
+    } catch (error: any) {
+      showAlert(
+        "Fehler",
+        error.response?.data?.message || error.message || "Netzwerkfehler: Konnte keine Verbindung zum Server herstellen."
+      );
+      console.error("Axios Upload Fehler:", error.response?.data || error.message);
+    }
+  };
+
   const myTabData = [
     {
       label: "Passwort",
@@ -45,23 +160,21 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
       desc: (
         <div className="flex flex-col items-center">
           <div className="w-full mt-2">
-              <LabelOverInput>Aktuelles Passwort</LabelOverInput>
-              
-              <Paasswort
-                handleChncePassword={(e: any) => setCurrentPassword(e.target.value)}
-                password={currentPassword}
-                autoComplete="current-password"
-              />
-              
+            <LabelOverInput>Aktuelles Passwort</LabelOverInput>
+            <Paasswort
+              handleChncePassword={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value)}
+              password={currentPassword}
+              autoComplete="current-password"
+            />
           </div>
           <div className="w-full mt-2">
             <LabelOverInput>Neues Passwort</LabelOverInput>
-            <Paasswort handleChncePassword={(e: any) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
+            <Paasswort handleChncePassword={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
           </div>
           <div className="w-full mt-2">
             <LabelOverInput>Neues Passwort bestätigen</LabelOverInput>
             <Paasswort
-              handleChncePassword={(e: any) => setPasswordConfirm(e.target.value)}
+              handleChncePassword={(e: React.ChangeEvent<HTMLInputElement>) => setPasswordConfirm(e.target.value)}
               password={passwordConfirm}
               autoComplete="new-password"
             />
@@ -69,26 +182,24 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
           <div className="mt-4 w-full">
             <SubmitButton onClick={handleChangePasswort}>Passwort ändern</SubmitButton>
           </div>
-          
         </div>
-
       )
     },
     {
       label: "E-Mail",
       value: "1",
-      icon: EnvelopeIcon ,
+      icon: EnvelopeIcon,
       desc: (
         <div className="flex flex-col items-center">
           <div className="w-full mt-2">
-            <LabelOverInput>neue E-Mail Adresse</LabelOverInput>
+            <LabelOverInput>Neue E-Mail Adresse</LabelOverInput>
             <Email
-              handleChnceEmail={(e: any) => setEmail(e.target.value)}
+              handleChnceEmail={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               email={email}
             />
           </div>
           <div className="mt-4 w-full">
-            <SubmitButton>E-Mail Adresse ändern</SubmitButton>
+            <SubmitButton onClick={handleChangeEmail}>E-Mail Adresse ändern</SubmitButton>
           </div>
         </div>
       )
@@ -97,24 +208,71 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen }) => {
       label: "Profilbild",
       value: "2",
       icon: UserCircleIcon,
-      desc: "",
+      desc: (
+        <div>
+          <label className="block text-xl font-medium text-gray-700 mb-2">Profilbild hochladen</label>
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition"
+          >
+            {selectedImageFile ? (
+              <img
+                src={URL.createObjectURL(selectedImageFile)}
+                alt="Vorschau ausgewähltes Bild"
+                className="w-full h-full object-contain rounded-md"
+              />
+            ) : displayedImageUrl ? (
+              <img
+                src={displayedImageUrl}
+                alt="Aktuelles Profilbild"
+                className="w-full h-full object-contain rounded-md"
+              />
+            ) : (
+              <span className="text-4xl text-gray-400">+</span>
+            )}
+          </div>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setSelectedImageFile(e.target.files[0]);
+                // Das Alert-Fenster hier nicht schließen, nur neue Auswahl vorbereiten
+              }
+            }}
+            className="hidden"
+            ref={fileInputRef}
+          />
+          <div className="mt-4 w-full">
+            <SubmitButton onClick={handleImageUpload}>Profilbild speichern</SubmitButton>
+          </div>
+        </div>
+      ),
     }
   ];
 
   if (!open) return null;
 
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
         <h2 className="text-xl font-bold mb-4 text-black">Einstellungen</h2>
+        {/* KEINE direkte Anzeige von Nachrichten hier */}
         <TabsWithIcon tabContent={myTabData} />
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-4">
           <button onClick={isOpen} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
             Schließen
           </button>
         </div>
       </div>
+      {/* Das DialogAlert-Fenster wird hier gerendert */}
+      <DialogAlert
+        open={isAlertOpen}
+        isOpen={closeAlert} // Verwenden Sie closeAlert, um den Dialog zu schließen
+        header={alertHeader}
+        content={alertContent}
+      />
     </div>
   );
 };
