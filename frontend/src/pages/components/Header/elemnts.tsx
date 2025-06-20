@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { NavigationLink } from "./compnents"; 
-import { logout } from "../../../slices/authSlice"; 
+import { NavigationLink } from "./compnents";
+import { logout } from "../../../slices/authSlice";
 import profilePlaceholder from "../../../icons/user.png";
-import settingIcon from "../../../icons/setting.png"; 
-import logoutIcon from "../../../icons/logout.png"; 
-import axiosInstance from "../../../api/axiosInstance"; 
+import settingIcon from "../../../icons/setting.png";
+import logoutIcon from "../../../icons/logout.png";
+import axiosInstance from "../../../api/axiosInstance";
 import { useAppDispatch } from "../../../hooks/redux-hooks";
 import { useNavigate } from "react-router-dom";
-import Settings from "../../../Pop-Up-Window/Settings"; 
+import Settings from "../../../Pop-Up-Window/Settings";
+import { fetchProfileImage } from "../../../utils/image";
 
 type AllNavigationLinksProps = {
     className?: string;
@@ -23,46 +24,29 @@ export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
     );
 };
 
-// Definieren Sie eine Schnittstelle für die User-Info im localStorage
 interface UserInfo {
     iduser: number;
     name: string;
     firstName: string;
-    birthday: string; // Oder Date, je nachdem wie Sie es parsen
+    birthday: string;
     passwort: string;
     email: string;
     image_idimage: number;
 }
+
+
 
 export const ProfileMenu = () => {
     const [open, setOpen] = useState(false);
     // Hier speichern wir die ID des Bildes, die aus localStorage gelesen wird
     const [userImageId, setUserImageId] = useState<number | null>(null);
     // Hier speichern wir die URL des Profilbilds, die wir anzeigen werden
-    const [profileImageUrl, setProfileImageUrl] = useState<string>(profilePlaceholder);
+    const [profileImageUrl, setProfileImageUrl] = useState<string | undefined>(profilePlaceholder);
     const [isOpenSettings, setIsOpenSettings] = useState(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    // Funktion zum Abrufen des Profilbilds vom Backend
-    const fetchProfileImage = async (imageId: number) => {
-        try {
-            const response = await axiosInstance.get(`/api/image/${imageId}`, {
-                responseType: 'blob' // um Binärdaten zu erhalten
-            });
-            if (response.status === 200) {
-                const blob = response.data;
-                const url = URL.createObjectURL(blob);
-                setProfileImageUrl(url);
-            } else {
-                console.error("Fehler beim Laden des Profilbilds:", response.status, response.data);
-                setProfileImageUrl(profilePlaceholder); // Fallback auf Platzhalter bei Fehler
-            }
-        } catch (error: any) {
-            console.error("Netzwerkfehler beim Laden des Profilbilds:", error.response?.data || error.message);
-            setProfileImageUrl(profilePlaceholder); // Fallback auf Platzhalter bei Netzwerkfehler
-        }
-    };
+    
 
     // useEffect zum Laden der Benutzerinformationen und des Profilbilds
     useEffect(() => {
@@ -73,7 +57,7 @@ export const ProfileMenu = () => {
                     const userInfo: UserInfo = JSON.parse(userInfoString);
                     if (userInfo.image_idimage) {
                         setUserImageId(userInfo.image_idimage); // Setzt die Bild-ID im State
-                        fetchProfileImage(userInfo.image_idimage); // Lädt das Bild vom Backend
+                        fetchProfileImage({onSetImageUrl: setProfileImageUrl , imageId:userInfo.image_idimage, profilePlaceholder: profilePlaceholder}); // Lädt das Bild vom Backend
                     } else {
                         setProfileImageUrl(profilePlaceholder);
                         setUserImageId(null);
@@ -94,18 +78,18 @@ export const ProfileMenu = () => {
         window.addEventListener('localStorageChange', loadUserInfoAndImage); // Ein Custom Event, falls Sie es senden
 
         return () => {
-            
+
             if (profileImageUrl && profileImageUrl !== profilePlaceholder) {
                 URL.revokeObjectURL(profileImageUrl);
             }
             window.removeEventListener('localStorageChange', loadUserInfoAndImage);
         };
-    }, []); 
+    }, []);
 
     // Callback-Funktion für das Settings-Modal, um die imageId zu aktualisieren
     const handleImageUploadSuccess = (newImageId: number) => {
         setUserImageId(newImageId); // Aktualisiert die Bild-ID im State
-        fetchProfileImage(newImageId); // Lädt das neue Bild sofort
+        fetchProfileImage({onSetImageUrl: setProfileImageUrl , imageId:newImageId, profilePlaceholder: profilePlaceholder}); // Lädt das neue Bild sofort 
         const userInfoString = localStorage.getItem("userInfo");
         if (userInfoString) {
             try {
@@ -161,7 +145,7 @@ export const ProfileMenu = () => {
             <Settings
                 open={isOpenSettings}
                 isOpen={() => setIsOpenSettings(false)}
-                currentImageId={userImageId} 
+                currentImageId={userImageId}
                 onImageUploadSuccess={handleImageUploadSuccess}
             />
         </>

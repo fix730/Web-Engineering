@@ -1,15 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import { TabsWithIcon } from "../pages/components/Tabs"; // Pfad überprüfen
+import { TabsWithIcon } from "../pages/components/Tabs";
 import {
   UserCircleIcon,
   KeyIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/solid";
-import { LabelOverInput } from "../pages/components/Label"; // Pfad überprüfen
-import { Email, Paasswort } from "../pages/components/Inputs"; // Pfade überprüfen
-import { SubmitButton } from "../pages/components/Button"; // Pfad überprüfen
-import axiosInstance from "../api/axiosInstance"; // Importieren Sie Ihre Axios-Instanz
-import DialogAlert from "./alert"; // <-- Importieren Sie Ihre DialogAlert Komponente
+import { LabelOverInput } from "../pages/components/Label";
+import { Email, Paasswort } from "../pages/components/Inputs";
+import { SubmitButton } from "../pages/components/Button";
+import axiosInstance from "../api/axiosInstance";
+import DialogAlert from "./alert";
+import { fetchProfileImage } from "../utils/image";
 
 type DialogAlertProps = {
   open: boolean;
@@ -24,7 +25,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [email, setEmail] = useState("");
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-  const [displayedImageUrl, setDisplayedImageUrl] = useState<string | null>(null);
+  const [displayedImageUrl, setDisplayedImageUrl] = useState<string | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // States für das DialogAlert-Fenster
@@ -50,25 +51,11 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
   useEffect(() => {
     const fetchCurrentImage = async () => {
       if (open && currentImageId) {
-        try {
-          const response = await axiosInstance.get(`/api/user/image/${currentImageId}`, {
-            responseType: 'blob'
-          });
-
-          if (response.status === 200) {
-            const blob = response.data;
-            const objectUrl = URL.createObjectURL(blob);
-            setDisplayedImageUrl(objectUrl);
-          } else {
-            console.error("Fehler beim Laden des aktuellen Profilbilds:", response.status, response.data);
-            setDisplayedImageUrl(null);
-          }
-        } catch (error: any) {
-          console.error("Netzwerkfehler beim Laden des Profilbilds:", error.response?.data || error.message);
-          setDisplayedImageUrl(null);
-        }
+        fetchProfileImage({
+          onSetImageUrl: setDisplayedImageUrl, imageId: currentImageId, profilePlaceholder: undefined
+        });
       } else if (open && !currentImageId) {
-        setDisplayedImageUrl(null);
+        setDisplayedImageUrl(undefined);
       }
     };
 
@@ -114,7 +101,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       return;
     }
 
-    showAlert("Information", "Bild wird hochgeladen..."); // Info-Nachricht beim Start des Uploads
+    showAlert("Information", "Bild wird hochgeladen...");
     const formData = new FormData();
     formData.append("profileImage", selectedImageFile);
 
@@ -130,10 +117,10 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       if (response.status === 200) {
         showAlert("Erfolg", data.message || "Profilbild erfolgreich hochgeladen!");
         if (data.imageId) {
-            setDisplayedImageUrl(URL.createObjectURL(selectedImageFile));
-            if (onImageUploadSuccess) {
-                onImageUploadSuccess(data.imageId);
-            }
+          setDisplayedImageUrl(URL.createObjectURL(selectedImageFile));
+          if (onImageUploadSuccess) {
+            onImageUploadSuccess(data.imageId);
+          }
         }
         setSelectedImageFile(null);
         if (fileInputRef.current) {

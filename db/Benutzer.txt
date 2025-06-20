@@ -15,4 +15,5 @@
         "email": "test@example.com",
         "image_idimage": 1
     }
-hans.martin@example.com; password
+hans.martin@example.com; Password
+Martin.Gruenwald@example.com password
