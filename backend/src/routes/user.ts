@@ -57,6 +57,7 @@ router.post('/upload-profile-image', protect, upload.single('profileImage'), asy
     }
 });
 
+
 export default router;
 
 

@@ -10,7 +10,7 @@ type PostObject = {
   location: string;
   imageUrl: string;
 
-  
+
 };
 
 
@@ -22,12 +22,12 @@ type PostProps = {
 
 
 const Post = ({ post, onClick }: PostProps) => {
-  
-  const[liked, setLiked] = useState(false);
 
-function toggleLike() {
-  setLiked(!liked); 
-}
+  const [liked, setLiked] = useState(false);
+
+  function toggleLike() {
+    setLiked(!liked);
+  }
   return (
     <div
       key={post.id}
@@ -37,22 +37,22 @@ function toggleLike() {
       {/* Bild auf der linken Seite */}
       <div className="md:w-1/3 w-full">
         <img
-                  src={post.imageUrl}
-                  alt={post.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+          src={post.imageUrl}
+          alt={post.title}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-              {/* Textinhalt auf der rechten Seite */}
-              <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center relative">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
-                <p className="text-gray-700 mb-2">{post.description}</p>
-                <p className="text-gray-500">Location: {post.location}</p>
+      {/* Textinhalt auf der rechten Seite */}
+      <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center relative">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
+        <p className="text-gray-700 mb-2">{post.description}</p>
+        <p className="text-gray-500">Location: {post.location}</p>
 
-                <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12"  src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
+        <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
 
-              </div>
-            </div>
+      </div>
+    </div>
   );
 };
 

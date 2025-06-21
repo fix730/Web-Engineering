@@ -112,21 +112,23 @@ export const newPost = async (userId: number, locationName: string, title: strin
     }
 }
 
-export async function showAllPosts(): Promise<Post[]> {
+export async function showAllPosts(): Promise<any[]> {
     const posts = await prisma.post.findMany();
-    return posts;
+    const postsWithUserLocation = addPostNameAndLocation(posts);
+    return postsWithUserLocation;
 }
 
 export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
     let posts;
     if (locationId.length == 0) {
-        posts = findTitlePosts(title);
+        posts = await findTitlePosts(title);
     } else if (title.length == 0) {
-        posts = findLocationPosts(locationId);
+        posts = await findLocationPosts(locationId);
     } else {
-        posts = findLocationTitlePosts(locationId, title);
+        posts = await findLocationTitlePosts(locationId, title);
     }
-    return posts;
+    const postsWithUserLocation = await addPostNameAndLocation(posts);
+    return postsWithUserLocation;
 }
 
 
@@ -195,8 +197,8 @@ export async function getPostComment(postId: number): Promise<any[]> {
         },
         select: {
             iduser: true,
-            name:true,
-            firstName:true,
+            name: true,
+            firstName: true,
             image_idimage: true,
         },
     });
@@ -210,4 +212,43 @@ export async function getPostComment(postId: number): Promise<any[]> {
     }));
 
     return commentsWithUser;
+}
+
+async function addPostNameAndLocation(posts: Post[]): Promise<any[]> {
+    const userIds = [...new Set(posts.map(post => post.user_iduser))];
+
+    const users = await prisma.user.findMany({
+        where: {
+            iduser: { in: userIds }
+        },
+        select: {
+            name: true,
+            firstName: true,
+            image_idimage: true,
+            iduser: true,
+        }
+    });
+
+    const locationIds = [...new Set(posts.map(post => post.location_idlocation))];
+
+    const locations = await prisma.location.findMany({
+        where: {
+            idlocation: { in: locationIds }
+        },
+        select: {
+            name: true,
+            idlocation: true,
+        }
+    });
+
+    const userMap = Object.fromEntries(users.map(user => [user.iduser, user]));
+    const locationMap = Object.fromEntries(locations.map(location => [location.idlocation, location.name]));
+
+    const postWithLocationAndName = posts.map(post => ({
+        ...post,
+        locationName: locationMap[post.location_idlocation],
+        user: userMap[post.user_iduser]
+    }));
+
+    return postWithLocationAndName;
 }
