@@ -252,3 +252,52 @@ async function addPostNameAndLocation(posts: Post[]): Promise<any[]> {
 
     return postWithLocationAndName;
 }
+
+export async function addLikePost(idPost:number, idUser:number) {
+    const newLike = await prisma.like.create({
+        data:{
+            post_idpost: idPost,
+            user_iduser: idUser
+        }
+    });
+    return newLike;  
+} 
+
+export async function deleteLikePost(idPost: number, idUser: number) {
+    //Geht nicht einfacher weil sonst fehler Meldung, eigentlich ist durch idUser und idPost das Objekt einmalig
+    const like = await prisma.like.findFirst({
+        where: {
+            user_iduser: idUser,
+            post_idpost: idPost
+        }
+    });
+    if (like) {
+        await prisma.like.delete({
+            where: {
+                idlike_user_iduser_post_idpost: {
+                    idlike: like.idlike,
+                    user_iduser: like.user_iduser,
+                    post_idpost: like.post_idpost
+                }
+            }
+        });
+    }
+}
+
+export async function getLikesByPostId(postId: number): Promise<number> {
+    const likes = await prisma.like.count({
+        where: {
+            post_idpost: postId
+        }
+    });
+    return likes;
+}
+export async function getLikesByUserIdPost(userId: number, postId:number): Promise<boolean> {
+    const like = await prisma.like.findFirst({
+        where: {
+            user_iduser: userId,
+            post_idpost: postId
+        }
+    });
+    return like !== null; // Gibt true zurück, wenn ein Like gefunden wurde, sonst false  
+}
