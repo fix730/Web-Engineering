@@ -185,7 +185,7 @@ router.delete("/like", protect, async (req: any, res: any) => {
     if (!user || !user.iduser) {
         return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
     }
-    const { postId } = req.body;
+    const { postId } = req.query;
     if (!postId) {
         return res.status(404).json({ message: "Fehlende Übergabeparameter im Body" });
     }
@@ -204,6 +204,7 @@ router.delete("/like", protect, async (req: any, res: any) => {
 );
 
 router.post("/like", protect, async (req: any, res: any) => {
+    
     const user = req.user;
     if (!user || !user.iduser) {
         return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
@@ -212,7 +213,9 @@ router.post("/like", protect, async (req: any, res: any) => {
     if (!postId) {
         return res.status(404).json({ message: "Fehlende Übergabeparameter im Body" });
     }
+    console.log("PostId:", postId);
     const numPostId = Number(postId);
+    console.log("PostIdNum:", numPostId);
     
     try {
         addLikePost(numPostId, Number(user.iduser));

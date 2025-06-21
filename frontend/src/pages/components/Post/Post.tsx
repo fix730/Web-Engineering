@@ -3,6 +3,7 @@ import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
 import { useState } from "react";
 import { fetchProfileImage } from "../../../utils/image";
+import axiosInstance from "../../../api/axiosInstance";
 
 type PostObject = {
   id: number; // GUID später??
@@ -49,13 +50,52 @@ const Post = ({ post, onClick }: PostProps) => {
 
   const [liked, setLiked] = useState(false);
   const [postImage, setPostImage] = useState<string | undefined>(undefined);
+  const [countLikes, setCountLikes] = useState<number>(0);
 
   function toggleLike() {
+    if (!liked) {
+      axiosInstance.post("/api/post/like", {
+        postId: post.idpost
+      });
+    } else {
+      axiosInstance.delete(`/api/post/like`, {
+        params: {
+          postId: post.idpost
+        }
+      });
+    }
     setLiked(!liked);
   }
   useEffect(() => {
     fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
   }, [post.image_idimage]);
+
+  
+
+  useEffect(() => {
+    const checkLikeStatus = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/post/like/byUser`, {
+          params: {
+            postId: post.idpost
+          }
+        }
+        );
+        setLiked(Boolean(response.data.isLiked));
+        const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
+          params: {
+            postId: post.idpost
+          }
+        }
+        );
+        setCountLikes(getCountLikes.data.count);
+      } catch (error) {
+        console.error("Fehler beim Überprüfen des Like-Status:", error);
+      }
+    }
+    checkLikeStatus();
+  }, []);
+
 
 
   return (
@@ -88,6 +128,7 @@ const Post = ({ post, onClick }: PostProps) => {
         <p className="text-gray-500">Location: {post.locationName}</p>
 
         <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
+        <p>{countLikes}</p>
 
       </div>
     </div>
