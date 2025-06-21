@@ -8,7 +8,7 @@ import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import DialogAlert from "../Pop-Up-Window/alert";
-import Post from "./components/Post/Post";
+import Post, { PostType } from "./components/Post/Post";
 import Comment from "./components/Comment/Comment";
 
 
@@ -17,7 +17,11 @@ function Home() {
   const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
- 
+  const [posts, setPosts] = useState<PostType[]>([]);
+
+  console.log("Posts:", posts);
+
+
   const dummyComment= [
     {
       id: "1",
@@ -99,13 +103,13 @@ function Home() {
   return (
     <>
       <Header />
-      <SearchBar />
+      <SearchBar  setPosts={setPosts}/>
       <h1>Home</h1>
       <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
 
-      {dummyPosts.map((post) => (
+      {posts.map((post) => (
         <Post
-          key={post.id}
+          key={post.idpost}
           post={post}
           onClick={() => setCurrentPost(post)} // Klick auf Post öffnet Modal
         />
@@ -123,7 +127,7 @@ function Home() {
           >
             <h2 className="text-xl font-bold">{currentPost.title}</h2>
             <p>{currentPost.description}</p>
-            <p className="text-gray-500">Location: {currentPost.location}</p>
+            <p className="text-gray-500">Location: {currentPost.locationName}</p>
             <img
               src={currentPost.imageUrl}
               alt={currentPost.title}

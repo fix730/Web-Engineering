@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MultiSelectCity } from "./elements"; 
 import { SearchInput } from "./elements";
 import { OptionType } from "./elements"; 
 import axios from "axios";
 import axiosInstance from "../../../api/axiosInstance";
 import { title } from "process";
+import { PostType } from "../Post/Post";
 
-export function SearchBar() {
+type SearchBarProps = {
+    setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
+};
+
+export function SearchBar({ setPosts }: SearchBarProps)  {
     const [searchValue, setSearchValue] = useState('');
     const [selectedCities, setSelectedCities] = useState<OptionType[]>([]);
 
@@ -30,12 +35,33 @@ export function SearchBar() {
                     locations: selectedCities.map(city => city.value) 
                 }
             });
+            posts.then((response) => {
+                //console.log("Suchergebnisse:", response.data.posts);
+                setPosts(response.data.posts); // Setze die Posts im Zustand
+            }).catch((error) => {
+                console.error("Fehler beim Abrufen der Posts:", error);
+                alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
+            });
 
         } catch (error) {
             console.error("Fehler beim Senden der Suchanfrage:", error);
             alert("Fehler beim Senden der Suchanfrage. Bitte versuche es später erneut.");
         }
     }
+
+    useEffect(() => {
+        const getAllPosts = async () => {
+            try {
+                const response = await axiosInstance.get('/api/post/all');
+                //console.log("Alle Posts:", response.data.posts);
+                setPosts(response.data.posts); // Setze die Posts im Zustand
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Posts:", error);
+                alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
+            }
+        };
+        getAllPosts();
+    }, []);
 
     return (
         <form

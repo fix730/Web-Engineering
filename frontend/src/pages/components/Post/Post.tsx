@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
 import { useState } from "react";
+import { fetchProfileImage } from "../../../utils/image";
 
 type PostObject = {
   id: number; // GUID später??
@@ -13,9 +14,32 @@ type PostObject = {
 
 };
 
+interface User {
+  name: string;
+  firstName: string;
+  image_idimage: number;
+  iduser: number;
+}
+
+
+export interface PostType {
+  idpost: number;
+  title: string;
+  description: string;
+  location_idlocation: number;
+  image_idimage: number;
+  user_iduser: number;
+  locationName: string;
+  user: User;
+}
+
+interface PostsData {
+  posts: PostType[];
+}
+
 
 type PostProps = {
-  post: PostObject;
+  post: PostType;
   onClick?: (post: PostObject) => void;
 };
 
@@ -24,20 +48,34 @@ type PostProps = {
 const Post = ({ post, onClick }: PostProps) => {
 
   const [liked, setLiked] = useState(false);
+  const [postImage, setPostImage] = useState<string | undefined>(undefined);
 
   function toggleLike() {
     setLiked(!liked);
   }
+  useEffect(() => {
+    fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
+  }, [post.image_idimage]);
+
+
   return (
     <div
-      key={post.id}
+      key={post.idpost}
       className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 cursor-pointer flex flex-col md:flex-row border border-gray-200"
-      onClick={() => onClick?.(post)} // call it only if it exists
+      onClick={() =>
+        onClick?.({
+          id: post.idpost,
+          title: post.title,
+          description: post.description,
+          location: post.locationName,
+          imageUrl: postImage || "",
+        })
+      }
     >
       {/* Bild auf der linken Seite */}
       <div className="md:w-1/3 w-full">
         <img
-          src={post.imageUrl}
+          src={postImage}
           alt={post.title}
           className="w-full h-full object-cover"
         />
@@ -47,7 +85,7 @@ const Post = ({ post, onClick }: PostProps) => {
       <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center relative">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
-        <p className="text-gray-500">Location: {post.location}</p>
+        <p className="text-gray-500">Location: {post.locationName}</p>
 
         <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
 
