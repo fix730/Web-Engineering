@@ -4,6 +4,8 @@ import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
+import DialogAlert from "../Pop-Up-Window/alert";
+import axiosInstance from "../api/axiosInstance";
 
 function PostNew() {
 
@@ -13,6 +15,10 @@ function PostNew() {
   const [Description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [titleAlert, setTitleAlert] = useState("");
+  const [descriptionAlert, setDescriptionAlert] = useState("");
+  const [isAlert, setIsAlert] = useState(false);
+
 
   //reagiert auf das submit event des Formulars
   // backend muss noch erstellt werden
@@ -20,14 +26,43 @@ function PostNew() {
   const newPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (title && Description && location && image) {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", Description);
-      formData.append("location", location);
-      formData.append("image", image);
+      try {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", Description);
+        formData.append("locationName", location);
+        formData.append("imagePost", image);
+
+        const response = await axiosInstance.post("/api/post/new", formData, { // Hier geändert
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        const data = response.data;
+        if (response.status === 200) {
+          setTitleAlert("Post erfolgreich erstellt");
+          setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
+          setIsAlert(true);
+          console.log("Post erfolgreich erstellt:", data);
+          navigate("/"); // Weiterleitung ins Hauptmenü
+        } else {
+          setTitleAlert("Fehler beim Erstellen des Posts");
+          setDescriptionAlert(data.message || "Unbekannter Fehler beim Erstellen des Posts.");
+          setIsAlert(true);
+          console.error("Fehler beim Erstellen des Posts:", data);
+        }
+      } catch (error) {
+        console.error("Fehler beim Hochladen des Posts:", error);
+        setTitleAlert("Fehler beim Hochladen des Posts");
+        setDescriptionAlert(error instanceof Error ? error.message : "Unbekannter Fehler beim Hochladen des Posts.");
+        setIsAlert(true);
+      }
 
     } else {
-      alert("Bitte alle Felder ausfüllen.");
+      setTitleAlert("Felder unvollständig");
+      setDescriptionAlert("Bitte fülle alle Felder aus.");
+      setIsAlert(true);
+      console.error("Alle Felder müssen ausgefüllt sein.");
     }
   }
 
@@ -105,6 +140,7 @@ function PostNew() {
 
         </div>
       </div>
+      <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
     </>
   );
 }

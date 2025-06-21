@@ -74,24 +74,13 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       showAlert("Fehler", "Die neuen Passwörter stimmen nicht überein.");
       return;
     }
-    console.log("Passwort ändern Logik: Aktuell:", currentPassword, "Neu:", password);
-    // Simulierter API-Aufruf
-    setTimeout(() => {
-      showAlert("Erfolg", "Passwort erfolgreich geändert!");
-      setCurrentPassword("");
-      setPassword("");
-      setPasswordConfirm("");
-    }, 1000);
+    //Todo: Implementiere die Logik zum Ändern des Passworts
   };
 
   // Handler für E-Mail-Änderung (Beispiel)
   const handleChangeEmail = () => {
     console.log("E-Mail ändern Logik:", email);
-    // Simulierter API-Aufruf
-    setTimeout(() => {
-      showAlert("Erfolg", "E-Mail-Adresse erfolgreich geändert!");
-      setEmail("");
-    }, 1000);
+    //Todo: Implementiere die Logik zum Ändern der E-Mail
   };
 
   // Handler für Bild-Upload (mit Axios)

@@ -121,28 +121,28 @@ export async function showFilterPosts(locationId: number[], title: string): Prom
     let posts;
     if (locationId.length == 0) {
         posts = findTitlePosts(title);
-    }else if(title.length == 0){
+    } else if (title.length == 0) {
         posts = findLocationPosts(locationId);
-    }else{
-        posts = findLocationTitlePosts(locationId,title);
+    } else {
+        posts = findLocationTitlePosts(locationId, title);
     }
     return posts;
 }
-    
+
 
 async function findTitlePosts(title: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            title: {contains: title}
+            title: { contains: title }
         }
     });
     return posts;
 }
 
-async function findLocationPosts(locationId: number[]):Promise<Post[]>{
+async function findLocationPosts(locationId: number[]): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            location_idlocation:{
+            location_idlocation: {
                 in: locationId
             }
         }
@@ -150,40 +150,64 @@ async function findLocationPosts(locationId: number[]):Promise<Post[]>{
     return posts;
 }
 
-async function findLocationTitlePosts(locationId: number[], title: string) :Promise<Post[]>{
+async function findLocationTitlePosts(locationId: number[], title: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            location_idlocation:{
+            location_idlocation: {
                 in: locationId
             },
-            title: {contains: title}
+            title: { contains: title },
         }
     });
     return posts;
 }
 
-export async function addComment(postId:number, userId:number, text:string) :Promise<comment>{
+export async function addComment(postId: number, userId: number, text: string): Promise<comment> {
     //console.log(userId);
     const comment = await prisma.comment.create({
         data: {
             text: text,
-            post_idpost:postId,
+            post_idpost: postId,
             user_iduser: userId,
             date: new Date(),
         }
     });
     return comment;
-    
+
 }
 
-export async function getPostComment(postId:number):Promise<any[]>{
+export async function getPostComment(postId: number): Promise<any[]> {
     const comments = await prisma.comment.findMany({
-            where: {
-                post_idpost: postId
-            },
-            orderBy: {
-                date: 'asc'
-            }
-        });
-    return comments;
+        where: {
+            post_idpost: postId,
+        },
+        orderBy: {
+            date: 'asc',
+        },
+    });
+
+    //User-Daten dazuholen
+    const userIds = [...new Set(comments.map(comment => comment.user_iduser))]; //Set entfernt duplikate, ...new macht daraus ein Array
+
+    const users = await prisma.user.findMany({
+        where: {
+            iduser: { in: userIds },
+        },
+        select: {
+            iduser: true,
+            name:true,
+            firstName:true,
+            image_idimage: true,
+        },
+    });
+
+    // Map bauen
+    const userMap = Object.fromEntries(users.map(user => [user.iduser, user]));
+
+    const commentsWithUser = comments.map(comment => ({
+        ...comment, //... entfernt comment:
+        user: userMap[comment.user_iduser] ?? null,
+    }));
+
+    return commentsWithUser;
 }
