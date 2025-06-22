@@ -66,6 +66,20 @@ const Post = ({ post, onClick }: PostProps) => {
     }
     setLiked(!liked);
   }
+  const aktualisierenLikeStatus = async () => {
+    try {
+        const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
+          params: {
+            postId: post.idpost
+          }
+        }
+        );
+        setCountLikes(Number(getCountLikes.data.likes));
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren des Like-Status:", error);
+    }
+  }
+  aktualisierenLikeStatus();
   useEffect(() => {
     fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
   }, [post.image_idimage]);
@@ -88,7 +102,7 @@ const Post = ({ post, onClick }: PostProps) => {
           }
         }
         );
-        setCountLikes(getCountLikes.data.count);
+        setCountLikes(Number(getCountLikes.data.likes));
       } catch (error) {
         console.error("Fehler beim Überprüfen des Like-Status:", error);
       }

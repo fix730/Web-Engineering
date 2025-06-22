@@ -1,0 +1,41 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy 
+    extra_hosts:
+      - "localhost:host-gateway"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: xTsqlMy-TS
+      DB_NAME: Web-Engineering
+      NODE_ENV: development
+      DATABASE_URL: mysql://root:xTsqlMy-TS@db:3306/Web-Engineering
+
+  db:
+    image: mysql:8.0
+    container_name: web_engineering_db
+    ports:
+      - "3306:3306" 
+    environment:
+      MYSQL_ROOT_PASSWORD: xTsqlMy-TS 
+      MYSQL_DATABASE: Web-Engineering
+      # MYSQL_USER: root              
+      # MYSQL_PASSWORD: xTsqlMy-TS
+    volumes:
+      - ./db-service:/docker-entrypoint-initdb.d 
+      - mysql_data:/var/lib/mysql 
+    healthcheck: 
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pxTsqlMy-TS"] 
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes: 
+  mysql_data:

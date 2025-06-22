@@ -92,7 +92,7 @@ CREATE TABLE `like` (
   KEY `fk_like_post1_idx` (`post_idpost`),
   CONSTRAINT `fk_like_post1` FOREIGN KEY (`post_idpost`) REFERENCES `post` (`idpost`),
   CONSTRAINT `fk_like_user1` FOREIGN KEY (`user_iduser`) REFERENCES `user` (`iduser`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +101,7 @@ CREATE TABLE `like` (
 
 LOCK TABLES `like` WRITE;
 /*!40000 ALTER TABLE `like` DISABLE KEYS */;
-INSERT INTO `like` VALUES (2,NULL,3,2),(19,NULL,3,4);
+INSERT INTO `like` VALUES (19,NULL,3,4),(21,NULL,3,2);
 /*!40000 ALTER TABLE `like` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,6 +193,10 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (1,'Max','Müller',NULL,NULL,NULL,1),(2,'2','1','2000-01-01','$2b$10$SAjTZ/pEc1jCXDPblIeypuJUtQXqmd5lyaUcI9SgejMa4qHy4mLAW','test@example.com',1),(3,'Max','Mustermann','2000-01-01','$2b$10$HLJvT2kGHimZHEw5nEsrbuMQSxoiDg6wH05O3fjy8iVoGKrZPZ0bS','Max.Mustermann@example.com',1),(4,'Martin','Hans','1996-01-11','$2b$10$l8xl3NoureVBagvNiGpDWOm1DQn5SK1MsjEPiIbfY2WPf3rR6Ebl2','hans.martin@example.com',2),(5,'Grünwald','Martin','1987-07-09','$2b$10$IM2Nxa8HOUrZK1T60cLSZOBDf8IQqJeF8SdQLhebYfEl6EcTOjydW','Martin.Gruenwald@example.com',5);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'web-engineering'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -203,4 +207,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-21 20:38:38
+-- Dump completed on 2025-06-22 17:57:27

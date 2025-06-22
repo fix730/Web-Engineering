@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import prisma from '../config/prisma';
-import { User, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 // let currentUser: any = null;
@@ -70,13 +70,13 @@ export const registerUser: RequestHandler = async (req: any, res: any) => {
 
   } catch (error) {
     // Fehlerbehandlung
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // P2002 ist der Fehlercode für einen Unique-Constraint-Fehler
-      // Das bedeutet, dass die E-Mail wahrscheinlich schon existiert
-      if (error.code === 'P2002') {
-        return res.status(409).json({ message: 'Die angegebene E-Mail-Adresse ist bereits registriert.' });
-      }
-    }
+    // if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //   // P2002 ist der Fehlercode für einen Unique-Constraint-Fehler
+    //   // Das bedeutet, dass die E-Mail wahrscheinlich schon existiert
+    //   if (error.code === 'P2002') {
+    //     return res.status(409).json({ message: 'Die angegebene E-Mail-Adresse ist bereits registriert.' });
+    //   }
+    // }
     console.error('Fehler bei der Benutzerregistrierung:', error);
     res.status(500).json({ message: 'Registrierung fehlgeschlagen. Interner Serverfehler.' });
   }
