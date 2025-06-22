@@ -8,19 +8,26 @@ import Register from './pages/Register';
 import { ThemeProvider } from "@material-tailwind/react";
 import PostNew from './pages/PostNew';
 import Einstellungen from './pages/Einstellungen';
+import ProtectedRoute from './pages/components/ProtectedRoute';
 
 function App() {
   return (
     <>
-      
       <ThemeProvider>
         <Routes>
-          
+          {/* Diese Routen sind öffentlich zugänglich */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/posts/new" element={<PostNew />} />
-          <Route path="/einstellungen" element={<Einstellungen />} />
-          <Route path="/" element={<Home />} />
+
+          {/* Geschützte Routen */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/posts/new" element={<PostNew />} />
+            <Route path="/einstellungen" element={<Einstellungen />} />
+            <Route path="/" element={<Home />} /> {/* Home ist jetzt geschützt */}
+          </Route>
+
+          {/* Optional: Fallback für nicht gefundene Routen (außerhalb des Schutzes) */}
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
         </Routes>
       </ThemeProvider>
     </>
