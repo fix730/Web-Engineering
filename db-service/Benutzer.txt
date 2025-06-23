@@ -16,4 +16,10 @@
         "image_idimage": 1
     }
 hans.martin@example.com; Password
-Martin.Gruenwald@example.com password
+Martin.Gruenwald@example.com Password
+
+ "name": "Günter",
+    "firstName": "Hans",
+    "email": "Günter.Hans@example.com",
+    "password": "password", 
+    "birthday": "2000-01-01"

@@ -1,9 +1,9 @@
-// src/routes/user.ts
 import express from 'express';
 import multer from 'multer';
-import path from 'path'; // Wird weiterhin für die Dateierweiterung benötigt
+import path from 'path';
+import bcrypt from 'bcryptjs';
 import { AuthenticatedRequest, protect } from '../middleware/protect';
-import { updateImageById, getImageById } from '../utils/dbQuery'; // Importieren Sie Ihre DB-Funktionen
+import { updateImageById, getImageById, updateEMail, checkEMail, updatePasswort, isPasswordValid } from '../utils/dbQuery';
 
 const router = express.Router();
 
@@ -43,18 +43,64 @@ router.post('/upload-profile-image', protect, upload.single('profileImage'), asy
     const imageName = req.file.originalname;  // Ursprünglicher Dateiname
 
     try {
-        // Rufen Sie die Funktion aus dbQuery.ts auf, um den bestehenden Bilddatensatz zu aktualisieren.
+        // Rufen die Funktion aus dbQuery.ts auf, um den bestehenden Bilddatensatz zu aktualisieren.
         const updatedImage = await updateImageById(req.user.image_idimage, imageData, imageMimeType, imageName);
 
         res.status(200).json({
             message: "Profilbild erfolgreich hochgeladen und aktualisiert.",
-            imageId: updatedImage.idimage, // Senden Sie die ID des aktualisierten Bildes zurück
+            imageId: updatedImage.idimage, // Senden die ID des aktualisierten Bildes zurück
         });
     } catch (error) {
         console.error("Fehler beim Hochladen des Profilbilds:", error);
         const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler beim Bild-Upload.";
         res.status(500).json({ message: "Fehler beim Hochladen des Profilbilds.", error: errorMessage });
     }
+});
+
+router.patch("/data", protect, async (req: any, res: any) => {
+    let user = null;
+    if (!req.user || !req.user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert." });
+    }
+    if (req.body.email) {
+        try {
+            if (await checkEMail(req.body.email)) {
+                return res.status(409).json({ message: 'E-Mail ist schon in der Datenbank. Bitte eine andere E-Mail Adresse verwenden.' })
+            }
+            user = await updateEMail(req.body.email, Number(req.user.iduser));
+
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren der E-Mail:", error);
+            const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler beim E-Mail updaten.";
+            res.status(500).json({ message: "Fehler beim Aktualisieren der E-Mail", error: errorMessage });
+        }
+    }
+    if (req.body.newPassword && req.body.currentPasswort) {
+        try {
+            const isPasswordVali = await isPasswordValid(req.body.currentPasswort,Number(req.user.iduser))
+            if (!isPasswordVali) {
+                return res.status(401).json({ message: 'aktuelles Passwort inkorrekt' });
+            }
+            user = await updatePasswort(req.body.newPassword, Number(req.user.iduser))
+
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren der E-Mail:", error);
+            const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler beim Passwort updaten.";
+            res.status(500).json({ message: "Fehler beim Aktualisieren der Passwort", error: errorMessage });
+
+        }
+    }
+
+    if (user == null) {
+        return res.status(422).json({ message: "Es wurden keine gültigen Übergabeparameter übertragen" })
+    }
+
+    res.status(200).json({
+        message: "Parameter erfolgreich aktualisiert.",
+        user: user
+    });
+
+
 });
 
 

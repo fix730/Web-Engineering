@@ -2,8 +2,7 @@ import express from "express";
 import { protect } from "../middleware/protect";
 import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts } from "../utils/dbQuery";
 import { upload } from "./user";
-import { timeStamp } from "console";
-import { text } from "stream/consumers";
+
 
 const router = express.Router();
 

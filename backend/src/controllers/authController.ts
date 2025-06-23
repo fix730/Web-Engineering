@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from '../config/prisma';
 import { Prisma } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { checkEMail } from "../utils/dbQuery";
 
 // let currentUser: any = null;
 
@@ -29,6 +30,10 @@ export const registerUser: RequestHandler = async (req: any, res: any) => {
 
   if (!email || !password) {
     return res.status(400).json({ message: 'E-Mail und Passwort sind erforderlich.' });
+  }
+
+  if (await checkEMail(email)) {
+    return res.status(409).json({ message: 'E-Mail ist schon in der Datenbank. Bitte mit der E-Mail anmelden oder eine andere E-Mail Adresse verwenden' })
   }
 
   try {

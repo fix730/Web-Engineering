@@ -9,7 +9,7 @@ import { LabelOverInput } from "../pages/components/Label";
 import { Email, Paasswort } from "../pages/components/Inputs";
 import { SubmitButton } from "../pages/components/Button";
 import axiosInstance from "../api/axiosInstance";
-import DialogAlert from "./alert";
+import DialogAlert, { DialogSuccess } from "./alert";
 import { fetchProfileImage } from "../utils/image";
 
 type DialogAlertProps = {
@@ -32,6 +32,9 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertHeader, setAlertHeader] = useState("");
   const [alertContent, setAlertContent] = useState("");
+  const [isSuccessOpen, setIsSuccesstOpen] = useState(false);
+  const [successHeader, setSuccessHeader] = useState("");
+  const [successContent, setSuccessContent] = useState("");
 
   // Hilfsfunktion zum Anzeigen des Alerts
   const showAlert = (header: string, content: string) => {
@@ -40,12 +43,25 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
     setIsAlertOpen(true);
   };
 
+  const showSuccess = (header: string, content: string) => {
+    setSuccessHeader(header);
+    setSuccessContent(content);
+    setIsSuccesstOpen(true);
+
+  }
+
   // Callback zum Schließen des Alerts
   const closeAlert = () => {
     setIsAlertOpen(false);
     setAlertHeader("");
     setAlertContent("");
   };
+
+  const closeSuccess = () =>{
+    setIsSuccesstOpen(false);
+    setSuccessHeader("");
+    setSuccessContent("");
+   }
 
   // Effekt, um das vorhandene Profilbild des Benutzers zu laden
   useEffect(() => {
@@ -69,18 +85,65 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
   }, [currentImageId, open]);
 
   // Handler für Passwortänderung
-  const handleChangePasswort = () => {
+  const handleChangePasswort = async () => {
     if (password !== passwordConfirm) {
       showAlert("Fehler", "Die neuen Passwörter stimmen nicht überein.");
       return;
     }
-    //Todo: Implementiere die Logik zum Ändern des Passworts
+    try {
+      const response = await axiosInstance.patch("api/user/data", {
+          currentPasswort: currentPassword,
+          newPassword: password
+      });
+      const data = response.data;
+
+      if (response.status === 200) {
+        showSuccess("Erfolg", "Passwort erfolgreich aktualiseiert!");
+      }
+      setSelectedImageFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      } else {
+        showAlert("Fehler", data.message || "Fehler beim Aktualisieren des Passworts.");
+        console.error("Upload Fehler:", data);
+      }
+
+    } catch (error: any) {
+      showAlert(
+        "Fehler",
+        error.response?.data?.message || error.message || "Netzwerkfehler: Konnte keine Verbindung zum Server herstellen."
+      );
+      console.error("Axios Upload Fehler:", error.response?.data || error.message);
+    }
+    
   };
 
   // Handler für E-Mail-Änderung (Beispiel)
-  const handleChangeEmail = () => {
-    console.log("E-Mail ändern Logik:", email);
-    //Todo: Implementiere die Logik zum Ändern der E-Mail
+  const handleChangeEmail = async () => {
+    try {
+      const response = await axiosInstance.patch("api/user/data", {
+          email: email
+      });
+      const data = response.data;
+
+      if (response.status === 200) {
+        showSuccess("Erfolg", "E-Mail erfolgreich aktualiseiert!");
+      }
+      setSelectedImageFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      } else {
+        showAlert("Fehler", data.message || "Fehler beim Aktualisieren der E-Mail Adresse.");
+        console.error("Upload Fehler:", data);
+      }
+
+    } catch (error: any) {
+      showAlert(
+        "Fehler",
+        error.response?.data?.message || error.message || "Netzwerkfehler: Konnte keine Verbindung zum Server herstellen."
+      );
+      console.error("Axios Upload Fehler:", error.response?.data || error.message);
+    }
   };
 
   // Handler für Bild-Upload (mit Axios)
@@ -104,7 +167,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       const data = response.data;
 
       if (response.status === 200) {
-        showAlert("Erfolg", data.message || "Profilbild erfolgreich hochgeladen!");
+        showSuccess("Erfolg", data.message || "Profilbild erfolgreich hochgeladen!");
         if (data.imageId) {
           setDisplayedImageUrl(URL.createObjectURL(selectedImageFile));
           if (onImageUploadSuccess) {
@@ -127,6 +190,8 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       console.error("Axios Upload Fehler:", error.response?.data || error.message);
     }
   };
+
+
 
   const myTabData = [
     {
@@ -245,9 +310,15 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       {/* Das DialogAlert-Fenster wird hier gerendert */}
       <DialogAlert
         open={isAlertOpen}
-        isOpen={closeAlert} // Verwenden Sie closeAlert, um den Dialog zu schließen
+        isOpen={closeAlert} 
         header={alertHeader}
         content={alertContent}
+      />
+      <DialogSuccess
+        open={isSuccessOpen}
+        isOpen={closeSuccess}
+        header={successHeader}
+        content={successContent}
       />
     </div>
   );

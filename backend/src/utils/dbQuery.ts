@@ -1,6 +1,6 @@
-import { timeStamp } from "console";
 import prisma from "../config/prisma";
-import { Post, Location as PrismaLocation, comment } from '@prisma/client';
+import { Post, Location as PrismaLocation, comment, User } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 
 
@@ -110,6 +110,16 @@ export const newPost = async (userId: number, locationName: string, title: strin
         console.error("Fehler bei neuen Post erstellen", error);
         throw new Error("Post konnte nicht erstellt werden.");
     }
+}
+
+export async function showPost(idPost: number): Promise<any> {
+    const post = await prisma.post.findFirst({
+        where: {
+            idpost: idPost
+        }
+    });
+    //Todo add user
+    //const postsWithUserLocation = addPostNameAndLocation(post);
 }
 
 export async function showAllPosts(): Promise<any[]> {
@@ -253,15 +263,15 @@ async function addPostNameAndLocation(posts: Post[]): Promise<any[]> {
     return postWithLocationAndName;
 }
 
-export async function addLikePost(idPost:number, idUser:number) {
+export async function addLikePost(idPost: number, idUser: number) {
     const newLike = await prisma.like.create({
-        data:{
+        data: {
             post_idpost: idPost,
             user_iduser: idUser
         }
     });
-    return newLike;  
-} 
+    return newLike;
+}
 
 export async function deleteLikePost(idPost: number, idUser: number) {
     //Geht nicht einfacher weil sonst fehler Meldung, eigentlich ist durch idUser und idPost das Objekt einmalig
@@ -292,7 +302,7 @@ export async function getLikesByPostId(postId: number): Promise<number> {
     });
     return likes;
 }
-export async function getLikesByUserIdPost(userId: number, postId:number): Promise<boolean> {
+export async function getLikesByUserIdPost(userId: number, postId: number): Promise<boolean> {
     const like = await prisma.like.findFirst({
         where: {
             user_iduser: userId,
@@ -300,4 +310,56 @@ export async function getLikesByUserIdPost(userId: number, postId:number): Promi
         }
     });
     return like !== null; // Gibt true zurück, wenn ein Like gefunden wurde, sonst false  
+}
+
+export async function checkEMail(eMail: string): Promise<boolean> {
+    const user = await prisma.user.findMany({
+        where: {
+            email: eMail
+        }
+    });
+    if (user.length == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export async function updateEMail(eMail: string, userId: number): Promise<User> {
+    const user = await prisma.user.update({
+        where: {
+            iduser: userId
+        },
+        data: {
+            email: eMail
+        }
+    });
+    return user;
+
+}
+
+export async function updatePasswort(password: string, userId: number): Promise<User> {
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(password, salt);
+
+    const user = await prisma.user.update({
+        where: {
+            iduser: userId
+        },
+        data: {
+            passwort: hashPassword
+        }
+    });
+    return user;
+}
+
+export async function isPasswordValid(password: string, userId: number): Promise<boolean> {
+    const user = await prisma.user.findFirst({
+        where: {
+            iduser: userId
+        }
+    });
+
+    const isPasswordValid = await bcrypt.compare(password, user?.passwort || '');
+    return isPasswordValid;
 }
