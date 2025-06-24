@@ -5,7 +5,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 // Footer-Links basierend auf eurer Seitenstruktur
 const footerLinks = [
   { path: "/", label: "Start" },
-  { path: "/postnew", label: "Post erstellen" },
+  { path: "/posts/new", label: "Post erstellen" },
   { path: "/login", label: "Login" },
   { path: "/register", label: "Registrieren" },
   { path: "/einstellungen", label: "Einstellungen" },

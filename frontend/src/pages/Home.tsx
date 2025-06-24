@@ -10,6 +10,7 @@ import { SearchBar } from "./components/SearchBar/SearchBar";
 import DialogAlert from "../Pop-Up-Window/alert";
 import Post, { PostType } from "./components/Post/Post";
 import Comment from "./components/Comment/Comment";
+import Footer from "./components/Footer/Footer";
 
 
 
@@ -146,6 +147,7 @@ function Home() {
           </div>
         </div>
       )}
+      <Footer />
     </>
   )
 }
