@@ -66,7 +66,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div>
-        © {new Date().getFullYear()} DeinProjekt
+        © {new Date().getFullYear()} FindDHBW
       </div>
     </footer>
   );
