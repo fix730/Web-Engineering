@@ -113,13 +113,33 @@ export const newPost = async (userId: number, locationName: string, title: strin
 }
 
 export async function showPost(idPost: number): Promise<any> {
-    const post = await prisma.post.findFirst({
+    let post = await prisma.post.findFirst({
         where: {
             idpost: idPost
         }
     });
-    //Todo add user
-    //const postsWithUserLocation = addPostNameAndLocation(post);
+    const user = await prisma.user.findFirst({
+        where:{
+            iduser: post?.user_iduser
+        },
+        select: {
+            iduser: true,
+            name: true,
+            firstName: true,
+            image_idimage: true,
+        }
+    });
+    const location =await prisma.location.findFirst({
+        where:{
+            idlocation: post?.location_idlocation
+        }
+    });
+    const postAll = {
+        ...post,
+        locationName: location?.name,
+        user: user        
+    }
+    return postAll;
 }
 
 export async function showAllPosts(): Promise<any[]> {
@@ -362,4 +382,20 @@ export async function isPasswordValid(password: string, userId: number): Promise
 
     const isPasswordValid = await bcrypt.compare(password, user?.passwort || '');
     return isPasswordValid;
+}
+
+export async function updatePost(postId:number, locationName: string, title: string, description: string, imageId:number, imageData: Buffer, imageMimeType: string, imageName: string) {
+    await updateImageById(imageId, imageData,imageMimeType,imageName);
+    const locationId = await addLocation(locationName);
+    const post = prisma.post.update({
+        where: {
+            idpost: postId
+        },
+        data:{
+            location_idlocation: locationId,
+            title: title,
+            description: description,
+            image_idimage: imageId
+        }
+    });
 }

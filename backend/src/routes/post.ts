@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts } from "../utils/dbQuery";
+import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showPost } from "../utils/dbQuery";
 import { upload } from "./user";
 
 
@@ -228,5 +228,33 @@ router.post("/like", protect, async (req: any, res: any) => {
     }
 }
 );
+
+router.get("/one", protect, async(req:any, res:any) =>{
+    const {postId} = req.query;
+    if(!postId){
+        return res.status(404).json({ message: "Fehlende Übergabeparameter bei den Paramertern (postId fehlt)" });
+    }
+    const numPostId = Number(postId);
+    try {
+        const post = await showPost(numPostId);
+        res.status(200).json({
+            post: post
+        }); 
+    } catch (error) {
+        console.error("Fehler beim Abrufen des Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen des Posts." });
+    }
+});
+
+router.patch("/",protect, upload.single('imagePost'), async(req:any, res:any)=>{
+    const user = req.user;
+    const data = req.body;
+    
+    if (!user || !user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
+    }
+      
+
+});
 
 export default router;
