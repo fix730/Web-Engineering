@@ -2,15 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 
-// Footer-Links basierend auf eurer Seitenstruktur
-const footerLinks = [
-  { path: "/", label: "Start" },
-  { path: "/posts/new", label: "Post erstellen" },
-  { path: "/login", label: "Login" },
-  { path: "/register", label: "Registrieren" },
-  { path: "/einstellungen", label: "Einstellungen" },
-];
-
 const Footer = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -20,15 +11,21 @@ const Footer = () => {
     <footer className="bg-white text-center text-xs text-gray-500 py-6">
       {/* Link-Zeile */}
       <nav className="flex flex-wrap justify-center space-x-4 mb-4">
-        {footerLinks.map(({ path, label }) => (
-          <button
-            key={path}
-            onClick={() => navigate(path)}
-            className="font-semibold hover:underline"
-          >
-            {label}
-          </button>
-        ))}
+        <button onClick={() => navigate("/")} className="font-semibold hover:underline">
+          Start
+        </button>
+        <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline">
+          Post erstellen
+        </button>
+        <button onClick={() => navigate("/login")} className="font-semibold hover:underline">
+          Login
+        </button>
+        <button onClick={() => navigate("/register")} className="font-semibold hover:underline">
+          Registrieren
+        </button>
+        <button onClick={() => navigate("/einstellungen")} className="font-semibold hover:underline">
+          Einstellungen
+        </button>
       </nav>
 
       {/* Sprache und Mobile Menu Toggle */}
@@ -52,15 +49,21 @@ const Footer = () => {
       {/* Mobile Nav */}
       {menuOpen && (
         <nav className="flex flex-col space-y-2 mb-4">
-          {footerLinks.map(({ path, label }) => (
-            <button
-              key={path}
-              onClick={() => navigate(path)}
-              className="font-semibold hover:underline text-left w-full"
-            >
-              {label}
-            </button>
-          ))}
+          <button onClick={() => navigate("/")} className="font-semibold hover:underline text-left w-full">
+            Start
+          </button>
+          <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline text-left w-full">
+            Post erstellen
+          </button>
+          <button onClick={() => navigate("/login")} className="font-semibold hover:underline text-left w-full">
+            Login
+          </button>
+          <button onClick={() => navigate("/register")} className="font-semibold hover:underline text-left w-full">
+            Registrieren
+          </button>
+          <button onClick={() => navigate("/einstellungen")} className="font-semibold hover:underline text-left w-full">
+            Einstellungen
+          </button>
         </nav>
       )}
 
