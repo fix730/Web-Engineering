@@ -1,0 +1,75 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Menu, X, ChevronDown } from "lucide-react";
+
+// Footer-Links basierend auf eurer Seitenstruktur
+const footerLinks = [
+  { path: "/", label: "Start" },
+  { path: "/postnew", label: "Post erstellen" },
+  { path: "/login", label: "Login" },
+  { path: "/register", label: "Registrieren" },
+  { path: "/einstellungen", label: "Einstellungen" },
+];
+
+const Footer = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const navigate = useNavigate();
+
+  return (
+    <footer className="bg-white text-center text-xs text-gray-500 py-6">
+      {/* Link-Zeile */}
+      <nav className="flex flex-wrap justify-center space-x-4 mb-4">
+        {footerLinks.map(({ path, label }) => (
+          <button
+            key={path}
+            onClick={() => navigate(path)}
+            className="font-semibold hover:underline"
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Sprache und Mobile Menu Toggle */}
+      <div className="flex justify-center items-center space-x-2 mb-2">
+        <button
+          onClick={() => setLanguageOpen(!languageOpen)}
+          className="flex items-center font-semibold hover:underline"
+          aria-label="Sprache auswählen"
+        >
+          Deutsch <ChevronDown size={14} className="ml-1" />
+        </button>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-gray-600 hover:text-blue-600"
+          aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* Mobile Nav */}
+      {menuOpen && (
+        <nav className="flex flex-col space-y-2 mb-4">
+          {footerLinks.map(({ path, label }) => (
+            <button
+              key={path}
+              onClick={() => navigate(path)}
+              className="font-semibold hover:underline text-left w-full"
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
+
+      {/* Copyright */}
+      <div>
+        © {new Date().getFullYear()} DeinProjekt
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
