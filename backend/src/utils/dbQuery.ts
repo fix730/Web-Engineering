@@ -2,7 +2,23 @@ import prisma from "../config/prisma";
 import { Post, Location as PrismaLocation, comment, User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
+type userExport = {
+    name: string | null;
+    image_idimage: number;
+    iduser: number;
+    firstName: string | null;
+};
 
+type PostExport = {
+    locationName?: string | null;
+    user?: userExport | null;
+    idpost?: number;
+    title?: string;
+    description?: string;
+    location_idlocation?: number;
+    image_idimage?: number;
+    user_iduser?: number;
+};
 
 export async function addLocation(locationName: string): Promise<number> {
     const idLocation = await isLocationInDB(locationName);
@@ -112,14 +128,14 @@ export const newPost = async (userId: number, locationName: string, title: strin
     }
 }
 
-export async function showPost(idPost: number): Promise<any> {
+export async function showPost(idPost: number): Promise<PostExport> {
     let post = await prisma.post.findFirst({
         where: {
             idpost: idPost
         }
     });
     const user = await prisma.user.findFirst({
-        where:{
+        where: {
             iduser: post?.user_iduser
         },
         select: {
@@ -129,15 +145,17 @@ export async function showPost(idPost: number): Promise<any> {
             image_idimage: true,
         }
     });
-    const location =await prisma.location.findFirst({
-        where:{
+    const location = await prisma.location.findFirst({
+        where: {
             idlocation: post?.location_idlocation
         }
     });
-    const postAll = {
+    const postAll: PostExport = {
         ...post,
+        title: post?.title ?? undefined,
+        description: post?.description ?? undefined,
         locationName: location?.name,
-        user: user        
+        user: user
     }
     return postAll;
 }
@@ -384,18 +402,23 @@ export async function isPasswordValid(password: string, userId: number): Promise
     return isPasswordValid;
 }
 
-export async function updatePost(postId:number, locationName: string, title: string, description: string, imageId:number, imageData: Buffer, imageMimeType: string, imageName: string) {
-    await updateImageById(imageId, imageData,imageMimeType,imageName);
+export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
+    if(imageData && imageMimeType && imageName){
+        await updateImageById(imageId, imageData, imageMimeType, imageName);
+    }
+    
     const locationId = await addLocation(locationName);
     const post = prisma.post.update({
         where: {
             idpost: postId
         },
-        data:{
+        data: {
             location_idlocation: locationId,
             title: title,
             description: description,
             image_idimage: imageId
         }
     });
+    return post;
 }
+

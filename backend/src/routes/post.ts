@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showPost } from "../utils/dbQuery";
+import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showPost, updatePost } from "../utils/dbQuery";
 import { upload } from "./user";
 
 
@@ -168,10 +168,10 @@ router.get("/like/byUser", protect, async (req: any, res: any) => {
     }
     const numPostId = Number(postId);
     try {
-        const isLiked = await getLikesByUserIdPost( Number(user.iduser), numPostId);
+        const isLiked = await getLikesByUserIdPost(Number(user.iduser), numPostId);
         res.status(200).json({
             isLiked: isLiked
-        }); 
+        });
     } catch (error) {
         console.error("Fehler beim Abrufen der Likes:", error);
         return res.status(500).json({ message: "Interner Serverfehler beim Abrufen der Likes." });
@@ -203,7 +203,7 @@ router.delete("/like", protect, async (req: any, res: any) => {
 );
 
 router.post("/like", protect, async (req: any, res: any) => {
-    
+
     const user = req.user;
     if (!user || !user.iduser) {
         return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
@@ -215,7 +215,7 @@ router.post("/like", protect, async (req: any, res: any) => {
     console.log("PostId:", postId);
     const numPostId = Number(postId);
     console.log("PostIdNum:", numPostId);
-    
+
     try {
         addLikePost(numPostId, Number(user.iduser));
         res.status(200).json({
@@ -229,9 +229,9 @@ router.post("/like", protect, async (req: any, res: any) => {
 }
 );
 
-router.get("/one", protect, async(req:any, res:any) =>{
-    const {postId} = req.query;
-    if(!postId){
+router.get("/one", protect, async (req: any, res: any) => {
+    const { postId } = req.query;
+    if (!postId) {
         return res.status(404).json({ message: "Fehlende Übergabeparameter bei den Paramertern (postId fehlt)" });
     }
     const numPostId = Number(postId);
@@ -239,22 +239,74 @@ router.get("/one", protect, async(req:any, res:any) =>{
         const post = await showPost(numPostId);
         res.status(200).json({
             post: post
-        }); 
+        });
     } catch (error) {
         console.error("Fehler beim Abrufen des Posts:", error);
         return res.status(500).json({ message: "Interner Serverfehler beim Abrufen des Posts." });
     }
 });
 
-router.patch("/",protect, upload.single('imagePost'), async(req:any, res:any)=>{
+router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any) => {
     const user = req.user;
     const data = req.body;
-    
+
     if (!user || !user.iduser) {
         return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
     }
-      
+    if (!data.postId) {
+        return res.status(404).json({ message: "Fehlende Übergabeparameter bei den Paramertern (postId fehlt)" });
+    }
+
+    let change = false;
+    let locationName;
+    let title;
+    let description;
+    let imageData;
+    let imageMimeType;
+    let imageName;
+
+    let newPost;
+    try {
+        const currentPost = showPost(Number(data.postId));
+        if (!data.locationName) {
+            change = true;
+            locationName = (await currentPost).locationName;
+        } else {
+            locationName = data.locationName
+        }
+        if (!data.title) {
+            change = true;
+            title = (await currentPost).title;
+        } else {
+            title = data.title;
+        }
+        if (!data.description) {
+            change = true;
+            description = (await currentPost).description;
+        } else {
+            description = data.description;
+        }
+        if (!req.file) {
+            newPost = await updatePost(Number(data.postId), title, title, description, (await currentPost).idpost || 1);
+        } else {
+            imageData = req.file.buffer;
+            imageMimeType = req.file.mimetype;
+            imageName = req.file.originalname;
+            newPost = await updatePost(Number(data.postId), title, title, description, (await currentPost).idpost || 1, imageData, imageMimeType, imageName);
+        }
+
+        res.status(200).json({
+            message: "Like erfolgreich in DB gespeichert",
+            post: newPost
+        });
+    } catch (error) {
+        console.error("Fehler beim Updaten des Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Updaten des Posts." });
+    }
+
 
 });
+
+
 
 export default router;
