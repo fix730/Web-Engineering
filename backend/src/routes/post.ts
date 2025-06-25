@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addComment, addLikePost, addLocation, deleteLikePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showPost, updatePost } from "../utils/dbQuery";
+import { addComment, addLikePost, addLocation, deleteLikePost, deletePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showPost, updatePost } from "../utils/dbQuery";
 import { upload } from "./user";
 
 
@@ -186,7 +186,7 @@ router.delete("/like", protect, async (req: any, res: any) => {
     }
     const { postId } = req.query;
     if (!postId) {
-        return res.status(404).json({ message: "Fehlende Übergabeparameter im Body" });
+        return res.status(404).json({ message: "Fehlende Übergabeparameter" });
     }
     const numPostId = Number(postId);
     try {
@@ -268,6 +268,12 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
     let newPost;
     try {
         const currentPost = showPost(Number(data.postId));
+        //Überprüfen ob Benutzer berechtigt ist
+        if ((await currentPost).user_iduser != user.iduser) {
+            return res.status(403).json({
+                message: "Sie sind nicht der Eigentümer des Posts, daher nicht berechtigt."
+            })
+        }
         if (!data.locationName) {
             change = true;
             locationName = (await currentPost).locationName;
@@ -296,7 +302,7 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
         }
 
         res.status(200).json({
-            message: "Like erfolgreich in DB gespeichert",
+            message: "Post erfolgreich in DB aktualisiert.",
             post: newPost
         });
     } catch (error) {
@@ -307,6 +313,32 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
 
 });
 
+router.delete("/", protect, async (req: any, res: any) => {
+    const { postId } = req.query;
+    const user = req.user;
+    if (!postId) {
+        return res.status(404).json({ message: "Fehlende Übergabeparameter" });
+    }
+    if (!user || !user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
+    }
+    try {
+        const currentPost = showPost(Number(postId));
+        //Überprüfen ob Benutzer berechtigt ist
+        if ((await currentPost).user_iduser != user.iduser) {
+            return res.status(403).json({
+                message: "Sie sind nicht der Eigentümer des Posts, daher nicht berechtigt."
+            })
+        };
+        deletePost(Number(postId));
+        res.status(200).json({
+            message: "Post erfolgreich in DB gelöscht"
+        });
+    } catch (error) {
+        console.error("Fehler beim Löschen des Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Löschen des Posts." });
+    }
 
+});
 
 export default router;

@@ -422,3 +422,11 @@ export async function updatePost(postId: number, locationName: string, title: st
     return post;
 }
 
+export async function deletePost(postId: number){
+    prisma.post.delete({
+        where:{
+            idpost:postId
+        }
+    });
+}
+
