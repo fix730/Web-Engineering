@@ -430,3 +430,27 @@ export async function deletePost(postId: number){
     });
 }
 
+export async function showLikedUser(postId: number) {
+    const posts= await prisma.like.findMany({
+        where:{
+            post_idpost:postId
+        },
+        select:{
+            user_iduser: true
+        }
+    });
+    const userIds = posts.map(post =>(post.user_iduser));
+    const users = prisma.user.findMany({
+        where: {
+            iduser: { in: userIds },
+        },
+        select: {
+            iduser: true,
+            name:true,
+            firstName:true,
+            image_idimage:true
+        }
+    });
+    return users;
+}
+

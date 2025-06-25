@@ -99,9 +99,9 @@ router.patch("/data", protect, async (req: any, res: any) => {
         message: "Parameter erfolgreich aktualisiert.",
         user: user
     });
-
-
 });
+
+
 
 
 export default router;
