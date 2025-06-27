@@ -1,36 +1,36 @@
 import React from 'react';
-import logo from './logo.svg'; // Sie benötigen dies möglicherweise nicht, wenn es nicht verwendet wird
-import './App.css'; // Behalten Sie dies für globale App-Styles
-import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import './App.css';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider } from "@material-tailwind/react";
+
+import Home from './pages/Home';
+import MyPosts from './pages/MyPosts';
 import PostNew from './pages/PostNew';
 import Einstellungen from './pages/Einstellungen';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import ProtectedRoute from './pages/components/ProtectedRoute';
 
 function App() {
   return (
-    <>
-      <ThemeProvider>
-        <Routes>
-          {/* Diese Routen sind öffentlich zugänglich */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <ThemeProvider>
+      <Routes>
+       
+        <Route path="/posts" element={<Navigate to="/myposts" replace />} />
 
-          {/* Geschützte Routen */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/posts/new" element={<PostNew />} />
-            <Route path="/einstellungen" element={<Einstellungen />} />
-            <Route path="/" element={<Home />} /> {/* Home ist jetzt geschützt */}
-          </Route>
+        {/* öffentlich */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-          {/* Optional: Fallback für nicht gefundene Routen (außerhalb des Schutzes) */}
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
-        </Routes>
-      </ThemeProvider>
-    </>
+        {/* geschützt */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/myposts" element={<MyPosts />} />
+          <Route path="/posts/new" element={<PostNew />} />
+          <Route path="/einstellungen" element={<Einstellungen />} />
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 
