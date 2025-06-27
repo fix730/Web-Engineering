@@ -18,6 +18,7 @@ type PostExport = {
     location_idlocation?: number;
     image_idimage?: number;
     user_iduser?: number;
+    
 };
 
 export async function addLocation(locationName: string): Promise<number> {

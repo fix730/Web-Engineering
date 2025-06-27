@@ -4,16 +4,50 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Post, { PostType } from "./components/Post/Post";
 import axiosInstance from "../api/axiosInstance";
+import { DialogQuestion } from "../Pop-Up-Window/alert";
+import { get } from "http";
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const navigate = useNavigate();
+  const [isOpenDialogQuestion, setIsOpenDialogQuestion] = useState(false);
+  const [qustionDialogHeader, setQuestionDialogHeader] = useState("");
+  const [questionDialogContent, setQuestionDialogContent] = useState("");
+  const [questionDialogConfirm, setQuestionDialogConfirm] = useState("");
+  const [questionDialogConfirmColorHeader, setQuestionDialogConfirmColorHeader] = useState("");
+  const [questionDialogColorOnHover, setQuestionDialogColorOnHover] = useState("");
+  const [questionDialogColorConfirm, setQuestionDialogColorConfirm] = useState("");
+  const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
+
+  async function getUserPosts() {
+    try {
+      const response = await axiosInstance.get('/api/post/all');
+      setPosts(response.data.posts); // Setze die Posts im Zustand
+    } catch (error) {
+      console.error("Fehler beim Abrufen der Posts:", error);
+      // alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
+    }
+  }
+
+  async function deletePost() {
+    alert("Post mit der ID " + postToDeleteId + " wird gelöscht");
+    setIsOpenDialogQuestion(false);
+    try {
+      await axiosInstance.delete(`/api/post/`, {
+        params: {
+          postId: postToDeleteId
+        }
+      });
+      getUserPosts(); // Aktualisiere die Liste der Posts nach dem Löschen
+    } catch (error) {
+      console.error("Fehler beim Löschen des Posts:", error);
+      // alert("Fehler beim Löschen des Posts. Bitte versuche es später erneut.");
+    }
+  }
+
 
   useEffect(() => {
-    axiosInstance
-      .get<PostType[]>("/api/posts/user")
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.error(err));
+    getUserPosts();
   }, []);
 
   const handleEdit = (id: number) => {
@@ -21,9 +55,14 @@ const MyPosts = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Beitrag wirklich löschen?")) return;
-    await axiosInstance.delete(`/api/post/${id}`);
-    setPosts((old) => old.filter((p) => p.idpost !== id));
+    setIsOpenDialogQuestion(true);
+    setQuestionDialogHeader("Post löschen?");
+    setQuestionDialogContent("Bist du sicher, dass du diesen Post löschen möchtest?");
+    setQuestionDialogConfirm("Löschen");
+    setQuestionDialogConfirmColorHeader("text-red-600"); // This affects the header text color
+    setQuestionDialogColorOnHover("red"); // Pass just the color name for hover
+    setQuestionDialogColorConfirm("red"); // Pass just the color name for confirm
+    setPostToDeleteId(id);
   };
 
   return (
@@ -57,6 +96,16 @@ const MyPosts = () => {
         </div>
       </main>
       <Footer />
+      <DialogQuestion open={isOpenDialogQuestion}
+        header={qustionDialogHeader}
+        content={questionDialogContent}
+        buttonConfirm={questionDialogConfirm}
+        onConfirm={deletePost}
+        onCancel={() => setIsOpenDialogQuestion(false)}
+        colorHeader={questionDialogConfirmColorHeader}
+        colorOnHover={questionDialogColorOnHover}
+        colorConfirm={questionDialogColorConfirm}
+      />
     </>
   );
 };
