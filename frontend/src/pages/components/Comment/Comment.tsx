@@ -1,52 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
-import { useState } from "react";
 
-type CommentObject = {
-  id: string;
-  postId: number;
-  author: string;
-  content: string;
-  createdAt: string;
-  ProfilePicture?: string;
-};
+export interface User {
+  iduser: number;
+  name: string;
+  firstName: string;
+  image_idimage: number;
+  profileImageUrl?: string; // Falls Bild-URL kommt, sonst musst du es separat holen
+}
 
+export interface Comment {
+  idcomment: number;
+  text: string;
+  date: string; // Oder Date, wenn du willst kannst du in Date umwandeln
+  commentcol: string | null;
+  user_iduser: number;
+  post_idpost: number;
+  user: User | null;
+}
 type CommentProps = {
-  comment: CommentObject;
-  onClick?: (comment: CommentObject) => void;
+  comment: Comment;
+  onClick?: (comment: Comment) => void;
 };
-
 
 const Comment = ({ comment, onClick }: CommentProps) => {
-
-  const [liked, setLiked] = useState(false);
-
-  function toggleLike() {
-    setLiked(!liked);
-  }
   return (
     <div
-      className=" max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-auto mb-6 cursor-pointer flex  sm:flex-row border-gray-200"
+      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4 mb-6 cursor-pointer flex items-start space-x-4 border-gray-200 relative"
+      onClick={() => onClick && onClick(comment)}
     >
-      {/* Profilbild auf der linken Seite */}
-      <div className="md:w-1/3 w-full flex items-center justify-center p-4">
+      {/* Profilbild */}
+      <div className="flex-shrink-0"> {/* Ensures the image doesn't shrink */}
         <img
-          src={comment.ProfilePicture}
-          alt={comment.author}
-          className="w-12 h-12 rounded-full"
+          src={comment.user?.profileImageUrl || "/default-profile.png"}
+          alt={`${comment.user?.firstName} ${comment.user?.name}`}
+          className="w-16 h-16 rounded-full object-cover" // Increased size to w-16 h-16 and added object-cover
         />
       </div>
-      {/* Textinhalt auf der rechten Seite */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{comment.author}</h2>
-        <p className="text-gray-700 mb-2">{comment.content}</p>
-        <p className="text-gray-500">Erstellt am: {comment.createdAt}</p>
 
-        <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
-
+      {/* Textinhalt */}
+      <div className="flex flex-col justify-center flex-grow"> {/* Allows text to take remaining space */}
+        <h2 className="text-lg font-bold text-gray-900"> {/* Adjusted font size for better fit */}
+          {comment.user?.firstName} {comment.user?.name}
+        </h2>
+        <p className="text-gray-500 text-sm mb-1"> {/* Date is grey, smaller, and directly below the name */}
+          {new Date(comment.date).toLocaleDateString()}
+        </p>
+        <p className="text-gray-700">{comment.text}</p> {/* Comment text */}
       </div>
-
     </div>
   );
 };

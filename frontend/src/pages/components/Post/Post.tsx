@@ -4,7 +4,7 @@ import heartLiked from "../../../icons/heartLiked.png";
 import { useState } from "react";
 import { fetchProfileImage } from "../../../utils/image";
 import axiosInstance from "../../../api/axiosInstance";
-
+import {Comment} from "../Comment/Comment"
 type PostObject = {
   id: number; // GUID später??
   title: string;
@@ -34,6 +34,7 @@ export interface PostType {
   user: User;
   start_time: Date;
   end_time: Date;
+  comments?: Comment[];
 }
 
 interface PostsData {

@@ -22,24 +22,30 @@ function Home() {
 
   console.log("Posts:", posts);
 
+  
+  const dummyUSer =[
+    {
+  iduser: 123,
+  name: "Klaus Schwab",
+  firstName: "Klaus",
+  image_idimage: 123,
+  profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
+  }
 
+  ];
   const dummyComment= [
     {
-      id: "1",
-      postId: 1,
-      author: "Max Mustermann",
-      content: "Toller Beitrag!",
-      createdAt: "2023-01-01",
-      ProfilePicture: "https://i1.sndcdn.com/avatars-otG7wzonZsfmH7xu-91jbYA-t1080x1080.jpg",
+      idcomment: 123,
+      text: "Colles Bild",
+      date: "string", // Oder Date, wenn du willst kannst du in Date umwandeln
+      commentcol: null,
+      user_iduser: 23,
+      post_idpost: 123,
+      user: dummyUSer[0],
+
     },
-    {
-      id: "2",
-      postId: 1,
-      author: "Erika Mustermann",
-      content: "Ich stimme zu!",
-      createdAt: "2023-01-02",
-      ProfilePicture: "https://m.media-amazon.com/images/I/61hEOLTQhzL._UXNaN_FMjpg_QL85_.jpg",
-    },
+    
+    
   ];
 
   // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
@@ -135,9 +141,7 @@ function Home() {
               className="w-2/3 object-cover mt-4"
             />
             <h3 className="text-lg font-semibold mt-4">Kommentare:</h3>
-            {dummyComment.map((joeBiden) => (
-              <Comment key={joeBiden.id} comment={joeBiden} />
-            ))}
+            
             <button
               onClick={() => setCurrentPost(null)}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
@@ -145,8 +149,10 @@ function Home() {
               Close
             </button>
           </div>
+         
         </div>
       )}
+       <Comment comment={dummyComment[0]} />
       <Footer />
     </>
   )
