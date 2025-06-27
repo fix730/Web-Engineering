@@ -368,6 +368,7 @@ router.get("/user", protect, async (req:any, res: any)=>{
     const iduser = Number(user.iduser);
     try {
         const posts = await showUserPosts(iduser);
+        // console.log(posts);
         res.status(200).json({
             posts: posts
         });

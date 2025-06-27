@@ -18,10 +18,11 @@ const MyPosts = () => {
   const [questionDialogColorOnHover, setQuestionDialogColorOnHover] = useState("");
   const [questionDialogColorConfirm, setQuestionDialogColorConfirm] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
   async function getUserPosts() {
     try {
-      const response = await axiosInstance.get('/api/post/all');
+      const response = await axiosInstance.get('/api/post/user');
       setPosts(response.data.posts); // Setze die Posts im Zustand
     } catch (error) {
       console.error("Fehler beim Abrufen der Posts:", error);
@@ -30,14 +31,16 @@ const MyPosts = () => {
   }
 
   async function deletePost() {
-    alert("Post mit der ID " + postToDeleteId + " wird gelöscht");
     setIsOpenDialogQuestion(false);
     try {
+      // alert("Post mit der ID " + postToDeleteId + " wird gelöscht");
       await axiosInstance.delete(`/api/post/`, {
         params: {
           postId: postToDeleteId
         }
       });
+      // --- Hier den Zeitversatz einbauen --- um sicherzustellen, dass der Post gelöscht wurde, bevor die Liste aktualisiert wird
+      await delay(500); // Wartet 500 Millisekunden (0.5 Sekunden)
       getUserPosts(); // Aktualisiere die Liste der Posts nach dem Löschen
     } catch (error) {
       console.error("Fehler beim Löschen des Posts:", error);
@@ -69,9 +72,9 @@ const MyPosts = () => {
     <>
       <Header />
       <main className="max-w-4xl mx-auto p-4 space-y-6">
-        <h1 className="text-3xl font-bold">Meine Posts</h1>
+        <h1 className="text-3xl font-bold text-center">Meine Posts</h1>
         {posts.length === 0 && (
-          <p className="text-gray-600">Du hast noch keine Posts.</p>
+          <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
         )}
         <div className="space-y-8">
           {posts.map((post) => (

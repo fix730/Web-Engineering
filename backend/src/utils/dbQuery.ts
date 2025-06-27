@@ -18,7 +18,7 @@ type PostExport = {
     location_idlocation?: number;
     image_idimage?: number;
     user_iduser?: number;
-    
+
 };
 
 export async function addLocation(locationName: string): Promise<number> {
@@ -174,6 +174,7 @@ export async function showUserPosts(userId: number): Promise<any[]> {
         }
     });
     const postsWithUserLocation = addPostNameAndLocation(posts);
+    // console.log(postsWithUserLocation);
     return postsWithUserLocation;
 }
 
@@ -434,11 +435,35 @@ export async function updatePost(postId: number, locationName: string, title: st
 }
 
 export async function deletePost(postId: number){
-    prisma.post.delete({
-        where:{
-            idpost:postId
+    const post = await showPost(postId);
+    const likes = await prisma.like.findMany({
+        where: {
+            post_idpost: postId
         }
     });
+    //Likes löschen wie anderst geht es nicht
+    for (const like of likes) {
+        await prisma.like.delete({
+            where: {
+                idlike_user_iduser_post_idpost: {
+                    idlike: like.idlike,
+                    user_iduser: like.user_iduser,
+                    post_idpost: like.post_idpost
+                }
+            }
+        });
+    }
+    const image = await prisma.image.delete({
+        where:{
+            idimage: post.image_idimage
+        }
+    })
+    const an = await prisma.post.delete({
+        where:{
+            idpost: postId
+        }
+    });
+    console.log(an);
 }
 
 export async function showLikedUser(postId: number) {
