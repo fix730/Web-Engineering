@@ -18,6 +18,8 @@ type PostExport = {
     location_idlocation?: number;
     image_idimage?: number;
     user_iduser?: number;
+    start_time?:Date;
+    end_time?:Date;
 
 };
 
@@ -99,7 +101,7 @@ export const getImageById = async (imageId: number) => {
     }
 };
 
-export const newPost = async (userId: number, locationName: string, title: string, description: string, imageData: Buffer, imageMimeType: string, imageName: string) => {
+export const newPost = async (userId: number, locationName: string, title: string, description: string, imageData: Buffer, imageMimeType: string, imageName: string,  start_time:Date, end_time:Date) => {
     try {
         const locationId = await addLocation(locationName);
         const newImage = await prisma.image.create({
@@ -119,7 +121,8 @@ export const newPost = async (userId: number, locationName: string, title: strin
                 location_idlocation: locationId,
                 image_idimage: newImage.idimage,
                 user_iduser: userId,
-
+                start_time: start_time,
+                end_time: end_time
             }
         });
         return newPost;
@@ -156,7 +159,9 @@ export async function showPost(idPost: number): Promise<PostExport> {
         title: post?.title ?? undefined,
         description: post?.description ?? undefined,
         locationName: location?.name,
-        user: user
+        user: user,
+        start_time: post?.start_time ?? undefined,
+        end_time: post?.end_time ?? undefined
     }
     return postAll;
 }
@@ -414,7 +419,7 @@ export async function isPasswordValid(password: string, userId: number): Promise
     return isPasswordValid;
 }
 
-export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
+export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, start_time:Date|null, end_time:Date|null, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
     if(imageData && imageMimeType && imageName){
         await updateImageById(imageId, imageData, imageMimeType, imageName);
     }
@@ -428,7 +433,9 @@ export async function updatePost(postId: number, locationName: string, title: st
             location_idlocation: locationId,
             title: title,
             description: description,
-            image_idimage: imageId
+            image_idimage: imageId,
+            start_time,
+            end_time
         }
     });
     return post;

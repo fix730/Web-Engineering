@@ -37,12 +37,14 @@ model Location {
 }
 
 model Post {
-  idpost              Int     @id @default(autoincrement())
-  title               String? @db.VarChar(45)
-  description         String? @db.Text
+  idpost              Int       @id @default(autoincrement())
+  title               String?   @db.VarChar(45)
+  description         String?   @db.Text
   location_idlocation Int
   image_idimage       Int
   user_iduser         Int
+  start_time          DateTime? @db.DateTime(0)
+  end_time            DateTime? @db.DateTime(0)
 
   @@index([image_idimage], map: "fk_post_image1_idx")
   @@index([location_idlocation], map: "fk_post_location1_idx")
