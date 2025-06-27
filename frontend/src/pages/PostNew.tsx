@@ -17,6 +17,8 @@ function PostNew() {
   const [Description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
   const [titleAlert, setTitleAlert] = useState("");
   const [descriptionAlert, setDescriptionAlert] = useState("");
   const [isAlert, setIsAlert] = useState(false);
@@ -27,13 +29,15 @@ function PostNew() {
 
   const newPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title && Description && location && image) {
+    if (title && Description && location && image && startTime && endTime) {
       try {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", Description);
         formData.append("locationName", location);
         formData.append("imagePost", image);
+        formData.append("start_time", startTime.toISOString());
+        formData.append("end_time", endTime.toISOString());
 
         const response = await axiosInstance.post("/api/post/new", formData, { // Hier geändert
           headers: {
@@ -106,37 +110,57 @@ function PostNew() {
                 className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
-
-              <div>
-                <label className="block text-xl font-medium text-gray-700 mb-2">Bild</label>
-                <div
-                  onClick={() => document.getElementById("fileInput")?.click()}
-                  className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition"
-                >
-                  {image ? (
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt="Preview"
-                      className="w-full h-full object-contain rounded-md"
-
-                    />
-                  ) : (
-                    <span className="text-4xl text-gray-400">+</span>
-                  )}
-                </div>
-                <input
-                  type="file"
-                  id="fileInput"
-                  accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      setImage(e.target.files[0]);
-                    }
-                  }}
-                  className="hidden"
-                />
-              </div>
             </div>
+            <div>
+              <label className="block text-xl font-medium text-gray-900">Startzeit</label>
+              <input
+                type="datetime-local"
+                value={startTime ? startTime.toISOString().slice(0, 16) : ""}
+                onChange={(e) => setStartTime(new Date(e.target.value))}
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xl font-medium text-gray-900">Endzeit</label>
+              <input
+                type="datetime-local"
+                value={endTime ? endTime.toISOString().slice(0, 16) : ""}
+                onChange={(e) => setEndTime(new Date(e.target.value))}
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xl font-medium text-gray-700 mb-2">Bild</label>
+              <div
+                onClick={() => document.getElementById("fileInput")?.click()}
+                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition"
+              >
+                {image ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Preview"
+                    className="w-full h-full object-contain rounded-md"
+
+                  />
+                ) : (
+                  <span className="text-4xl text-gray-400">+</span>
+                )}
+              </div>
+              <input
+                type="file"
+                id="fileInput"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setImage(e.target.files[0]);
+                  }
+                }}
+                className="hidden"
+              />
+            </div>
+
             <SubmitButton>Hochladen</SubmitButton>
           </form>
 
