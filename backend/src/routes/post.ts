@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addComment, addLikePost, addLocation, deleteLikePost, deletePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showLikedUser, showPost, updatePost } from "../utils/dbQuery";
+import { addComment, addLikePost, addLocation, deleteLikePost, deletePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showLikedUser, showPost, showUserPosts, updatePost } from "../utils/dbQuery";
 import { upload } from "./user";
 
 
@@ -358,5 +358,24 @@ router.get("/like/users", protect, async (req: any, res: any) => {
     }
 }
 );
+
+router.get("/user", protect, async (req:any, res: any)=>{
+    const user = req.user;
+    if (!user || !user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
+    }
+
+    const iduser = Number(user.iduser);
+    try {
+        const posts = await showUserPosts(iduser);
+        res.status(200).json({
+            posts: posts
+        });
+    } catch (error) {
+        console.error("Fehler beim Abrufen des Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen des Posts." });
+    }
+
+});
 
 export default router;

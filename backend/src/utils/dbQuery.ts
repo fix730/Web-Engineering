@@ -166,6 +166,16 @@ export async function showAllPosts(): Promise<any[]> {
     return postsWithUserLocation;
 }
 
+export async function showUserPosts(userId: number): Promise<any[]> {
+    const posts = await prisma.post.findMany({
+        where:{
+            user_iduser: userId
+        }
+    });
+    const postsWithUserLocation = addPostNameAndLocation(posts);
+    return postsWithUserLocation;
+}
+
 export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
     let posts;
     if (locationId.length == 0) {

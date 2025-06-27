@@ -40,7 +40,7 @@ export function SearchBar({ setPosts }: SearchBarProps)  {
                 setPosts(response.data.posts); // Setze die Posts im Zustand
             }).catch((error) => {
                 console.error("Fehler beim Abrufen der Posts:", error);
-                alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
+                // alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
             });
 
         } catch (error) {
@@ -57,7 +57,7 @@ export function SearchBar({ setPosts }: SearchBarProps)  {
                 setPosts(response.data.posts); // Setze die Posts im Zustand
             } catch (error) {
                 console.error("Fehler beim Abrufen der Posts:", error);
-                alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
+                // alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
             }
         };
         getAllPosts();

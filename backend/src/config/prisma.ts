@@ -10,7 +10,7 @@ interface PrismaConnectSuccess {
 interface PrismaConnectError {
     (e: Error): void;
 }
-
+//Prisma mit MySQL Datenbak verbinden
 prisma.$connect()
     .then((() => {
         console.log('Erfolgreich mit der MySQL-Datenbank über Prisma verbunden.');
