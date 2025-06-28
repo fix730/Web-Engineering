@@ -4,7 +4,8 @@ import heartLiked from "../../../icons/heartLiked.png";
 import { useState } from "react";
 import { fetchProfileImage } from "../../../utils/image";
 import axiosInstance from "../../../api/axiosInstance";
-import {Comment} from "../Comment/Comment"
+import { Comment } from "../Comment/Comment"
+import CommentUnderPost from "./CommentUnderPost";
 type PostObject = {
   id: number; // GUID später??
   title: string;
@@ -139,13 +140,26 @@ const Post = ({ post, onClick }: PostProps) => {
       </div>
 
       {/* Textinhalt auf der rechten Seite */}
-      <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center relative">
+      <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
         <p className="text-gray-500">Location: {post.locationName}</p>
+        <p className="mb-2">{countLikes}</p> {/* Added mb-2 for spacing below likes */}
 
-        <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
-        <p>{countLikes}</p>
+
+        <div className="flex items-end gap-4 mt-auto">
+          {/* Comment nimmt nötigen platz */}
+          <div className="flex-grow mt-10">
+            <CommentUnderPost postId={post.idpost} />
+          </div >
+          {/* Heart icon */}
+          <img 
+            onClick={toggleLike}
+            className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
+            src={liked ? heartLiked : heartNotLiked}
+            alt="Like"
+          />
+        </div>
 
       </div>
     </div>

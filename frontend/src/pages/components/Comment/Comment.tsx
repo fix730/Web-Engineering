@@ -17,7 +17,7 @@ export interface Comment {
   commentcol: string | null;
   user_iduser: number;
   post_idpost: number;
-  user: User | null;
+  user: User ;
 }
 type CommentProps = {
   comment: Comment;
