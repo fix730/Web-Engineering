@@ -1,71 +1,66 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Pencil, Trash2 } from "lucide-react";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Post, { PostType } from "./components/Post/Post";
 import axiosInstance from "../api/axiosInstance";
 import { DialogQuestion } from "../Pop-Up-Window/alert";
-import { get } from "http";
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const navigate = useNavigate();
-  const [isOpenDialogQuestion, setIsOpenDialogQuestion] = useState(false);
-  const [qustionDialogHeader, setQuestionDialogHeader] = useState("");
-  const [questionDialogContent, setQuestionDialogContent] = useState("");
-  const [questionDialogConfirm, setQuestionDialogConfirm] = useState("");
-  const [questionDialogConfirmColorHeader, setQuestionDialogConfirmColorHeader] = useState("");
-  const [questionDialogColorOnHover, setQuestionDialogColorOnHover] = useState("");
-  const [questionDialogColorConfirm, setQuestionDialogColorConfirm] = useState("");
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [dialogHeader, setDialogHeader] = useState("");
+  const [dialogContent, setDialogContent] = useState("");
+  const [dialogConfirmText, setDialogConfirmText] = useState("");
+  const [dialogConfirmColor, setDialogConfirmColor] = useState("");
+  const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
+
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  async function getUserPosts() {
+  const getUserPosts = async () => {
     try {
-      const response = await axiosInstance.get('/api/post/user');
-      setPosts(response.data.posts); // Setze die Posts im Zustand
+      const response = await axiosInstance.get<{ posts: PostType[] }>("/api/post/user");
+      setPosts(response.data.posts);
     } catch (error) {
       console.error("Fehler beim Abrufen der Posts:", error);
-      // alert("Fehler beim Abrufen der Posts. Bitte versuche es später erneut.");
     }
-  }
+  };
 
-  async function deletePost() {
-    setIsOpenDialogQuestion(false);
+  const deletePost = async () => {
+    setIsOpenDialog(false);
+    if (postToDeleteId == null) return;
     try {
-      // alert("Post mit der ID " + postToDeleteId + " wird gelöscht");
-      await axiosInstance.delete(`/api/post/`, {
-        params: {
-          postId: postToDeleteId
-        }
-      });
-      // --- Hier den Zeitversatz einbauen --- um sicherzustellen, dass der Post gelöscht wurde, bevor die Liste aktualisiert wird
-      await delay(500); // Wartet 500 Millisekunden (0.5 Sekunden)
-      getUserPosts(); // Aktualisiere die Liste der Posts nach dem Löschen
+      await axiosInstance.delete("/api/post/", { params: { postId: postToDeleteId } });
+      await delay(500);
+      await getUserPosts();
     } catch (error) {
       console.error("Fehler beim Löschen des Posts:", error);
-      // alert("Fehler beim Löschen des Posts. Bitte versuche es später erneut.");
     }
-  }
-
+  };
 
   useEffect(() => {
     getUserPosts();
   }, []);
 
   const handleEdit = (id: number) => {
-    navigate(`/posts/edit/${id}`);
+    try {
+      navigate(`/posts/edit/${id}`);
+    } catch (error) {
+      console.error("Fehler beim Navigieren zur Edit-Seite:", error);
+    }
   };
 
-  const handleDelete = async (id: number) => {
-    setIsOpenDialogQuestion(true);
-    setQuestionDialogHeader("Post löschen?");
-    setQuestionDialogContent("Bist du sicher, dass du diesen Post löschen möchtest?");
-    setQuestionDialogConfirm("Löschen");
-    setQuestionDialogConfirmColorHeader("text-red-600"); // This affects the header text color
-    setQuestionDialogColorOnHover("red"); // Pass just the color name for hover
-    setQuestionDialogColorConfirm("red"); // Pass just the color name for confirm
+  const handleDeleteClick = (id: number) => {
+    setDialogHeader("Post löschen?");
+    setDialogContent("Bist du sicher, dass du diesen Post löschen möchtest?");
+    setDialogConfirmText("Löschen");
+    setDialogConfirmColor("text-red-600");
+    setDialogHoverColor("red");
     setPostToDeleteId(id);
+    setIsOpenDialog(true);
   };
 
   return (
@@ -77,21 +72,23 @@ const MyPosts = () => {
           <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
         )}
         <div className="space-y-8">
-          {posts.map((post) => (
+          {posts.map(post => (
             <div key={post.idpost} className="relative">
               <Post post={post} />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
                   onClick={() => handleEdit(post.idpost)}
-                  className="px-2 py-1 text-sm text-blue-600 hover:underline"
+                  className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition-colors"
                 >
-                  Bearbeiten
+                  <Pencil size={16} />
+                  <span className="text-sm">Bearbeiten</span>
                 </button>
                 <button
-                  onClick={() => handleDelete(post.idpost)}
-                  className="px-2 py-1 text-sm text-red-600 hover:underline"
+                  onClick={() => handleDeleteClick(post.idpost)}
+                  className="flex items-center space-x-1 text-red-600 hover:text-red-800 transition-colors"
                 >
-                  Löschen
+                  <Trash2 size={16} />
+                  <span className="text-sm">Löschen</span>
                 </button>
               </div>
             </div>
@@ -99,15 +96,16 @@ const MyPosts = () => {
         </div>
       </main>
       <Footer />
-      <DialogQuestion open={isOpenDialogQuestion}
-        header={qustionDialogHeader}
-        content={questionDialogContent}
-        buttonConfirm={questionDialogConfirm}
+      <DialogQuestion
+        open={isOpenDialog}
+        header={dialogHeader}
+        content={dialogContent}
+        buttonConfirm={dialogConfirmText}
         onConfirm={deletePost}
-        onCancel={() => setIsOpenDialogQuestion(false)}
-        colorHeader={questionDialogConfirmColorHeader}
-        colorOnHover={questionDialogColorOnHover}
-        colorConfirm={questionDialogColorConfirm}
+        onCancel={() => setIsOpenDialog(false)}
+        colorHeader={dialogConfirmColor}
+        colorOnHover={dialogHoverColor}
+        colorConfirm={dialogConfirmColor}
       />
     </>
   );
