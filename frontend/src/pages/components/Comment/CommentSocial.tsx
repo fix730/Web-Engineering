@@ -10,30 +10,38 @@ export interface User {
   profileImageUrl?: string; // Falls Bild-URL kommt, sonst musst du es separat holen
 }
 
-export interface Comment {
+export interface CommentType {
   idcomment: number;
   text: string;
-  date: string; // Oder Date, wenn du willst kannst du in Date umwandeln
-  commentcol: string | null;
-  user_iduser: number;
-  post_idpost: number;
-  user: User ;
+  date: string;
+  user: {
+    iduser: number;
+    name: string;
+    firstName: string;
+    image_idimage: number;
+  };
 }
 type CommentProps = {
-  comment: Comment;
+  comment: CommentType;
   onClick?: (comment: Comment) => void;
 };
 
-const Comment = ({ comment, onClick }: CommentProps) => {
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  // Tag, Monat (plus 1, da nullbasiert), Jahr
+  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
+};
+const CommentSocial = ({ comment, onClick }: CommentProps) => {
   return (
+
     <div
-      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4 mb-6 cursor-pointer flex items-start space-x-4 border-gray-200 relative"
-      onClick={() => onClick && onClick(comment)}
+      className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-4 mb-6 cursor-pointer flex items-start space-x-4 border border-black relative"
+
     >
       {/* Profilbild */}
       <div className="flex-shrink-0"> {/* Ensures the image doesn't shrink */}
         <img
-          src={comment.user?.profileImageUrl || "/default-profile.png"}
+          src={"http://localhost:8000/api/image/" + comment.user.image_idimage}
           alt={`${comment.user?.firstName} ${comment.user?.name}`}
           className="w-16 h-16 rounded-full object-cover" // Increased size to w-16 h-16 and added object-cover
         />
@@ -45,7 +53,7 @@ const Comment = ({ comment, onClick }: CommentProps) => {
           {comment.user?.firstName} {comment.user?.name}
         </h2>
         <p className="text-gray-500 text-sm mb-1"> {/* Date is grey, smaller, and directly below the name */}
-          {new Date(comment.date).toLocaleDateString()}
+          {formatDate(comment.date)}
         </p>
         <p className="text-gray-700">{comment.text}</p> {/* Comment text */}
       </div>
@@ -53,4 +61,4 @@ const Comment = ({ comment, onClick }: CommentProps) => {
   );
 };
 
-export default Comment;
+export default CommentSocial;

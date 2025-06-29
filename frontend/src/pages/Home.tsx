@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import React from "react";
 import { useEffect, useState } from "react";
-import {logout } from "../slices/authSlice";
+import { logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import DialogAlert from "../Pop-Up-Window/alert";
 import Post, { PostType } from "./components/Post/Post";
-import Comment from "./components/Comment/Comment";
+import Comment from "./components/Comment/CommentSocial";
 import Footer from "./components/Footer/Footer";
-
+import PostClicked from "./components/Post/PostClicked";
 
 
 function Home() {
@@ -19,21 +19,27 @@ function Home() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PostType[]>([]);
+  const [postClicked, setPostClicked] = useState(false);
 
+  const handlePostClick = () => {
+    setPostClicked(true);
+    setCurrentPost(posts);
+
+  }
   console.log("Posts:", posts);
 
-  
-  const dummyUSer =[
+
+  const dummyUSer = [
     {
-  iduser: 123,
-  name: "Klaus Schwab",
-  firstName: "Klaus",
-  image_idimage: 123,
-  profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
-  }
+      iduser: 123,
+      name: "Klaus Schwab",
+      firstName: "Klaus",
+      image_idimage: 123,
+      profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
+    }
 
   ];
-  const dummyComment= [
+  const dummyComment = [
     {
       idcomment: 123,
       text: "Colles Bild",
@@ -44,8 +50,8 @@ function Home() {
       user: dummyUSer[0],
 
     },
-    
-    
+
+
   ];
 
   // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
@@ -110,51 +116,31 @@ function Home() {
   return (
     <>
       <Header />
-      <SearchBar  setPosts={setPosts}/>
+      <SearchBar setPosts={setPosts} />
       <h1>Home</h1>
       <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
 
       {posts.map((post) => (
         <Post
+          handlePostClick={handlePostClick}
           key={post.idpost}
           post={post}
           onClick={() => setCurrentPost(post)} // Klick auf Post öffnet Modal
         />
       ))}
       {/* Für das Anschauen von den Posts / draufclicken */}
-      {currentPost && (
-        <div
-
-          className="fixed inset-0 pady-5 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => setCurrentPost(null)} // Klick auf Overlay schließt Modal
-        >
-          <div
-            className="bg-white p-4 rounded-lg max-w-md mx-auto"
-            onClick={(e) => e.stopPropagation()} // Klick im Modal nicht schließen
-          >
-            <h2 className="text-xl font-bold">{currentPost.title}</h2>
-            <p>{currentPost.description}</p>
-            <p className="text-gray-500">Location: {currentPost.locationName}</p>
-            <img
-              src={currentPost.imageUrl}
-              alt={currentPost.title}
-              className="w-2/3 object-cover mt-4"
-            />
-            <h3 className="text-lg font-semibold mt-4">Kommentare:</h3>
-            
-            <button
-              onClick={() => setCurrentPost(null)}
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Close
-            </button>
-          </div>
-         
-        </div>
+      {postClicked && currentPost && (
+        <PostClicked
+        handlePostClick={handlePostClick}
+          post={currentPost}
+          onClose={() => setPostClicked(false)}
+        />
       )}
-       <Comment comment={dummyComment[0]} />
+
+      <Comment comment={dummyComment[0]} />
       <Footer />
     </>
+
   )
 }
 export default Home;

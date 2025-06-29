@@ -1,28 +1,25 @@
-import React, { useEffect } from "react";
+import React from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
-import { useState } from "react";
-import { fetchProfileImage } from "../../../utils/image";
-import axiosInstance from "../../../api/axiosInstance";
-import { Comment } from "../Comment/Comment"
+import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is defined
 import CommentUnderPost from "./CommentUnderPost";
+import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
+
 type PostObject = {
-  id: number; // GUID später??
+  id: number;
   title: string;
   description: string;
   location: string;
   imageUrl: string;
-
-
 };
 
-interface User {
+// Re-export PostType and User if they are canonical here
+export interface User {
   name: string;
   firstName: string;
   image_idimage: number;
   iduser: number;
 }
-
 
 export interface PostType {
   idpost: number;
@@ -38,83 +35,14 @@ export interface PostType {
   comments?: Comment[];
 }
 
-interface PostsData {
-  posts: PostType[];
-}
-
-
-type PostProps = {
+export type PostProps = {
   post: PostType;
   onClick?: (post: PostObject) => void;
+  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-
-
-const Post = ({ post, onClick }: PostProps) => {
-
-  const [liked, setLiked] = useState(false);
-  const [postImage, setPostImage] = useState<string | undefined>(undefined);
-  const [countLikes, setCountLikes] = useState<number>(0);
-
-  function toggleLike() {
-    if (!liked) {
-      axiosInstance.post("/api/post/like", {
-        postId: post.idpost
-      });
-    } else {
-      axiosInstance.delete(`/api/post/like`, {
-        params: {
-          postId: post.idpost
-        }
-      });
-    }
-    setLiked(!liked);
-  }
-  const aktualisierenLikeStatus = async () => {
-    try {
-      const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-        params: {
-          postId: post.idpost
-        }
-      }
-      );
-      setCountLikes(Number(getCountLikes.data.likes));
-    } catch (error) {
-      console.error("Fehler beim Aktualisieren des Like-Status:", error);
-    }
-  }
-  aktualisierenLikeStatus();
-  useEffect(() => {
-    fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
-  }, [post.image_idimage]);
-
-
-
-  useEffect(() => {
-    const checkLikeStatus = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/post/like/byUser`, {
-          params: {
-            postId: post.idpost
-          }
-        }
-        );
-        setLiked(Boolean(response.data.isLiked));
-        const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-          params: {
-            postId: post.idpost
-          }
-        }
-        );
-        setCountLikes(Number(getCountLikes.data.likes));
-      } catch (error) {
-        console.error("Fehler beim Überprüfen des Like-Status:", error);
-      }
-    }
-    checkLikeStatus();
-  }, []);
-
-
+const Post = ({ post, onClick, handlePostClick}: PostProps) => {
+  const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
 
   return (
     <div
@@ -144,23 +72,22 @@ const Post = ({ post, onClick }: PostProps) => {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
         <p className="text-gray-500">Location: {post.locationName}</p>
-        <p className="mb-2">{countLikes}</p> {/* Added mb-2 for spacing below likes */}
-
+        <p className="mb-2">{countLikes}</p>
 
         <div className="flex items-end gap-4 mt-auto">
-          {/* Comment nimmt nötigen platz */}
           <div className="flex-grow mt-10">
-            <CommentUnderPost postId={post.idpost} />
-          </div >
-          {/* Heart icon */}
-          <img 
-            onClick={toggleLike}
+            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick}/>
+          </div>
+          <img
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the click from bubbling up to open the popup
+              toggleLike();
+            }}
             className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
             src={liked ? heartLiked : heartNotLiked}
             alt="Like"
           />
         </div>
-
       </div>
     </div>
   );

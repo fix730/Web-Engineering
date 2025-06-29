@@ -19,6 +19,11 @@ const MyPosts = () => {
   const [questionDialogColorConfirm, setQuestionDialogColorConfirm] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+  const [postClicked, setPostClicked] = useState(false);
+  const handlePostClick = () => {
+    setPostClicked(true);
+
+  }
 
   async function getUserPosts() {
     try {
@@ -79,7 +84,7 @@ const MyPosts = () => {
         <div className="space-y-8">
           {posts.map((post) => (
             <div key={post.idpost} className="relative">
-              <Post post={post} />
+              <Post handlePostClick={handlePostClick}post={post} />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
                   onClick={() => handleEdit(post.idpost)}
