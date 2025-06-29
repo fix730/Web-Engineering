@@ -20,7 +20,6 @@ export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
             <NavigationLink href="/" className={className}>Start</NavigationLink>
             <NavigationLink href="/posts" className={className}>Meine Posts</NavigationLink>
             <NavigationLink href="/posts/new" className={className}>Neuen Post hinzufügen</NavigationLink>
-            <NavigationLink href="/calendar"  className={className}>Kalender</NavigationLink>
      
 
         </>

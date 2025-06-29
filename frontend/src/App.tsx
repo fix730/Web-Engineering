@@ -12,7 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './pages/components/ProtectedRoute';
 import EditPost from './pages/EditPosts';
-import CalendarPage from "./pages/calender";
+
 
 function App() {
   return (
@@ -31,7 +31,6 @@ function App() {
           <Route path="/myposts" element={<MyPosts />} />
           <Route path="/posts/new" element={<PostNew />} />
           <Route path="/posts/edit/:id" element={<EditPost />} />
-          <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/einstellungen" element={<Einstellungen />} />
         </Route>
       </Routes>
