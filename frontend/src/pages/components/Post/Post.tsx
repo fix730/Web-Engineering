@@ -75,7 +75,7 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
       }
     >
       {/* Bild auf der linken Seite */}
-      <div className="md:w-1/3 w-full">
+      <div className="md:w-1/3 w-full h-96">
         <img
           src={postImage}
           alt={post.title}
