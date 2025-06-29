@@ -81,10 +81,10 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                             </div>
 
                             {/* Titel + Beschreibung + Location */}
-                            <div className="flex-1 pr-4 pl-1 max-w-[calc(100%-150px)] overflow-auto">
-                                <h2 className="text-4xl font-bold text-gray-900 mb-2">{post.title}</h2>
-                                <p className="text-base text-gray-700 mb-2">{post.description}</p>
-                                <p className="text-sm text-gray-500 mb-2 break-words">
+                            <div className="flex-1 pr-4 pl-1 max-w-[calc(100%-150px)]">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-2">{post.title}</h2>
+                                <p className="text-sm text-gray-700 mb-2">{post.description}</p>
+                                <p className="text-xs text-gray-500 mb-2 break-words">
                                     Location: {post.locationName}
                                 </p>
                             </div>
