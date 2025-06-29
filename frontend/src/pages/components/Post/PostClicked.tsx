@@ -42,7 +42,7 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-3xl font-semibold z-10"
+                    className="absolute top-1 right-4 text-gray-600 hover:text-gray-900 text-3xl font-semibold z-10"
                     aria-label="Close post"
                 >
                     &times;
@@ -58,24 +58,45 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                 </div>
 
                 {/* Rechte Seite: nimmt andere 50%, flex-grow, scrollbar */}
-                <div className="w-1/2 p-6 flex flex-col overflow-hidden">
+                <div className="w-1/2 p-7 flex flex-col overflow-hidden">
                     {/* Oben: Infos nebeneinander, ohne Scrollbar */}
-                    <div className="flex flex-row justify-between items-start mb-4 flex-none">
-                        {/* Links: Titel + Beschreibung */}
-                        <div className="flex-1 pr-4">
+                    <div className="flex flex-row justify-between items-start mb-4 flex-none flex-nowrap">
+                        {/* Profilbereich: Name über Bild */}
+                        <div className="flex flex-col items-center flex-shrink-0 mr-4">
+                            <p className="text-sm font-semibold text-gray-900 mb-1 text-center">
+                                {post.user.firstName}
+                            </p>
+                            <div className="flex flex-col items-center">
+                                <img
+                                    src={"http://localhost:8000/api/image/" + post.user.image_idimage}
+                                    alt={`${post.user?.firstName} ${post.user?.name}`}
+                                    className="w-16 h-16 rounded-full object-cover"
+                                />
+                                <p className="text-lg text-gray-700 font-semibold mt-2 text-center">
+                                    {countLikes} Likes
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Titel + Beschreibung + Location - mit max-w */}
+                        <div className="flex-1 pr-4 pl-8 max-w-[calc(100%-150px)]">
+                            {/* max-w so setzen, dass rechts genug Platz für Likes bleibt */}
                             <h2 className="text-4xl font-bold text-gray-900 mb-2">{post.title}</h2>
                             <p className="text-base text-gray-700 mb-2">{post.description}</p>
+                            <p className="text-sm text-gray-500 mb-2 break-words">
+                                Location: {post.locationName}
+                            </p>
                         </div>
 
-                        {/* Rechts: Location + Likes */}
-                        <div className="flex flex-col flex-none text-right">
-                            <p className="text-sm text-gray-500 mb-2">Location: {post.locationName}</p>
-                            <p className="text-lg text-gray-700 font-semibold">{countLikes} Likes</p>
-                        </div>
+                        {/* Likes - fixiert, keine Größenänderung */}
+
                     </div>
 
+
+
                     {/* Kommentare: Scrollbar nur hier */}
-                    <div className="flex-grow overflow-y-auto py-2 pr-2 text-sm min-h-[58%]"> {/* Changed py-4 to py-2 and removed mb-4 */}
+                    <div className="flex-grow overflow-y-auto py-0 pr-2 text-sm min-h-[58%]"> {/* Changed py-4 to py-2 and removed mb-4 */}
+                        <hr className="my-4 border-t border-gray-300" />
                         {comments.length === 0 ? (
                             <p className="text-gray-500">Keine Kommentare :/</p>
                         ) : (
@@ -91,7 +112,7 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                         <div className="flex-1">
                             <CommentUnderPost
                                 postId={post.idpost}
-                                onCommentSubmit={() => fetchComments()} 
+                                onCommentSubmit={() => fetchComments()}
                             />
                         </div>
 

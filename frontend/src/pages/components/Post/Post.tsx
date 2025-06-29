@@ -72,7 +72,7 @@ const Post = ({ post, onClick, handlePostClick}: PostProps) => {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
         <p className="text-gray-500">Location: {post.locationName}</p>
-        <p className="mb-2">{countLikes}</p>
+        <p className="mb-2">Likes: {countLikes}</p>
 
         <div className="flex items-end gap-4 mt-auto">
           <div className="flex-grow mt-10">
