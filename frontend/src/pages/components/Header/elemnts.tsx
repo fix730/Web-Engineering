@@ -22,7 +22,6 @@ export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
             <NavigationLink href="/posts/new" className={className}>Neuen Post hinzufügen</NavigationLink>
             <NavigationLink href="/calendar"  className={className}>Kalender</NavigationLink>
      
- );
 
         </>
     );

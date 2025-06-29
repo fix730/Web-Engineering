@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider } from "@material-tailwind/react";
 

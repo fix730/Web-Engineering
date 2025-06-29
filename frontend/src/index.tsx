@@ -1,31 +1,31 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux'; 
-import store from './store'; 
-import { BrowserRouter } from 'react-router-dom'; 
+import { Provider } from 'react-redux';
+import store from './store';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@material-tailwind/react';
 
+import ReactBigCalendar from './pages/components/Calender/ReactBigCalender';
+import FullCalendar from './pages/components/Calender/FullCalender';
+import TuiCalendar from './pages/components/Calender/TuiCalender';
+import ReactCalendar from './pages/components/Calender/ReactCalender';
 
-import { ThemeProvider } from "@material-tailwind/react";
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider>
           <App />
+          <ReactBigCalendar />
         </ThemeProvider>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+  </StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
