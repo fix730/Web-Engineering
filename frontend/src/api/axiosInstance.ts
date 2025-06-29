@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 
 // Create an Axios instance with default options
-const axiosInstance = axios.create({
+const  axiosInstance = axios.create({
   baseURL: "http://localhost:8000",
   withCredentials: true,
   //angepasst das post/search funktioniert

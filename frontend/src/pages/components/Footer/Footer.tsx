@@ -7,6 +7,7 @@ const Footer = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -49,7 +50,7 @@ const Footer = () => {
             <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline text-left w-full">
               Post erstellen
             </button>
-            <button onClick={() => setSettingsOpen(true)} className="font-semibold hover:underline text-left w-full">
+            <button onClick={() => setHelpOpen(true)} className="font-semibold hover:underline text-left w-full">
               Hilfe
             </button>
           </nav>

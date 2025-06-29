@@ -91,6 +91,9 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
     }
   };
   const formatLikedNames = (names: string[]) => {
+    if(names.length == 0){
+      return '...'
+    }
     if (names.length <= 3) {
       return names.join(', ');
     } else {
