@@ -36,9 +36,9 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
     }, [post.idpost]);
 
     return (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-lg shadow-xl flex w-full max-w-5xl h-5/6 overflow-hidden relative">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4"  onClick={onClose}>
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4 " onClick={onClose}>
+                <div className="bg-white rounded-lg shadow-xl flex w-full max-w-5xl h-5/6 overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
 
                     {/* Close Button */}
                     <button
@@ -62,7 +62,7 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                     <div className="w-1/2 p-7 flex flex-col overflow-hidden relative h-full">
 
                         {/* Oben: Infos - jetzt 25% Höhe */}
-                        <div className="flex flex-row justify-between items-start mb-4 flex-none flex-nowrap h-[25%]">
+                        <div className="flex flex-row justify-between items-start mb-4 flex-none flex-nowrap h-[20%]">
                             {/* Profilbereich */}
                             <div className="flex flex-col items-center flex-shrink-0 mr-4">
                                 <p className="text-sm font-semibold text-gray-900 mb-1 text-center">
@@ -91,7 +91,7 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                         </div>
 
                         {/* Kommentare: Scrollbarer Bereich, jetzt 55% Höhe */}
-                        <div className="overflow-y-auto pr-2 text-sm h-[55%]">
+                        <div className="overflow-y-auto pr-2 text-sm h-[60%]">
                             <hr className="my-4 border-t border-gray-300" />
                             {comments.length === 0 ? (
                                 <p className="text-gray-500">Keine Kommentare :/</p>

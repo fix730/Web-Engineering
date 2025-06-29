@@ -23,31 +23,23 @@ interface CommentUnderPostProps {
   postId: number;
   onCommentSubmit?: (commentText: string) => void;
   onViewAllComments?: (postId: number) => void;
+  onViewAllLikes?: (postId: number) => void;  
   handlePostClick?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments, handlePostClick }) => {
+const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments,onViewAllLikes, handlePostClick ,}) => {
   const [commentText, setCommentText] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
   };
+  const handleViewAllLikesClick = () => {
+  if (onViewAllLikes) onViewAllLikes(postId);
+};
 
   // Lade Kommentare beim Mounten und wenn postId sich ändert
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await axiosInstance.get(`/api/post/comment?postId=${postId}`);
-      setComments(response.data.comments || []);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-      setComments([]);
-    }
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +56,7 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
       if (response.status === 201) {
         if (onCommentSubmit) onCommentSubmit(commentText);
         setCommentText('');
-        fetchComments(); // Kommentare nach Posting neu laden
+        
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
       }
@@ -94,6 +86,13 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
         onAuxClick={() => handlePostClick?.(true)}
       >
         Alle Kommentare anzeigen
+      </button>
+      <button
+        
+        className="text-red-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200"
+        onClick={handleViewAllLikesClick}
+      >
+        Alle likes anzeigen 
       </button>
 
       {/* Hier kannst du ggf. die Kommentare auch anzeigen (optional) */}

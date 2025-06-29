@@ -39,10 +39,11 @@ export type PostProps = {
   post: PostType;
   onClick?: (post: PostObject) => void;
   handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
+  onViewAllLikes?: (postId: number) => void; // NEU
 };
 
-const Post = ({ post, onClick, handlePostClick}: PostProps) => {
-  const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
+const Post = ({ post, onClick, handlePostClick, onViewAllLikes}: PostProps) => {
+  const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
 
   return (
     <div
@@ -76,7 +77,7 @@ const Post = ({ post, onClick, handlePostClick}: PostProps) => {
 
         <div className="flex items-end gap-4 mt-auto">
           <div className="flex-grow mt-10">
-            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick}/>
+            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick}  onViewAllLikes={onViewAllLikes}/>
           </div>
           <img
             onClick={(e) => {

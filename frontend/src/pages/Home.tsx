@@ -12,7 +12,7 @@ import Post, { PostType } from "./components/Post/Post";
 import Comment from "./components/Comment/CommentSocial";
 import Footer from "./components/Footer/Footer";
 import PostClicked from "./components/Post/PostClicked";
-
+import PostLikes from "./components/Post/PostLikes"
 
 function Home() {
   const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
@@ -20,7 +20,8 @@ function Home() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PostType[]>([]);
   const [postClicked, setPostClicked] = useState(false);
-
+  const [isLikesOpen, setIsLikesOpen] = useState(false);
+  const [likesPostId, setLikesPostId] = useState<number | null>(null);
   const handlePostClick = () => {
     setPostClicked(true);
     setCurrentPost(posts);
@@ -28,6 +29,10 @@ function Home() {
   }
   console.log("Posts:", posts);
 
+  const handleViewAllLikes = (postId: number) => {
+    setLikesPostId(postId);
+    setIsLikesOpen(true);
+  };
 
   const dummyUSer = [
     {
@@ -121,21 +126,33 @@ function Home() {
       <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
 
       {posts.map((post) => (
-        <Post
-          handlePostClick={handlePostClick}
-          key={post.idpost}
-          post={post}
-          onClick={() => setCurrentPost(post)} // Klick auf Post öffnet Modal
-        />
+        <>
+          <Post
+            key={post.idpost}
+            post={post}
+            onClick={() => setCurrentPost(post)}
+            handlePostClick={handlePostClick}
+            onViewAllLikes={handleViewAllLikes}  // Hier weitergeben!
+          />
+          
+        </>
       ))}
       {/* Für das Anschauen von den Posts / draufclicken */}
       {postClicked && currentPost && (
         <PostClicked
-        handlePostClick={handlePostClick}
+          handlePostClick={handlePostClick}
           post={currentPost}
           onClose={() => setPostClicked(false)}
         />
       )}
+      {isLikesOpen && likesPostId !== null && (
+
+        <PostLikes
+          postId={likesPostId}
+          onClose={() => setIsLikesOpen(false)}
+        />
+      )}
+
 
       <Comment comment={dummyComment[0]} />
       <Footer />
