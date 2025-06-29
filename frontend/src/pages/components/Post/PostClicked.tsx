@@ -9,12 +9,13 @@ import CommentSocial, { CommentType } from "../Comment/CommentSocial";
 import CommentUnderPost from "./CommentUnderPost";
 
 interface PostClickedProps {
-    post: PostType;
-    onClose: () => void;
-    handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
+  post: PostType;
+  onClose: () => void;
+  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
+   onViewAllLikes?: (postId: number) => void; // NEU
 }
 
-const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
+const PostClicked = ({ post, onClose, onViewAllLikes }: PostClickedProps) => {
     const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
 
     const [comments, setComments] = useState<CommentType[]>([]);
@@ -108,6 +109,8 @@ const PostClicked = ({ post, onClose, handlePostClick }: PostClickedProps) => {
                                 <CommentUnderPost
                                     postId={post.idpost}
                                     onCommentSubmit={() => fetchComments()}
+                                    onViewAllLikes={onViewAllLikes}
+
                                 />
                             </div>
                             <div className="flex-none">
