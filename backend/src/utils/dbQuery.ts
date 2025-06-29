@@ -183,14 +183,15 @@ export async function showUserPosts(userId: number): Promise<any[]> {
     return postsWithUserLocation;
 }
 
-export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
+export async function showFilterPosts(locationId: number[], text: string): Promise<Post[]> {
     let posts;
+    //Wenn keine Lokation dann nur nach Text Suchen
     if (locationId.length == 0) {
-        posts = await findTitlePostsOrDescription(title);
-    } else if (title.length == 0) {
+        posts = await findTitlePostsOrDescription(text);
+    } else if (text.length == 0) {
         posts = await findLocationPosts(locationId);
-    } else {
-        posts = await findLocationTextPosts(locationId, title);
+    } else { // Wenn beides vorhanden ist muss es auch beides Beinhalten
+        posts = await findLocationTextPosts(locationId, text);
     }
     const postsWithUserLocation = await addPostNameAndLocation(posts);
     return postsWithUserLocation;
@@ -286,7 +287,7 @@ export async function getPostComment(postId: number): Promise<any[]> {
     });
 
     // Map bauen
-    const userMap = Object.fromEntries(users.map(user => [user.iduser, user]));
+    const userMap = Object.fromEntries(users.map(user => [user.iduser, user])); //Object.fromEntries Verwnadelt es in ein Objekt um effizient den User zu finden
 
     const commentsWithUser = comments.map(comment => ({
         ...comment, //... entfernt comment:

@@ -107,7 +107,7 @@ export const ProfileMenu = () => {
         try {
             await dispatch(logout()).unwrap();
             navigate("/login");
-            axiosInstance.post("/api/auth/logout")
+            //axiosInstance.post("/api/auth/logout")
         } catch (e) {
             console.error(e);
         }

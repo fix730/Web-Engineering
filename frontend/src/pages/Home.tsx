@@ -122,8 +122,6 @@ function Home() {
     <>
       <Header />
       <SearchBar setPosts={setPosts} />
-      <h1>Home</h1>
-      <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
 
       {posts.map((post) => (
         <>
