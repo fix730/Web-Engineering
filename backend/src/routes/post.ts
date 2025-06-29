@@ -23,9 +23,9 @@ router.post("/new", protect, upload.single('imagePost'), async (req: any, res: a
         return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
     }
 
-    const { locationName, title, description } = req.body;
+    const { locationName, title, description, start_time, end_time } = req.body;
 
-    if (!locationName || !title || !description) {
+    if (!locationName || !title || !description || !start_time || !end_time) {
         return res.status(404).json({ message: "Fehlende Übergabeparameter im Body" });
     }
 
@@ -38,7 +38,10 @@ router.post("/new", protect, upload.single('imagePost'), async (req: any, res: a
     const imageName = req.file.originalname;  // Ursprünglicher Dateiname
 
     try {
-        const post = await newPost(user.iduser, locationName, title, description, imageData, imageMimeType, imageName);
+        const dateStart_time = new Date(start_time);
+        const dateEnde_time = new Date(end_time)
+
+        const post = await newPost(user.iduser, locationName, title, description, imageData, imageMimeType, imageName, start_time, end_time);
 
         res.status(200).json({
             message: "neuer Post erfolgreich in DB gespeichert",
@@ -264,41 +267,71 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
     let imageData;
     let imageMimeType;
     let imageName;
+    let start_time;
+    let end_time;
 
     let newPost;
     try {
-        const currentPost = showPost(Number(data.postId));
+        const currentPost = await showPost(Number(data.postId));
+        // console.log("currentPost.user_iduser:"+ Number(currentPost.user_iduser));
         //Überprüfen ob Benutzer berechtigt ist
-        if ((await currentPost).user_iduser != user.iduser) {
+        if (currentPost.user?.iduser != user.iduser) {
             return res.status(403).json({
-                message: "Sie sind nicht der Eigentümer des Posts, daher nicht berechtigt."
+                message: "Sie sind nicht der Eigentümer des Posts, daher nicht berechtigt.",
+                // currentPostuser_iduser: currentPost.user_iduser,
+                // useriduser: user.iduser,
+                // post: currentPost
             })
         }
         if (!data.locationName) {
-            change = true;
-            locationName = (await currentPost).locationName;
+            locationName = currentPost.locationName;
         } else {
+            change = true;
             locationName = data.locationName
         }
         if (!data.title) {
-            change = true;
-            title = (await currentPost).title;
+            title = currentPost.title;
         } else {
+            change = true;
             title = data.title;
         }
         if (!data.description) {
-            change = true;
-            description = (await currentPost).description;
+            description = currentPost.description;
         } else {
+            change = true;
             description = data.description;
         }
+        if(!data.start_time){
+            start_time = currentPost.start_time;
+        }else{
+            change=true;
+            start_time = new Date(data.start_time);
+        }
+        if(!data.end_time){
+            end_time = currentPost.end_time;
+        }else{
+            change=true;
+            end_time = new Date(data.end_time);
+        }
+
+        // Sicherstellen start_time und end_time sosnt gibt es einen TS Fehler
+        if (!(start_time instanceof Date) || isNaN(start_time.getTime())) {
+            start_time = null;
+        }
+        if (!(end_time instanceof Date) || isNaN(end_time.getTime())) {
+            end_time = null;
+        }
+
         if (!req.file) {
-            newPost = await updatePost(Number(data.postId), title, title, description, (await currentPost).idpost || 1);
+            if(!change){
+                return res.status(200).json({ message: "Keine Änderungen erkannt oder übermittelt." });
+            }
+            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time);
         } else {
             imageData = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageName = req.file.originalname;
-            newPost = await updatePost(Number(data.postId), title, title, description, (await currentPost).idpost || 1, imageData, imageMimeType, imageName);
+            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time, imageData, imageMimeType, imageName);
         }
 
         res.status(200).json({
@@ -325,7 +358,7 @@ router.delete("/", protect, async (req: any, res: any) => {
     try {
         const currentPost = showPost(Number(postId));
         //Überprüfen ob Benutzer berechtigt ist
-        if ((await currentPost).user_iduser != user.iduser) {
+        if ((await currentPost).user?.iduser != user.iduser) {
             return res.status(403).json({
                 message: "Sie sind nicht der Eigentümer des Posts, daher nicht berechtigt."
             })

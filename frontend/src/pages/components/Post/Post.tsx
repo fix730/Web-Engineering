@@ -32,6 +32,8 @@ export interface PostType {
   user_iduser: number;
   locationName: string;
   user: User;
+  start_time: Date;
+  end_time: Date;
 }
 
 interface PostsData {
@@ -68,13 +70,13 @@ const Post = ({ post, onClick }: PostProps) => {
   }
   const aktualisierenLikeStatus = async () => {
     try {
-        const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-          params: {
-            postId: post.idpost
-          }
+      const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
+        params: {
+          postId: post.idpost
         }
-        );
-        setCountLikes(Number(getCountLikes.data.likes));
+      }
+      );
+      setCountLikes(Number(getCountLikes.data.likes));
     } catch (error) {
       console.error("Fehler beim Aktualisieren des Like-Status:", error);
     }
@@ -84,7 +86,7 @@ const Post = ({ post, onClick }: PostProps) => {
     fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
   }, [post.image_idimage]);
 
-  
+
 
   useEffect(() => {
     const checkLikeStatus = async () => {
