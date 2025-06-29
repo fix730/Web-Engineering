@@ -109,27 +109,22 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
       </div>
       */}
 
-      <form onSubmit={handleSubmit} className="relative flex items-center mt-2">
+      <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-20">
+        {/* <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-[80px]">  You can also use pixel values if needed */}
         <label htmlFor="comment" className="sr-only">Your Comment</label>
         <textarea
           id="comment"
-          className="w-full p-2 pr-16 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-none overflow-hidden"
+          className="w-full p-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-none h-[40px] whitespace-nowrap overflow-x-hidden"
           rows={1}
-          style={{ minHeight: '40px', maxHeight: '100px' }}
           placeholder="Schreibe was nettes!"
           value={commentText}
           onChange={handleTextChange}
-          onInput={(e) => {
-            e.currentTarget.style.height = 'auto';
-            e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px';
-          }}
           required
-        />
+        ></textarea>
         {!isCommentEmpty && (
           <button
             type="submit"
             className="absolute right-3 text-blue-500 hover:text-blue-700 font-semibold text-sm transition-colors duration-200"
-            
           >
             Posten
           </button>

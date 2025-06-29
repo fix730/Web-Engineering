@@ -36,26 +36,25 @@ const CommentSocial = ({ comment, onClick }: CommentProps) => {
 
     <div
       className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-4 mb-6 cursor-pointer flex items-start space-x-4 border border-black relative"
-
     >
       {/* Profilbild */}
-      <div className="flex-shrink-0"> {/* Ensures the image doesn't shrink */}
+      <div className="flex-shrink-0">
         <img
           src={"http://localhost:8000/api/image/" + comment.user.image_idimage}
           alt={`${comment.user?.firstName} ${comment.user?.name}`}
-          className="w-16 h-16 rounded-full object-cover" // Increased size to w-16 h-16 and added object-cover
+          className="w-16 h-16 rounded-full object-cover"
         />
       </div>
 
       {/* Textinhalt */}
-      <div className="flex flex-col justify-center flex-grow"> {/* Allows text to take remaining space */}
-        <h2 className="text-lg font-bold text-gray-900"> {/* Adjusted font size for better fit */}
+      <div className="flex flex-col justify-center flex-grow min-w-0 max-w-[calc(100%-80px)]">
+        <h2 className="text-lg font-bold text-gray-900">
           {comment.user?.firstName} {comment.user?.name}
         </h2>
-        <p className="text-gray-500 text-sm mb-1"> {/* Date is grey, smaller, and directly below the name */}
+        <p className="text-gray-500 text-sm mb-1">
           {formatDate(comment.date)}
         </p>
-        <p className="text-gray-700">{comment.text}</p> {/* Comment text */}
+        <p className="text-gray-700 whitespace-normal break-words">{comment.text}</p>
       </div>
     </div>
   );
