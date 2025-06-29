@@ -143,6 +143,7 @@ function Home() {
           handlePostClick={handlePostClick}
           post={currentPost}
           onClose={() => setPostClicked(false)}
+          onViewAllLikes={handleViewAllLikes}
         />
       )}
       {isLikesOpen && likesPostId !== null && (
