@@ -23,24 +23,26 @@ interface CommentUnderPostProps {
   postId: number;
   onCommentSubmit?: (commentText: string) => void;
   onViewAllComments?: (postId: number) => void;
-  onViewAllLikes?: (postId: number) => void;  
+  onViewAllLikes?: (postId: number) => void;
   handlePostClick?: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchComments?: () => void;
 }
 
-const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments,onViewAllLikes, handlePostClick ,}) => {
+const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments, onViewAllLikes, handlePostClick, fetchComments }) => {
   const [commentText, setCommentText] = useState<string>('');
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [showPreview, setShowPreview] = useState(false)
+  const [likedNames, setLikedNames] = useState<string[]>([]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
   };
   const handleViewAllLikesClick = () => {
-  if (onViewAllLikes) onViewAllLikes(postId);
-};
+    if (onViewAllLikes) onViewAllLikes(postId);
+  };
 
   // Lade Kommentare beim Mounten und wenn postId sich ändert
-  
 
+  //Kommentar schreiben
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -56,7 +58,7 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
       if (response.status === 201) {
         if (onCommentSubmit) onCommentSubmit(commentText);
         setCommentText('');
-        
+
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
       }
@@ -70,11 +72,36 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
       }
     }
   };
-
+  // Alle Komments sejen
   const handleViewAllCommentsClick = () => {
     if (onViewAllComments) onViewAllComments(postId);
     handlePostClick?.(true);
   };
+
+  const likedPreview = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/post/like/users?postId=${postId}`);
+      const likedUsers = response.data.users || [];
+      const names = likedUsers.map((user: any) => `${user.firstName} ${user.name}`);
+      setLikedNames(names);
+      console.log("showPreview true gesetzt");
+      setShowPreview(true);
+    } catch (error) {
+      console.error("Fehler beim Laden der Likes:", error);
+    }
+  };
+  const formatLikedNames = (names: string[]) => {
+    if (names.length <= 3) {
+      return names.join(', ');
+    } else {
+      const firstThree = names.slice(0, 3).join(', ');
+      const restCount = names.length - 3;
+      return `${firstThree} und von noch ${restCount} mehr`;
+    }
+  };
+
+
+
 
   const isCommentEmpty = commentText.trim() === '';
 
@@ -88,25 +115,20 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
         Alle Kommentare anzeigen
       </button>
       <button
-        
-        className="text-red-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200"
+        onMouseEnter={likedPreview}
+        onMouseLeave={() => setShowPreview(false)} // Füge dies hinzu
+        className="relative text-red-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200" // Füge 'relative' hinzu
         onClick={handleViewAllLikesClick}
       >
-        Alle likes anzeigen 
+        Alle likes anzeigen
+        {showPreview && (
+          <p className="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap shadow-lg z-50">
+            Geliked von: {formatLikedNames(likedNames)}
+          </p>
+        )}
       </button>
 
-      {/* Hier kannst du ggf. die Kommentare auch anzeigen (optional) */}
-      {/* 
-      <div className="mt-2 max-h-40 overflow-y-auto">
-        {comments.map(comment => (
-          <div key={comment.idcomment} className="mb-2 border-b border-gray-200 pb-2">
-            <p className="font-semibold">{comment.user.name} {comment.user.firstName}</p>
-            <p>{comment.text}</p>
-            <small className="text-gray-400">{new Date(comment.date).toLocaleString()}</small>
-          </div>
-        ))}
-      </div>
-      */}
+
 
       <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-20">
         {/* <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-[80px]">  You can also use pixel values if needed */}
