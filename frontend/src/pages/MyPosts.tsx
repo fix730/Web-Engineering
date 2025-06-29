@@ -51,7 +51,7 @@ const MyPosts = () => {
     setDialogHeader("Post löschen?");
     setDialogContent("Bist du sicher, dass du diesen Post löschen möchtest?");
     setDialogConfirmText("Löschen");
-    setDialogConfirmColor("text-red-600");
+    setDialogConfirmColor("red");
     setDialogHoverColor("red");
     setPostToDeleteId(id);
     setIsOpenDialog(true);
