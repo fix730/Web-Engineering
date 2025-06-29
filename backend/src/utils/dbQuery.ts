@@ -146,7 +146,7 @@ export async function showPost(idPost: number): Promise<PostExport> {
             iduser: true,
             name: true,
             firstName: true,
-            image_idimage: true,
+            image_idimage: true
         }
     });
     const location = await prisma.location.findFirst({
@@ -186,21 +186,35 @@ export async function showUserPosts(userId: number): Promise<any[]> {
 export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
     let posts;
     if (locationId.length == 0) {
-        posts = await findTitlePosts(title);
+        posts = await findTitlePostsOrDescription(title);
     } else if (title.length == 0) {
         posts = await findLocationPosts(locationId);
     } else {
-        posts = await findLocationTitlePosts(locationId, title);
+        posts = await findLocationTextPosts(locationId, title);
     }
     const postsWithUserLocation = await addPostNameAndLocation(posts);
     return postsWithUserLocation;
 }
 
 
-async function findTitlePosts(title: string): Promise<Post[]> {
+async function findTitlePostsOrDescription(text: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            title: { contains: title }
+            OR:[{
+                title: { contains: text },
+            },
+            {
+                description: { contains: text },
+            }]
+        }
+    });
+    return posts;
+}
+
+async function findDescriptionPosts(description:string): Promise<Post[]>{
+    const posts = await prisma.post.findMany({
+        where: {
+            description: { contains: description }
         }
     });
     return posts;
@@ -217,13 +231,16 @@ async function findLocationPosts(locationId: number[]): Promise<Post[]> {
     return posts;
 }
 
-async function findLocationTitlePosts(locationId: number[], title: string): Promise<Post[]> {
+async function findLocationTextPosts(locationId: number[], text: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
             location_idlocation: {
                 in: locationId
             },
-            title: { contains: title },
+            OR:[
+                {title: { contains: text }},
+                {description: { contains: text }}
+            ],
         }
     });
     return posts;
