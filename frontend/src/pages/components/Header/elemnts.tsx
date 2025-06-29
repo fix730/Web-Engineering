@@ -106,7 +106,8 @@ export const ProfileMenu = () => {
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
-            navigate("/logout");
+            navigate("/login");
+            axiosInstance.post("/api/auth/logout")
         } catch (e) {
             console.error(e);
         }
