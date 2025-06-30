@@ -1,10 +1,12 @@
 import axios from "axios";
 import qs from "qs";
 import store from "../store";
-import { logout } from "../slices/authSlice";
-import { useAppDispatch } from "../hooks/redux-hooks";
-import { useNavigate } from "react-router-dom";
+import EventEmitter from 'events';
+// import { setAuthError } from "../slices/authSlice";
+export const authEventEmitter = new EventEmitter();
 
+// const dispatch = useAppDispatch();
+// const navigate = useNavigate();
 
 
 // Create an Axios instance with default options
@@ -21,27 +23,21 @@ const  axiosInstance = axios.create({
 
 
 //Antworten Abfangen
-// axiosInstance.interceptors.response.use(function (response) {
-//   return response;
-// }, async function (error) {
-//   alert("Me: " + error.message);
-//   const dispatch = useAppDispatch();
-//   const navigate = useNavigate();
-//   //Wenn Benutzer nicht Authentiert ist
-  
-//   if (error.response && error.response.status === 401) {
-//     const errorMessage = error.response.data?.message;
-    
-//     if (errorMessage == "Not authenticated: No token provided") {
-//       console.warn("Token abgelaufen oder ungültig. Automatische Abmeldung...");
-//       try {
-//         await dispatch(logout()).unwrap();
-//         navigate("/logout");
-//       } catch (e) {
-//         console.error(e);
-//       }
-//     }
-//   }
-// });
+axiosInstance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  async function (error) {
+    // Prüfen, ob der Fehler ein 401 (Unauthorized) ist
+    if (error.response && error.response.status === 401) {
+      console.warn("401 Unauthorized – Sitzung abgelaufen. Melde an globales System.");
+      // store.dispatch(setAuthError("Sitzung abgelaufen. Bitte erneut anmelden."));
+
+      // Fehler speichern
+      return Promise.reject({ ...error, message: "Sitzung abgelaufen. Bitte erneut anmelden." });
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

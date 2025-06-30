@@ -122,37 +122,17 @@ function Home() {
     <>
       <Header />
       <SearchBar setPosts={setPosts} />
-      <h1>Home</h1>
-      <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
 
       {posts.map((post) => (
         <>
           <Post
-            key={post.idpost}
             post={post}
-            onClick={() => setCurrentPost(post)}
-            handlePostClick={handlePostClick}
-            onViewAllLikes={handleViewAllLikes}  // Hier weitergeben!
+
           />
           
         </>
       ))}
-      {/* Für das Anschauen von den Posts / draufclicken */}
-      {postClicked && currentPost && (
-        <PostClicked
-          handlePostClick={handlePostClick}
-          post={currentPost}
-          onClose={() => setPostClicked(false)}
-          onViewAllLikes={handleViewAllLikes}
-        />
-      )}
-      {isLikesOpen && likesPostId !== null && (
-
-        <PostLikes
-          postId={likesPostId}
-          onClose={() => setIsLikesOpen(false)}
-        />
-      )}
+      
 
 
       <Comment comment={dummyComment[0]} />

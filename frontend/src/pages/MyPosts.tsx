@@ -98,9 +98,7 @@ const MyPosts = () => {
             <div key={post.idpost} className="relative">
               <Post
                 post={post}
-                onClick={() => handlePostSelect(post)}
-                handlePostClick={handlePostClick}
-                onViewAllLikes={handleViewAllLikes}
+                
               />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
@@ -124,18 +122,7 @@ const MyPosts = () => {
       </main>
       <Footer />
 
-      {postClicked && currentPost && (
-        <PostClicked
-          post={currentPost}
-          handlePostClick={() => setPostClicked(false)}
-          onClose={() => setPostClicked(false)}
-          onViewAllLikes={handleViewAllLikes}
-        />
-      )}
-
-      {isLikesOpen && likesPostId !== null && (
-        <PostLikes postId={likesPostId} onClose={() => setIsLikesOpen(false)} />
-      )}
+     
 
       <DialogQuestion
         open={isOpenDialog}

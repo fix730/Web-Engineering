@@ -4,18 +4,16 @@ import heartLiked from "../../../icons/heartLiked.png"; // Pfad anpassen
 import { PostType } from "../Post/Post"; // Pfad anpassen
 import { usePostDetails } from "../Post/usePostDetails"; // Pfad anpassen
 import axiosInstance from "../../../api/axiosInstance"; // Pfad anpassen
-import Comment from "../Comment/CommentSocial";
 import CommentSocial, { CommentType } from "../Comment/CommentSocial";
 import CommentUnderPost from "./CommentUnderPost";
 
 interface PostClickedProps {
-    post: PostType;
-    onClose: () => void;
-    handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
-    onViewAllLikes?: (postId: number) => void; // NEU
+  post: PostType;
+  onClose: () => void;
+  
 }
 
-const PostClicked = ({ post, onClose, onViewAllLikes }: PostClickedProps) => {
+const PostClicked = ({ post, onClose,  }: PostClickedProps) => {
     const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
 
     const [comments, setComments] = useState<CommentType[]>([]);
@@ -106,30 +104,34 @@ const PostClicked = ({ post, onClose, onViewAllLikes }: PostClickedProps) => {
                         )}
                     </div>
 
-                    {/* Fixierter unterer Bereich, jetzt 20% Höhe */}
-                    <div className="flex items-center gap-4 pt-2 flex-none bg-white border-t border-grey-300 h-[20%]">
-                        <div className="flex-1">
-                            <CommentUnderPost
-                                postId={post.idpost}
-                                onCommentSubmit={() => fetchComments()}
-                                onViewAllLikes={onViewAllLikes}
-                            />
+                        {/* Fixierter unterer Bereich, jetzt 20% Höhe */}
+                        <div className="flex items-center gap-4 pt-2 flex-none bg-white border-t border-gray-300 h-[20%]">
+                            <div className="flex-1">
+                                <CommentUnderPost
+                                    post={post}
+                                    
+                                    
+
+                                />
+                            </div>
+                            <div className="flex-none">
+                                <img
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleLike();
+                                    }}
+                                    className="w-12 h-12 cursor-pointer"
+                                    src={liked ? heartLiked : heartNotLiked}
+                                    alt={liked ? "Unlike" : "Like"}
+                                />
+                            </div>
                         </div>
-                        <div className="flex-none">
-                            <img
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleLike();
-                                }}
-                                className="w-12 h-12 cursor-pointer"
-                                src={liked ? heartLiked : heartNotLiked}
-                                alt={liked ? "Unlike" : "Like"}
-                            />
-                        </div>
+
                     </div>
+
                 </div>
             </div>
-        </div>
+        
 
     );
 };

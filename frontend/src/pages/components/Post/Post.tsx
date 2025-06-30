@@ -1,9 +1,8 @@
-import React from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
-import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is defined
 import CommentUnderPost from "./CommentUnderPost";
 import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
+<<<<<<< HEAD
 import axiosInstance from "../../../api/axiosInstance";
 import { useState, useEffect } from "react";
 type PostObject = {
@@ -13,13 +12,18 @@ type PostObject = {
   location: string;
   imageUrl: string;
 };
+=======
+>>>>>>> Posts-bessere-render-logik
 
-// Re-export PostType and User if they are canonical here
+
+
+
+
 export interface User {
+  iduser: number;
   name: string;
   firstName: string;
   image_idimage: number;
-  iduser: number;
 }
 
 export type PostType = {
@@ -33,6 +37,7 @@ export type PostType = {
   start_time: string;
   end_time: string;
   locationName: string;
+<<<<<<< HEAD
   user: {
     iduser: number;
     name: string;
@@ -42,11 +47,13 @@ export type PostType = {
   };
 };
 
+=======
+  user: User;
+}
+>>>>>>> Posts-bessere-render-logik
 export type PostProps = {
   post: PostType;
-  onClick?: (post: PostObject) => void;
-  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
-  onViewAllLikes?: (postId: number) => void; // NEU
+  
 };
 
 const formatDate = (dateString: string) => {
@@ -58,8 +65,9 @@ const formatDate = (dateString: string) => {
 
 
 
-const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => {
+const Post = ({ post}: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
+<<<<<<< HEAD
   const [comments, setComments] = useState<CommentType[]>([]);
   const [sameDate, setSameDate] = useState(false)
 
@@ -95,19 +103,12 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
     handleDoubleDate(post.start_time, post.end_time);
   }, [post.start_time, post.end_time]);
 
+=======
+>>>>>>> Posts-bessere-render-logik
   return (
     <div
       key={post.idpost}
-      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 cursor-pointer flex flex-col md:flex-row border border-gray-200"
-      onClick={() =>
-        onClick?.({
-          id: post.idpost,
-          title: post.title,
-          description: post.description,
-          location: post.locationName,
-          imageUrl: postImage || "",
-        })
-      }
+      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 flex flex-col md:flex-row border border-gray-200"
     >
       {/* Bild auf der linken Seite */}
       <div className="md:w-1/3 w-full h-100">
@@ -129,6 +130,7 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
         <p className="text-gray-500">Location: {post.locationName}</p>
         <p className="mb-2">Likes: {countLikes}</p>
 
+<<<<<<< HEAD
         {/* NEUER BEREICH FÜR DEN FOOTER / INTERAKTION */}
         {/* Dieser div nimmt den gesamten verfügbaren vertikalen Raum ein und schiebt den Footer nach unten */}
         <div className="flex flex-grow items-end mt-auto w-full">
@@ -155,6 +157,18 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
               alt="Like"
             />
           </div>
+=======
+        <div className="flex items-end gap-4 mt-auto">
+          <div className="flex-grow mt-10">
+            <CommentUnderPost post={post}  />
+          </div>
+          <img
+          onClick={toggleLike}
+            className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
+            src={liked ? heartLiked : heartNotLiked}
+            alt="Like"
+          />
+>>>>>>> Posts-bessere-render-logik
         </div>
       </div>
     </div>

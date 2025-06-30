@@ -47,9 +47,10 @@ const initialState: AuthApiState = {
   error: null,
 };
 
+//Funktion von Redux Toolkit, die dir dabei hilft, asynchrone Logik für API Sie generiert automatisch die notwendigen Redux-Aktionen für den pending, fulfilled und rejected Zustand deiner asynchronen Operationen.
 export const login = createAsyncThunk(
   "login",
-  async (data: User, { rejectWithValue }) => {
+  async (data: User, { rejectWithValue }) => { 
     try {
       const response = await axiosInstance.post("api/auth/login", data);
       const resData = response.data;
@@ -102,11 +103,17 @@ export const logout = createAsyncThunk<any, void, { rejectValue: RejectPayload }
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    // setAuthError: (state, action: PayloadAction<string | null>) => {
+    //   state.error = action.payload; // Setzt die Fehlermeldung
+    //   state.basicUserInfo = null; // Meldet den Benutzer ab
+    //   localStorage.removeItem("userInfo"); // Löscht die User-Info aus dem LocalStorage
+    //   state.status = "idle"; // Setzt den Status zurück
+    // },
+  },
   extraReducers: (builder) => {
     builder
-      // Login Reducers (bereits angepasst)
-      .addCase(login.pending, (state) => {
+      .addCase(login.pending, (state) => { //pending = bearbeitung
         state.status = "loading";
         state.error = null;
       })
@@ -158,5 +165,6 @@ const authSlice = createSlice({
       });
   },
 });
+// export const { setAuthError } = authSlice.actions;
 
 export default authSlice.reducer;
