@@ -23,7 +23,7 @@ const App = () => {
         views={allViews}
         defaultDate={new Date(2015, 3, 1)}
         popup={false}
-        onShowMore={(events, date) => {
+        onShowMore={(events:any, date) => {
           setModalEvents(events);
           setModalDate(date);
           setShowModal(true);
