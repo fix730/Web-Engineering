@@ -18,7 +18,7 @@ export const usePostDetails = (post: PostType): UsePostDetailsResult => {
   const [liked, setLiked] = useState(false);
   const [postImage, setPostImage] = useState<string | undefined>(undefined);
   const [countLikes, setCountLikes] = useState<number>(0);
-  const [postClicked, setPostClicked] = useState(false);
+
 
   // Fetches post image
   useEffect(() => {
