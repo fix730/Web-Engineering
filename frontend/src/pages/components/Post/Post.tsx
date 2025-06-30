@@ -1,21 +1,8 @@
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
 import CommentUnderPost from "./CommentUnderPost";
-import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
-<<<<<<< HEAD
-import axiosInstance from "../../../api/axiosInstance";
 import { useState, useEffect } from "react";
-type PostObject = {
-  id: number;
-  title: string;
-  description: string;
-  location: string;
-  imageUrl: string;
-};
-=======
->>>>>>> Posts-bessere-render-logik
-
-
+import { usePostDetails } from "./usePostDetails";
 
 
 
@@ -37,20 +24,8 @@ export type PostType = {
   start_time: string;
   end_time: string;
   locationName: string;
-<<<<<<< HEAD
-  user: {
-    iduser: number;
-    name: string;
-    firstName: string;
-    image_idimage: number;
-
-  };
-};
-
-=======
   user: User;
 }
->>>>>>> Posts-bessere-render-logik
 export type PostProps = {
   post: PostType;
   
@@ -67,20 +42,9 @@ const formatDate = (dateString: string) => {
 
 const Post = ({ post}: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
-<<<<<<< HEAD
-  const [comments, setComments] = useState<CommentType[]>([]);
   const [sameDate, setSameDate] = useState(false)
 
-  const fetchComments = async () => {
-    try {
-      const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
-      // Hier erwartet man: response.data.comments (Array)
-      setComments(response.data.comments || []);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-      setComments([]);
-    }
-  };
+  
 
   const handleDescriptionlentgh = (dateString: string) => {
   const d = new Date(dateString);
@@ -103,8 +67,6 @@ const Post = ({ post}: PostProps) => {
     handleDoubleDate(post.start_time, post.end_time);
   }, [post.start_time, post.end_time]);
 
-=======
->>>>>>> Posts-bessere-render-logik
   return (
     <div
       key={post.idpost}
@@ -130,7 +92,6 @@ const Post = ({ post}: PostProps) => {
         <p className="text-gray-500">Location: {post.locationName}</p>
         <p className="mb-2">Likes: {countLikes}</p>
 
-<<<<<<< HEAD
         {/* NEUER BEREICH FÜR DEN FOOTER / INTERAKTION */}
         {/* Dieser div nimmt den gesamten verfügbaren vertikalen Raum ein und schiebt den Footer nach unten */}
         <div className="flex flex-grow items-end mt-auto w-full">
@@ -140,10 +101,8 @@ const Post = ({ post}: PostProps) => {
           <div className="flex-grow w-10/12 mr-auto">
             {/* 'mt-auto' hier entfernt, da der übergeordnete flex-container das übernimmt */}
             <CommentUnderPost
-              postId={post.idpost}
-              handlePostClick={handlePostClick}
-              onViewAllLikes={onViewAllLikes}
-              fetchComments={fetchComments}
+              post={post}
+              
             />
           </div>
           <div className="ml-auto py-5">
@@ -157,18 +116,6 @@ const Post = ({ post}: PostProps) => {
               alt="Like"
             />
           </div>
-=======
-        <div className="flex items-end gap-4 mt-auto">
-          <div className="flex-grow mt-10">
-            <CommentUnderPost post={post}  />
-          </div>
-          <img
-          onClick={toggleLike}
-            className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
-            src={liked ? heartLiked : heartNotLiked}
-            alt="Like"
-          />
->>>>>>> Posts-bessere-render-logik
         </div>
       </div>
     </div>
