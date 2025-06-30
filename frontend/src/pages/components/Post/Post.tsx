@@ -5,7 +5,7 @@ import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is d
 import CommentUnderPost from "./CommentUnderPost";
 import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
 import axiosInstance from "../../../api/axiosInstance";
-import { useState } from "react";
+import { useState, useEffect } from "react"; 
 type PostObject = {
   id: number;
   title: string;
@@ -22,19 +22,25 @@ export interface User {
   iduser: number;
 }
 
-export interface PostType {
+export type PostType = {
+
   idpost: number;
   title: string;
   description: string;
   location_idlocation: number;
   image_idimage: number;
   user_iduser: number;
+  start_time: string;
+  end_time: string;
   locationName: string;
-  user: User;
-  start_time: Date;
-  end_time: Date;
-  comments?: Comment[];
-}
+  user: {
+    iduser: number;
+    name: string;
+    firstName: string;
+    image_idimage: number;
+
+  };
+};
 
 export type PostProps = {
   post: PostType;
@@ -43,22 +49,44 @@ export type PostProps = {
   onViewAllLikes?: (postId: number) => void; // NEU
 };
 
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  // Tag, Monat (plus 1, da nullbasiert), Jahr
+  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
+};
+
+
 
 const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
- const [comments, setComments] = useState<CommentType[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [sameDate, setSameDate] = useState(false)
 
   const fetchComments = async () => {
-  try {
-    const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
-    // Hier erwartet man: response.data.comments (Array)
-    setComments(response.data.comments || []);
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    setComments([]);
-  }
-};
+    try {
+      const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
+      // Hier erwartet man: response.data.comments (Array)
+      setComments(response.data.comments || []);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setComments([]);
+    }
+  };
 
+  const handleDoubleDate = (dateStringStart: string, dateStringEnd: string) => {
+    const dS = formatDate(dateStringStart);
+    const dE = formatDate(dateStringEnd);
+    if (dE == dS) {
+      setSameDate(true)
+    }
+    else (
+      setSameDate(false)
+    )
+  };
+
+  useEffect(() => {
+    handleDoubleDate(post.start_time, post.end_time);
+  }, [post.start_time, post.end_time]);
 
   return (
     <div
@@ -86,8 +114,17 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
       {/* Textinhalt auf der rechten Seite */}
       <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
-        <p className="text-gray-700 mb-2">{post.description}</p>
+        <p className="text-gray-700 mb-2">{post.description} </p>
 
+        {sameDate == true && (
+          <p className="text-gray-700 mb-2">Am  {formatDate(post.end_time)} </p>
+        )
+        }
+        {sameDate == false && (
+          <p className="text-gray-700 mb-2">Vom {formatDate(post.start_time)} bis {formatDate(post.end_time)} </p>
+        )
+        }
+        
         <p className="text-gray-500">Location: {post.locationName}</p>
         <p className="mb-2">Likes: {countLikes}</p>
 
