@@ -21,6 +21,7 @@ const MyPosts = () => {
   const [dialogConfirmColor, setDialogConfirmColor] = useState("");
   const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
+   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
   // Post-Details Modal
   const [postClicked, setPostClicked] = useState(false);
@@ -58,32 +59,28 @@ const MyPosts = () => {
   };
 
   const deletePost = async () => {
-    setIsOpenDialog(false);
-    if (postToDeleteId == null) return;
-    try {
-      await axiosInstance.delete("/api/post/", { params: { postId: postToDeleteId } });
-      await getUserPosts();
-      setPostClicked(false);  // Modal schließen, falls aktueller Post gelöscht wurde
-    } catch (error) {
-      console.error("Fehler beim Löschen des Posts:", error);
-    }
-  };
+  setIsOpenDialog(false);
+  if (postToDeleteId == null) return;
+  try {
+    // Post löschen
+    await axiosInstance.delete(`/api/post/`, {
+      params: { postId: postToDeleteId }
+    });
 
-  // Aktuellen Post setzen
-  const handlePostSelect = (post: PostType) => {
-    setCurrentPost(post);
-  };
+    // Warten, damit Backend sicher löschen kann
+    await delay(500);
 
-  // Post-Details öffnen
-  const handlePostClick = () => {
-    setPostClicked(true);
-  };
+    // Posts neu laden, um UI zu aktualisieren
+    await getUserPosts();
 
-  // Likes öffnen
-  const handleViewAllLikes = (postId: number) => {
-    setLikesPostId(postId);
-    setIsLikesOpen(true);
-  };
+    // Modal schließen, falls aktueller Post gelöscht wurde
+    setPostClicked(false);
+  } catch (error) {
+    console.error("Fehler beim Löschen des Posts:", error);
+  }
+};
+
+  
 
   return (
     <>
@@ -98,7 +95,7 @@ const MyPosts = () => {
             <div key={post.idpost} className="relative">
               <Post
                 post={post}
-                
+
               />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
@@ -122,7 +119,7 @@ const MyPosts = () => {
       </main>
       <Footer />
 
-     
+
 
       <DialogQuestion
         open={isOpenDialog}

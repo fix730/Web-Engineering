@@ -17,14 +17,16 @@ export interface Comment {
 
 interface CommentUnderPostProps {
   post: PostType
+  onCommentAdded?: () => void;
 
 }
-const CommentUnderPost = ({ post }: CommentUnderPostProps) => {
+const CommentUnderPost = ({ post, onCommentAdded }: CommentUnderPostProps) => {
   const [commentText, setCommentText] = useState<string>('');
   const [showPreview, setShowPreview] = useState(false);
   const [likedNames, setLikedNames] = useState<string[]>([]);
   const [postClicked, setPostClicked] = useState(false);
-  const [isLikesOpen, setIsLikesOpen] = useState(false);  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isLikesOpen, setIsLikesOpen] = useState(false); const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
@@ -64,28 +66,44 @@ const CommentUnderPost = ({ post }: CommentUnderPostProps) => {
 
     if (commentText.trim() === '') return;
 
+    console.time("Comment Submission Process"); // Start timer for the whole process
+
     try {
+      console.time("API Post Request"); // Start timer for the API call
       const response = await axiosInstance.post(`/api/post/comment`, {
         postId: post.idpost,
         text: commentText,
       });
-      
+      console.timeEnd("API Post Request"); // End timer for the API call
+
       if (response.status === 200) {
-        setCommentText('');
-        
+        setCommentText(''); // Clear input immediately for user feedback
+        console.log("Comment submitted successfully to backend.");
+
+        console.time("Delay Before Reload"); // Start timer for the intentional delay
+        // Assuming 'delay' is a utility function that returns a Promise
+        await delay(500);
+        console.timeEnd("Delay Before Reload"); // End timer for the delay
+
+        console.time("Comments Reload Trigger"); // Start timer for triggering the reload
+        await onCommentAdded?.(); // This should trigger the parent to refetch comments
+        console.timeEnd("Comments Reload Trigger"); // End timer for triggering the reload
+
+        console.log("Reload of comments triggered after delay.");
+
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
+        console.log("Comment submission failed on backend.");
       }
     } catch (error: any) {
-      if (error.response) {
-        console.error("Server Fehler:", error.response.data);
-      } else if (error.request) {
-        console.error("Keine Antwort vom Server:", error.request);
-      } else {
-        console.error("Fehler:", error.message);
-      }
+      console.error("Error during comment submission:", error);
+      console.log("Comment submission failed due to network or unexpected error.");
+    } finally {
+      console.timeEnd("Comment Submission Process"); // End timer for the whole process
     }
   };
+
+
   // Alle Komments sejen
 
   const likedPreview = async () => {
@@ -148,7 +166,7 @@ const CommentUnderPost = ({ post }: CommentUnderPostProps) => {
         <PostClicked
           post={post}
           onClose={() => setPostClicked(false)}
-          
+
         />
       )}
 
@@ -162,10 +180,10 @@ const CommentUnderPost = ({ post }: CommentUnderPostProps) => {
           placeholder="Schreibe was nettes!"
           value={commentText}
           onChange={handleTextChange}
-          onKeyDown={(e) => { 
+          onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault(); 
-              handleSubmit(e); 
+              e.preventDefault();
+              handleSubmit(e);
             }
           }}
           required

@@ -11,6 +11,7 @@ interface PostClickedProps {
   post: PostType;
   onClose: () => void;
   
+  
 }
 
 const PostClicked = ({ post, onClose,  }: PostClickedProps) => {
@@ -109,7 +110,7 @@ const PostClicked = ({ post, onClose,  }: PostClickedProps) => {
                             <div className="flex-1">
                                 <CommentUnderPost
                                     post={post}
-                                    
+                                    onCommentAdded={fetchComments}
                                     
 
                                 />
