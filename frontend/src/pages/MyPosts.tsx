@@ -6,10 +6,14 @@ import Footer from "./components/Footer/Footer";
 import Post, { PostType } from "./components/Post/Post";
 import axiosInstance from "../api/axiosInstance";
 import { DialogQuestion } from "../Pop-Up-Window/alert";
+import PostClicked from "./components/Post/PostClicked";
+import PostLikes from "./components/Post/PostLikes";
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const navigate = useNavigate();
+
+  // Dialog für Post löschen
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [dialogHeader, setDialogHeader] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -18,12 +22,17 @@ const MyPosts = () => {
   const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
 
-  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+  // Post-Details Modal
   const [postClicked, setPostClicked] = useState(false);
-  const handlePostClick = () => {
-    setPostClicked(true);
+  const [currentPost, setCurrentPost] = useState<PostType | null>(null);
 
-  }
+  // Likes Modal
+  const [isLikesOpen, setIsLikesOpen] = useState(false);
+  const [likesPostId, setLikesPostId] = useState<number | null>(null);
+
+  useEffect(() => {
+    getUserPosts();
+  }, []);
 
   const getUserPosts = async () => {
     try {
@@ -34,38 +43,46 @@ const MyPosts = () => {
     }
   };
 
-  const deletePost = async () => {
-    setIsOpenDialog(false);
-    if (postToDeleteId == null) return;
-    try {
-      await axiosInstance.delete("/api/post/", { params: { postId: postToDeleteId } });
-      await delay(500);
-      await getUserPosts();
-    } catch (error) {
-      console.error("Fehler beim Löschen des Posts:", error);
-    }
-  };
-
-  useEffect(() => {
-    getUserPosts();
-  }, []);
-
   const handleEdit = (id: number) => {
-    try {
-      navigate(`/posts/edit/${id}`);
-    } catch (error) {
-      console.error("Fehler beim Navigieren zur Edit-Seite:", error);
-    }
+    navigate(`/posts/edit/${id}`);
   };
 
   const handleDeleteClick = (id: number) => {
     setDialogHeader("Post löschen?");
     setDialogContent("Bist du sicher, dass du diesen Post löschen möchtest?");
     setDialogConfirmText("Löschen");
-    setDialogConfirmColor("text-red-600");
+    setDialogConfirmColor("red");
     setDialogHoverColor("red");
     setPostToDeleteId(id);
     setIsOpenDialog(true);
+  };
+
+  const deletePost = async () => {
+    setIsOpenDialog(false);
+    if (postToDeleteId == null) return;
+    try {
+      await axiosInstance.delete("/api/post/", { params: { postId: postToDeleteId } });
+      await getUserPosts();
+      setPostClicked(false);  // Modal schließen, falls aktueller Post gelöscht wurde
+    } catch (error) {
+      console.error("Fehler beim Löschen des Posts:", error);
+    }
+  };
+
+  // Aktuellen Post setzen
+  const handlePostSelect = (post: PostType) => {
+    setCurrentPost(post);
+  };
+
+  // Post-Details öffnen
+  const handlePostClick = () => {
+    setPostClicked(true);
+  };
+
+  // Likes öffnen
+  const handleViewAllLikes = (postId: number) => {
+    setLikesPostId(postId);
+    setIsLikesOpen(true);
   };
 
   return (
@@ -77,9 +94,14 @@ const MyPosts = () => {
           <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
         )}
         <div className="space-y-8">
-          {posts.map(post => (
+          {posts.map((post) => (
             <div key={post.idpost} className="relative">
-              <Post handlePostClick={handlePostClick}post={post} />
+              <Post
+                post={post}
+                onClick={() => handlePostSelect(post)}
+                handlePostClick={handlePostClick}
+                onViewAllLikes={handleViewAllLikes}
+              />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
                   onClick={() => handleEdit(post.idpost)}
@@ -101,6 +123,20 @@ const MyPosts = () => {
         </div>
       </main>
       <Footer />
+
+      {postClicked && currentPost && (
+        <PostClicked
+          post={currentPost}
+          handlePostClick={() => setPostClicked(false)}
+          onClose={() => setPostClicked(false)}
+          onViewAllLikes={handleViewAllLikes}
+        />
+      )}
+
+      {isLikesOpen && likesPostId !== null && (
+        <PostLikes postId={likesPostId} onClose={() => setIsLikesOpen(false)} />
+      )}
+
       <DialogQuestion
         open={isOpenDialog}
         header={dialogHeader}

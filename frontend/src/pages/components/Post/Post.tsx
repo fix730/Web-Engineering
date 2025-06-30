@@ -4,7 +4,8 @@ import heartLiked from "../../../icons/heartLiked.png";
 import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is defined
 import CommentUnderPost from "./CommentUnderPost";
 import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
-
+import axiosInstance from "../../../api/axiosInstance";
+import { useState } from "react";
 type PostObject = {
   id: number;
   title: string;
@@ -42,8 +43,22 @@ export type PostProps = {
   onViewAllLikes?: (postId: number) => void; // NEU
 };
 
-const Post = ({ post, onClick, handlePostClick, onViewAllLikes}: PostProps) => {
+
+const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
+ const [comments, setComments] = useState<CommentType[]>([]);
+
+  const fetchComments = async () => {
+  try {
+    const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
+    // Hier erwartet man: response.data.comments (Array)
+    setComments(response.data.comments || []);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    setComments([]);
+  }
+};
+
 
   return (
     <div
@@ -72,12 +87,13 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes}: PostProps) => {
       <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
+
         <p className="text-gray-500">Location: {post.locationName}</p>
         <p className="mb-2">Likes: {countLikes}</p>
 
         <div className="flex items-end gap-4 mt-auto">
           <div className="flex-grow mt-10">
-            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick}  onViewAllLikes={onViewAllLikes}/>
+            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick} onViewAllLikes={onViewAllLikes} fetchComments={fetchComments} />
           </div>
           <img
             onClick={(e) => {
