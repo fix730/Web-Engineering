@@ -11,7 +11,7 @@ import CommentUnderPost from "./CommentUnderPost";
 interface PostClickedProps {
   post: PostType;
   onClose: () => void;
-  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
+  handlePostClick?: React.Dispatch<React.SetStateAction<boolean>>;
    onViewAllLikes?: (postId: number) => void; // NEU
 }
 

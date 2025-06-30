@@ -1,29 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { render } from "react-dom";
 import events from "./components/Calender/events";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Header from "./components/Header/Header";
+import axiosInstance from "../api/axiosInstance";
+import { PostType } from "./components/Post/Post";
+import PostClicked from "./components/Post/PostClicked";
 
 moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
 const allViews = Object.values(Views);
 
-type EventType = { title: string;[key: string]: any };
+type EventType = {
+  id: number;
+  title:
+  string;
+  [key: string]: any
+};
+
+
 
 const Cal = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalEvents, setModalEvents] = useState<EventType[]>([]);
   const [modalDate, setModalDate] = useState<Date | null>(null);
+  const [postClicked, setPostClicked] = useState(false);
+  const [currentPost, setCurrentPost] = useState<PostType>();
+  const [x, setX] = useState<boolean>(false);
 
+  useEffect(() => {
+    console.log("Events loaded:");
+  }, [showModal]);
+
+  async function handleOnSelectEvent(event: EventType) {
+    setShowModal(true);
+    const response = await axiosInstance.get("/api/post/one", {
+      params: { postId: 12 },
+    });
+
+    // setModalEvents(events.filter((e: EventType) => e.title === event.title));
+    console.log("Selected event:", response.data.post);
+    setCurrentPost(response.data.post);
+    setPostClicked(true);
+  }
   return (
     <>
       <Header />
       <div className="" style={{ height: 700 }}>
         <Calendar
           localizer={localizer}
-          events={events}
+          events={events as EventType[]}
           step={60}
           views={allViews}
           defaultDate={new Date(2015, 3, 1)}
@@ -33,18 +61,15 @@ const Cal = () => {
             setModalDate(date);
             setShowModal(true);
           }}
+        onSelectEvent={(event)=>handleOnSelectEvent(event)}
         />
 
-        {showModal && (
-          <div style={{ backgroundColor: "lightgray", padding: 20 }}>
-            <h3>Mehr Termine am {modalDate?.toLocaleDateString()}:</h3>
-            <ul>
-              {modalEvents.map((event: EventType, idx: number) => (
-                <li key={idx}>{event.title}</li>
-              ))}
-            </ul>
-            <button onClick={() => setShowModal(false)}>Schließen</button>
-          </div>
+        {currentPost && (
+          <PostClicked
+            post={currentPost}
+            onClose={() => setPostClicked(false)}
+            handlePostClick={setPostClicked}
+          />
         )}
       </div>
     </>
