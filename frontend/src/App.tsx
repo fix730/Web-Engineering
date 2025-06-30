@@ -10,6 +10,10 @@ import Einstellungen from './pages/Einstellungen';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './pages/components/ProtectedRoute';
+import EditPost from './pages/EditPosts';
+import { Calendar } from 'lucide-react';
+import Cal from './pages/calender';
+
 
 function App() {
   return (
@@ -27,7 +31,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/myposts" element={<MyPosts />} />
           <Route path="/posts/new" element={<PostNew />} />
+          <Route path="/posts/edit/:id" element={<EditPost />} />
           <Route path="/einstellungen" element={<Einstellungen />} />
+          <Route path="/calender" element={<Cal/>} />
         </Route>
       </Routes>
     </ThemeProvider>

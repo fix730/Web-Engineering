@@ -20,6 +20,9 @@ export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
             <NavigationLink href="/" className={className}>Start</NavigationLink>
             <NavigationLink href="/posts" className={className}>Meine Posts</NavigationLink>
             <NavigationLink href="/posts/new" className={className}>Neuen Post hinzufügen</NavigationLink>
+            <NavigationLink href="/calender" className={className}>Kalender</NavigationLink>
+     
+
         </>
     );
 };
@@ -106,7 +109,8 @@ export const ProfileMenu = () => {
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
-            navigate("/logout");
+            navigate("/login");
+            //axiosInstance.post("/api/auth/logout")
         } catch (e) {
             console.error(e);
         }

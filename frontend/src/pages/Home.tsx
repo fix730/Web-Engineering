@@ -3,43 +3,60 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import React from "react";
 import { useEffect, useState } from "react";
-import {logout } from "../slices/authSlice";
+import { logout } from "../slices/authSlice";
 import axiosInstance from "../api/axiosInstance";
 import Header from "./components/Header/Header";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import DialogAlert from "../Pop-Up-Window/alert";
 import Post, { PostType } from "./components/Post/Post";
-import Comment from "./components/Comment/Comment";
+import Comment from "./components/Comment/CommentSocial";
 import Footer from "./components/Footer/Footer";
-
-
+import PostClicked from "./components/Post/PostClicked";
+import PostLikes from "./components/Post/PostLikes"
 
 function Home() {
   const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PostType[]>([]);
+  const [postClicked, setPostClicked] = useState(false);
+  const [isLikesOpen, setIsLikesOpen] = useState(false);
+  const [likesPostId, setLikesPostId] = useState<number | null>(null);
+  const handlePostClick = () => {
+    setPostClicked(true);
+    setCurrentPost(posts);
 
+  }
   console.log("Posts:", posts);
 
+  const handleViewAllLikes = (postId: number) => {
+    setLikesPostId(postId);
+    setIsLikesOpen(true);
+  };
 
-  const dummyComment= [
+  const dummyUSer = [
     {
-      id: "1",
-      postId: 1,
-      author: "Max Mustermann",
-      content: "Toller Beitrag!",
-      createdAt: "2023-01-01",
-      ProfilePicture: "https://i1.sndcdn.com/avatars-otG7wzonZsfmH7xu-91jbYA-t1080x1080.jpg",
-    },
+      iduser: 123,
+      name: "Klaus Schwab",
+      firstName: "Klaus",
+      image_idimage: 123,
+      profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
+    }
+
+  ];
+  const dummyComment = [
     {
-      id: "2",
-      postId: 1,
-      author: "Erika Mustermann",
-      content: "Ich stimme zu!",
-      createdAt: "2023-01-02",
-      ProfilePicture: "https://m.media-amazon.com/images/I/61hEOLTQhzL._UXNaN_FMjpg_QL85_.jpg",
+      idcomment: 123,
+      text: "Colles Bild",
+      date: "string", // Oder Date, wenn du willst kannst du in Date umwandeln
+      commentcol: null,
+      user_iduser: 23,
+      post_idpost: 123,
+      user: dummyUSer[0],
+
     },
+
+
   ];
 
   // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
@@ -104,51 +121,42 @@ function Home() {
   return (
     <>
       <Header />
-      <SearchBar  setPosts={setPosts}/>
-      <h1>Home</h1>
-      <h4>Name: {localStorage.getItem("userInfo") + " "}</h4>
+      <SearchBar setPosts={setPosts} />
 
       {posts.map((post) => (
-        <Post
-          key={post.idpost}
-          post={post}
-          onClick={() => setCurrentPost(post)} // Klick auf Post öffnet Modal
-        />
+        <>
+          <Post
+            key={post.idpost}
+            post={post}
+            onClick={() => setCurrentPost(post)}
+            handlePostClick={handlePostClick}
+            onViewAllLikes={handleViewAllLikes}  // Hier weitergeben!
+          />
+          
+        </>
       ))}
       {/* Für das Anschauen von den Posts / draufclicken */}
-      {currentPost && (
-        <div
-
-          className="fixed inset-0 pady-5 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => setCurrentPost(null)} // Klick auf Overlay schließt Modal
-        >
-          <div
-            className="bg-white p-4 rounded-lg max-w-md mx-auto"
-            onClick={(e) => e.stopPropagation()} // Klick im Modal nicht schließen
-          >
-            <h2 className="text-xl font-bold">{currentPost.title}</h2>
-            <p>{currentPost.description}</p>
-            <p className="text-gray-500">Location: {currentPost.locationName}</p>
-            <img
-              src={currentPost.imageUrl}
-              alt={currentPost.title}
-              className="w-2/3 object-cover mt-4"
-            />
-            <h3 className="text-lg font-semibold mt-4">Kommentare:</h3>
-            {dummyComment.map((joeBiden) => (
-              <Comment key={joeBiden.id} comment={joeBiden} />
-            ))}
-            <button
-              onClick={() => setCurrentPost(null)}
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+      {postClicked && currentPost && (
+        <PostClicked
+          handlePostClick={handlePostClick}
+          post={currentPost}
+          onClose={() => setPostClicked(false)}
+          onViewAllLikes={handleViewAllLikes}
+        />
       )}
+      {isLikesOpen && likesPostId !== null && (
+
+        <PostLikes
+          postId={likesPostId}
+          onClose={() => setIsLikesOpen(false)}
+        />
+      )}
+
+
+      <Comment comment={dummyComment[0]} />
       <Footer />
     </>
+
   )
 }
 export default Home;

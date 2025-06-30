@@ -146,7 +146,7 @@ export async function showPost(idPost: number): Promise<PostExport> {
             iduser: true,
             name: true,
             firstName: true,
-            image_idimage: true,
+            image_idimage: true
         }
     });
     const location = await prisma.location.findFirst({
@@ -183,24 +183,39 @@ export async function showUserPosts(userId: number): Promise<any[]> {
     return postsWithUserLocation;
 }
 
-export async function showFilterPosts(locationId: number[], title: string): Promise<Post[]> {
+export async function showFilterPosts(locationId: number[], text: string): Promise<Post[]> {
     let posts;
+    //Wenn keine Lokation dann nur nach Text Suchen
     if (locationId.length == 0) {
-        posts = await findTitlePosts(title);
-    } else if (title.length == 0) {
+        posts = await findTitlePostsOrDescription(text);
+    } else if (text.length == 0) {
         posts = await findLocationPosts(locationId);
-    } else {
-        posts = await findLocationTitlePosts(locationId, title);
+    } else { // Wenn beides vorhanden ist muss es auch beides Beinhalten
+        posts = await findLocationTextPosts(locationId, text);
     }
     const postsWithUserLocation = await addPostNameAndLocation(posts);
     return postsWithUserLocation;
 }
 
 
-async function findTitlePosts(title: string): Promise<Post[]> {
+async function findTitlePostsOrDescription(text: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            title: { contains: title }
+            OR:[{
+                title: { contains: text },
+            },
+            {
+                description: { contains: text },
+            }]
+        }
+    });
+    return posts;
+}
+
+async function findDescriptionPosts(description:string): Promise<Post[]>{
+    const posts = await prisma.post.findMany({
+        where: {
+            description: { contains: description }
         }
     });
     return posts;
@@ -217,13 +232,16 @@ async function findLocationPosts(locationId: number[]): Promise<Post[]> {
     return posts;
 }
 
-async function findLocationTitlePosts(locationId: number[], title: string): Promise<Post[]> {
+async function findLocationTextPosts(locationId: number[], text: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
             location_idlocation: {
                 in: locationId
             },
-            title: { contains: title },
+            OR:[
+                {title: { contains: text }},
+                {description: { contains: text }}
+            ],
         }
     });
     return posts;
@@ -269,7 +287,7 @@ export async function getPostComment(postId: number): Promise<any[]> {
     });
 
     // Map bauen
-    const userMap = Object.fromEntries(users.map(user => [user.iduser, user]));
+    const userMap = Object.fromEntries(users.map(user => [user.iduser, user])); //Object.fromEntries Verwnadelt es in ein Objekt um effizient den User zu finden
 
     const commentsWithUser = comments.map(comment => ({
         ...comment, //... entfernt comment:

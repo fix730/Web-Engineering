@@ -1,27 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
-import { useState } from "react";
-import { fetchProfileImage } from "../../../utils/image";
+import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is defined
+import CommentUnderPost from "./CommentUnderPost";
+import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
 import axiosInstance from "../../../api/axiosInstance";
-
+import { useState } from "react";
 type PostObject = {
-  id: number; // GUID später??
+  id: number;
   title: string;
   description: string;
   location: string;
   imageUrl: string;
-
-
 };
 
-interface User {
+// Re-export PostType and User if they are canonical here
+export interface User {
   name: string;
   firstName: string;
   image_idimage: number;
   iduser: number;
 }
-
 
 export interface PostType {
   idpost: number;
@@ -34,84 +33,31 @@ export interface PostType {
   user: User;
   start_time: Date;
   end_time: Date;
+  comments?: Comment[];
 }
 
-interface PostsData {
-  posts: PostType[];
-}
-
-
-type PostProps = {
+export type PostProps = {
   post: PostType;
   onClick?: (post: PostObject) => void;
+  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
+  onViewAllLikes?: (postId: number) => void; // NEU
 };
 
 
+const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => {
+  const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
+ const [comments, setComments] = useState<CommentType[]>([]);
 
-const Post = ({ post, onClick }: PostProps) => {
-
-  const [liked, setLiked] = useState(false);
-  const [postImage, setPostImage] = useState<string | undefined>(undefined);
-  const [countLikes, setCountLikes] = useState<number>(0);
-
-  function toggleLike() {
-    if (!liked) {
-      axiosInstance.post("/api/post/like", {
-        postId: post.idpost
-      });
-    } else {
-      axiosInstance.delete(`/api/post/like`, {
-        params: {
-          postId: post.idpost
-        }
-      });
-    }
-    setLiked(!liked);
+  const fetchComments = async () => {
+  try {
+    const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
+    // Hier erwartet man: response.data.comments (Array)
+    setComments(response.data.comments || []);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    setComments([]);
   }
-  const aktualisierenLikeStatus = async () => {
-    try {
-      const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-        params: {
-          postId: post.idpost
-        }
-      }
-      );
-      setCountLikes(Number(getCountLikes.data.likes));
-    } catch (error) {
-      console.error("Fehler beim Aktualisieren des Like-Status:", error);
-    }
-  }
-  aktualisierenLikeStatus();
-  useEffect(() => {
-    fetchProfileImage({ onSetImageUrl: setPostImage, imageId: post.image_idimage, profilePlaceholder: undefined });
-  }, [post.image_idimage]);
-
-
-
-  useEffect(() => {
-    const checkLikeStatus = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/post/like/byUser`, {
-          params: {
-            postId: post.idpost
-          }
-        }
-        );
-        setLiked(Boolean(response.data.isLiked));
-        const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-          params: {
-            postId: post.idpost
-          }
-        }
-        );
-        setCountLikes(Number(getCountLikes.data.likes));
-      } catch (error) {
-        console.error("Fehler beim Überprüfen des Like-Status:", error);
-      }
-    }
-    checkLikeStatus();
-  }, []);
-
+};
 
 
   return (
@@ -138,14 +84,27 @@ const Post = ({ post, onClick }: PostProps) => {
       </div>
 
       {/* Textinhalt auf der rechten Seite */}
-      <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col justify-center relative">
+      <div className="md:w-2/3 w-full p-6 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description}</p>
+
         <p className="text-gray-500">Location: {post.locationName}</p>
+        <p className="mb-2">Likes: {countLikes}</p>
 
-        <img onClick={toggleLike} className="absolute bottom-2 right-2 w-12 h-12" src={liked ? heartLiked : heartNotLiked} alt="Placeholder" />
-        <p>{countLikes}</p>
-
+        <div className="flex items-end gap-4 mt-auto">
+          <div className="flex-grow mt-10">
+            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick} onViewAllLikes={onViewAllLikes} fetchComments={fetchComments} />
+          </div>
+          <img
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the click from bubbling up to open the popup
+              toggleLike();
+            }}
+            className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
+            src={liked ? heartLiked : heartNotLiked}
+            alt="Like"
+          />
+        </div>
       </div>
     </div>
   );

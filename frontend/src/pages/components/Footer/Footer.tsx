@@ -3,17 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Settings from "../../../Pop-Up-Window/Settings";
 
-
 const Footer = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
     <>
       <footer className="bg-white text-center text-xs text-gray-500 py-6">
-        {/* Hauptnavigation */}
         <nav className="flex flex-wrap justify-center space-x-4 mb-4">
           <button onClick={() => navigate("/")} className="font-semibold hover:underline">
             Start
@@ -22,24 +21,10 @@ const Footer = () => {
             Post erstellen
           </button>
           <button onClick={() => setSettingsOpen(true)} className="font-semibold hover:underline">
-            Einstellungen
-          </button>
-        </nav>
-
-        {/* Sekundärlinks */}
-        <nav className="flex flex-wrap justify-center space-x-4 mb-4">
-          <button onClick={() => {/* zukünftig: Impressum-Route */}} className="hover:underline">
-            Impressum
-          </button>
-          <button onClick={() => {/* zukünftig: Datenschutz-Route */}} className="hover:underline">
-            Datenschutz
-          </button>
-          <button onClick={() => {/* zukünftig: Hilfe-Route */}} className="hover:underline">
             Hilfe
           </button>
         </nav>
 
-        {/* Sprache und Mobile Menu Toggle */}
         <div className="flex justify-center items-center space-x-2 mb-2">
           <button
             onClick={() => setLanguageOpen(!languageOpen)}
@@ -57,7 +42,6 @@ const Footer = () => {
           </button>
         </div>
 
-        {/* Mobile Nav (gesamtes Menü) */}
         {menuOpen && (
           <nav className="flex flex-col space-y-2 mb-4">
             <button onClick={() => navigate("/")} className="font-semibold hover:underline text-left w-full">
@@ -66,27 +50,17 @@ const Footer = () => {
             <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline text-left w-full">
               Post erstellen
             </button>
-            <button onClick={() => setSettingsOpen(true)} className="font-semibold hover:underline text-left w-full">
-              Einstellungen
-            </button>
-            <button onClick={() => {/* zukünftig: Impressum */}} className="hover:underline text-left w-full">
-              Impressum
-            </button>
-            <button onClick={() => {/* zukünftig: Datenschutz */}} className="hover:underline text-left w-full">
-              Datenschutz
-            </button>
-            <button onClick={() => {/* zukünftig: Hilfe */}} className="hover:underline text-left w-full">
+            <button onClick={() => setHelpOpen(true)} className="font-semibold hover:underline text-left w-full">
               Hilfe
             </button>
           </nav>
         )}
 
-        {/* Copyright */}
         <div>
           © {new Date().getFullYear()} FindDHBW
         </div>
       </footer>
-      {/* Settings-Popup */}
+
       <Settings
         open={settingsOpen}
         isOpen={() => setSettingsOpen(false)}
@@ -98,3 +72,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
