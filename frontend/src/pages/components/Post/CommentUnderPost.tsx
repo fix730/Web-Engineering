@@ -53,12 +53,11 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
         postId: postId,
         text: commentText,
       });
-      setCommentText("");
+      // setCommentText("");
 
       if (response.status === 201) {
         if (onCommentSubmit) onCommentSubmit(commentText);
         setCommentText('');
-
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
       }
