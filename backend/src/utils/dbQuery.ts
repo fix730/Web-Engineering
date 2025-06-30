@@ -18,8 +18,8 @@ type PostExport = {
     location_idlocation?: number;
     image_idimage?: number;
     user_iduser?: number;
-    start_time?:Date;
-    end_time?:Date;
+    start_time?: Date;
+    end_time?: Date;
 
 };
 
@@ -101,7 +101,7 @@ export const getImageById = async (imageId: number) => {
     }
 };
 
-export const newPost = async (userId: number, locationName: string, title: string, description: string, imageData: Buffer, imageMimeType: string, imageName: string,  start_time:Date, end_time:Date) => {
+export const newPost = async (userId: number, locationName: string, title: string, description: string, imageData: Buffer, imageMimeType: string, imageName: string, start_time: Date, end_time: Date) => {
     try {
         const locationId = await addLocation(locationName);
         const newImage = await prisma.image.create({
@@ -174,7 +174,7 @@ export async function showAllPosts(): Promise<any[]> {
 
 export async function showUserPosts(userId: number): Promise<any[]> {
     const posts = await prisma.post.findMany({
-        where:{
+        where: {
             user_iduser: userId
         }
     });
@@ -201,7 +201,7 @@ export async function showFilterPosts(locationId: number[], text: string): Promi
 async function findTitlePostsOrDescription(text: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
-            OR:[{
+            OR: [{
                 title: { contains: text },
             },
             {
@@ -212,7 +212,7 @@ async function findTitlePostsOrDescription(text: string): Promise<Post[]> {
     return posts;
 }
 
-async function findDescriptionPosts(description:string): Promise<Post[]>{
+async function findDescriptionPosts(description: string): Promise<Post[]> {
     const posts = await prisma.post.findMany({
         where: {
             description: { contains: description }
@@ -238,9 +238,9 @@ async function findLocationTextPosts(locationId: number[], text: string): Promis
             location_idlocation: {
                 in: locationId
             },
-            OR:[
-                {title: { contains: text }},
-                {description: { contains: text }}
+            OR: [
+                { title: { contains: text } },
+                { description: { contains: text } }
             ],
         }
     });
@@ -437,11 +437,11 @@ export async function isPasswordValid(password: string, userId: number): Promise
     return isPasswordValid;
 }
 
-export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, start_time:Date|null, end_time:Date|null, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
-    if(imageData && imageMimeType && imageName){
+export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, start_time: Date | null, end_time: Date | null, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
+    if (imageData && imageMimeType && imageName) {
         await updateImageById(imageId, imageData, imageMimeType, imageName);
     }
-    
+
     const locationId = await addLocation(locationName);
     const post = prisma.post.update({
         where: {
@@ -459,59 +459,85 @@ export async function updatePost(postId: number, locationName: string, title: st
     return post;
 }
 
-export async function deletePost(postId: number){
-    const post = await showPost(postId);
-    const likes = await prisma.like.findMany({
-        where: {
-            post_idpost: postId
-        }
-    });
-    //Likes löschen wie anderst geht es nicht
-    for (const like of likes) {
-        await prisma.like.delete({
+export async function deletePost(postId: number) {
+    try {
+        const post = await showPost(postId);
+        const likes = await prisma.like.findMany({
             where: {
-                idlike_user_iduser_post_idpost: {
-                    idlike: like.idlike,
-                    user_iduser: like.user_iduser,
-                    post_idpost: like.post_idpost
-                }
+                post_idpost: postId
             }
         });
+        //Likes löschen wie anderst geht es nicht
+        for (const like of likes) {
+            await prisma.like.delete({
+                where: {
+                    idlike_user_iduser_post_idpost: {
+                        idlike: like.idlike,
+                        user_iduser: like.user_iduser,
+                        post_idpost: like.post_idpost
+                    }
+                }
+            });
+        }
+        const image = await prisma.image.delete({
+            where: {
+                idimage: post.image_idimage
+            }
+        })
+        const an = await prisma.post.delete({
+            where: {
+                idpost: postId
+            }
+        });
+    }catch (error){
+        return error;
     }
-    const image = await prisma.image.delete({
-        where:{
-            idimage: post.image_idimage
-        }
-    })
-    const an = await prisma.post.delete({
-        where:{
-            idpost: postId
-        }
-    });
-    console.log(an);
+
+    // console.log(an);
 }
 
 export async function showLikedUser(postId: number) {
-    const posts= await prisma.like.findMany({
-        where:{
-            post_idpost:postId
+    const posts = await prisma.like.findMany({
+        where: {
+            post_idpost: postId
         },
-        select:{
+        select: {
             user_iduser: true
         }
     });
-    const userIds = posts.map(post =>(post.user_iduser));
-    const users = prisma.user.findMany({
+    const userIds = posts.map(post => (post.user_iduser));
+    const users = await prisma.user.findMany({
         where: {
             iduser: { in: userIds },
         },
         select: {
             iduser: true,
-            name:true,
-            firstName:true,
-            image_idimage:true
+            name: true,
+            firstName: true,
+            image_idimage: true
         }
     });
     return users;
+}
+
+export async function showUserLikedPosts(userId:number) {
+    const likesUserPosts = await prisma.like.findMany({
+        where:{
+            user_iduser: userId
+        },
+        select:{
+            post_idpost: true
+        }
+    });
+    // Post Ids in die Liste Schreiben
+    const postIds = likesUserPosts.map(likeUser => (likeUser.post_idpost));
+    //Alle Post holen die der Benutzer geliked hat
+    const posts = await prisma.post.findMany({
+        where:{
+            idpost: {in: postIds}
+        }
+    });
+    const postsWithUserLocation = await addPostNameAndLocation(posts);
+    return postsWithUserLocation;
 }
 

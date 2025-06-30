@@ -105,7 +105,7 @@ const MyPosts = () => {
                   <Pencil size={16} />
                   <span className="text-sm">Bearbeiten</span>
                 </button>
-                <button
+                <button 
                   onClick={() => handleDeleteClick(post.idpost)}
                   className="flex items-center space-x-1 text-red-600 hover:text-red-800 transition-colors"
                 >
