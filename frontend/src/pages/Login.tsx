@@ -104,9 +104,9 @@ function Login() {
                     </form>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Hast du schon ein Benutzerkonto?{' '}
+                        Do you not yet have an account?{' '}
                         <a href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Registrie dich
+                        Please register.
                         </a>
                     </p>
                 </div>
