@@ -1,25 +1,17 @@
-import React from "react";
 import heartNotLiked from "../../../icons/heart.png";
 import heartLiked from "../../../icons/heartLiked.png";
-import { CommentType } from "../Comment/CommentSocial"; // Assuming Comment is defined
 import CommentUnderPost from "./CommentUnderPost";
 import { usePostDetails } from "../Post/usePostDetails"; // Import the hook
-import axiosInstance from "../../../api/axiosInstance";
-import { useState } from "react";
-type PostObject = {
-  id: number;
-  title: string;
-  description: string;
-  location: string;
-  imageUrl: string;
-};
 
-// Re-export PostType and User if they are canonical here
+
+
+
+
 export interface User {
+  iduser: number;
   name: string;
   firstName: string;
   image_idimage: number;
-  iduser: number;
 }
 
 export interface PostType {
@@ -31,48 +23,19 @@ export interface PostType {
   user_iduser: number;
   locationName: string;
   user: User;
-  start_time: Date;
-  end_time: Date;
-  comments?: Comment[];
 }
-
 export type PostProps = {
   post: PostType;
-  onClick?: (post: PostObject) => void;
-  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
-  onViewAllLikes?: (postId: number) => void; // NEU
+  
 };
 
 
-const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => {
+const Post = ({ post}: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
- const [comments, setComments] = useState<CommentType[]>([]);
-
-  const fetchComments = async () => {
-  try {
-    const response = await axiosInstance.get(`/api/post/comment?postId=${post.idpost}`);
-    // Hier erwartet man: response.data.comments (Array)
-    setComments(response.data.comments || []);
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    setComments([]);
-  }
-};
-
-
   return (
     <div
       key={post.idpost}
-      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 cursor-pointer flex flex-col md:flex-row border border-gray-200"
-      onClick={() =>
-        onClick?.({
-          id: post.idpost,
-          title: post.title,
-          description: post.description,
-          location: post.locationName,
-          imageUrl: postImage || "",
-        })
-      }
+      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 flex flex-col md:flex-row border border-gray-200"
     >
       {/* Bild auf der linken Seite */}
       <div className="md:w-1/3 w-full">
@@ -93,13 +56,10 @@ const Post = ({ post, onClick, handlePostClick, onViewAllLikes }: PostProps) => 
 
         <div className="flex items-end gap-4 mt-auto">
           <div className="flex-grow mt-10">
-            <CommentUnderPost postId={post.idpost} handlePostClick={handlePostClick} onViewAllLikes={onViewAllLikes} fetchComments={fetchComments} />
+            <CommentUnderPost post={post}  />
           </div>
           <img
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent the click from bubbling up to open the popup
-              toggleLike();
-            }}
+          onClick={toggleLike}
             className="w-10 h-10 flex-shrink-0 cursor-pointer mb-4"
             src={liked ? heartLiked : heartNotLiked}
             alt="Like"

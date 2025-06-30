@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../../api/axiosInstance";
-
-export interface User {
-  iduser: number;
-  name: string;
-  firstName: string;
-  image_idimage: number;
-  profileImageUrl?: string;
-}
-
+import { PostType } from './Post';
+import { User } from './Post'
+import PostLikes from './PostLikes';
+import PostClicked from './PostClicked';
 export interface Comment {
   idcomment: number;
   text: string;
@@ -19,27 +14,27 @@ export interface Comment {
   user: User;
 }
 
-interface CommentUnderPostProps {
-  postId: number;
-  onCommentSubmit?: (commentText: string) => void;
-  onViewAllComments?: (postId: number) => void;
-  onViewAllLikes?: (postId: number) => void;
-  handlePostClick?: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchComments?: () => void;
-}
 
-const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments, onViewAllLikes, handlePostClick, fetchComments }) => {
+interface CommentUnderPostProps {
+  post: PostType
+
+}
+const CommentUnderPost = ({ post }: CommentUnderPostProps) => {
   const [commentText, setCommentText] = useState<string>('');
   const [showPreview, setShowPreview] = useState(false)
   const [likedNames, setLikedNames] = useState<string[]>([]);
-
+  const [postClicked, setPostClicked] = useState(false);
+  const [isLikesOpen, setIsLikesOpen] = useState(false);
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
   };
   const handleViewAllLikesClick = () => {
-    if (onViewAllLikes) onViewAllLikes(postId);
-  };
+    setIsLikesOpen(true);
 
+  };
+  const handlePostCLicked = () => {
+    setPostClicked(true)
+  };
   // Lade Kommentare beim Mounten und wenn postId sich ändert
 
   //Kommentar schreiben
@@ -50,14 +45,13 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
 
     try {
       const response = await axiosInstance.post(`/api/post/comment`, {
-        postId: postId,
+        postId: post.idpost,
         text: commentText,
       });
-      // setCommentText("");
-
-      if (response.status === 201) {
-        if (onCommentSubmit) onCommentSubmit(commentText);
+      
+      if (response.status === 200) {
         setCommentText('');
+        
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
       }
@@ -72,14 +66,10 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
     }
   };
   // Alle Komments sejen
-  const handleViewAllCommentsClick = () => {
-    if (onViewAllComments) onViewAllComments(postId);
-    handlePostClick?.(true);
-  };
 
   const likedPreview = async () => {
     try {
-      const response = await axiosInstance.get(`/api/post/like/users?postId=${postId}`);
+      const response = await axiosInstance.get(`/api/post/like/users?postId=${post.idpost}`);
       const likedUsers = response.data.users || [];
       const names = likedUsers.map((user: any) => `${user.firstName} ${user.name}`);
       setLikedNames(names);
@@ -89,8 +79,9 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
       console.error("Fehler beim Laden der Likes:", error);
     }
   };
+
   const formatLikedNames = (names: string[]) => {
-    if(names.length == 0){
+    if (names.length == 0) {
       return '...'
     }
     if (names.length <= 3) {
@@ -110,15 +101,15 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
   return (
     <div className="max-w-4xl mx-auto py-4">
       <button
-        onClick={handleViewAllCommentsClick}
+        onClick={handlePostCLicked}
         className="text-gray-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200"
-        onAuxClick={() => handlePostClick?.(true)}
+
       >
         Alle Kommentare anzeigen
       </button>
       <button
         onMouseEnter={likedPreview}
-        onMouseLeave={() => setShowPreview(false)} // Füge dies hinzu
+        onMouseLeave={() => setShowPreview(false)}
         className="relative text-red-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200" // Füge 'relative' hinzu
         onClick={handleViewAllLikesClick}
       >
@@ -130,7 +121,19 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
         )}
       </button>
 
-
+      {isLikesOpen == true && (
+        <PostLikes
+          post={post}
+          onClose={() => setIsLikesOpen(false)}
+        />
+      )}
+      {postClicked == true && (
+        <PostClicked
+          post={post}
+          onClose={() => setPostClicked(false)}
+          
+        />
+      )}
 
       <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-20">
         {/* <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-[80px]">  You can also use pixel values if needed */}

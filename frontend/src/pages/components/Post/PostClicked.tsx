@@ -11,11 +11,10 @@ import CommentUnderPost from "./CommentUnderPost";
 interface PostClickedProps {
   post: PostType;
   onClose: () => void;
-  handlePostClick: React.Dispatch<React.SetStateAction<boolean>>;
-   onViewAllLikes?: (postId: number) => void; // NEU
+  
 }
 
-const PostClicked = ({ post, onClose, onViewAllLikes }: PostClickedProps) => {
+const PostClicked = ({ post, onClose,  }: PostClickedProps) => {
     const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
 
     const [comments, setComments] = useState<CommentType[]>([]);
@@ -107,9 +106,9 @@ const PostClicked = ({ post, onClose, onViewAllLikes }: PostClickedProps) => {
                         <div className="flex items-center gap-4 pt-2 flex-none bg-white border-t border-gray-300 h-[20%]">
                             <div className="flex-1">
                                 <CommentUnderPost
-                                    postId={post.idpost}
-                                    onCommentSubmit={() => fetchComments()}
-                                    onViewAllLikes={onViewAllLikes}
+                                    post={post}
+                                    
+                                    
 
                                 />
                             </div>
