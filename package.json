@@ -4,6 +4,7 @@
     "react-big-calendar": "^1.19.4"
   },
   "devDependencies": {
+    "@types/moment": "^2.11.29",
     "@types/react-big-calendar": "^1.16.2"
   }
 }
