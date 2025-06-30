@@ -48,7 +48,7 @@ function Login() {
                         className="mx-auto h-10 w-auto"
                     />
                     <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                        Sign in to your account
+                        Sign In to your account
                     </h2>
                 </div>
 
@@ -77,7 +77,7 @@ function Login() {
                                 </label>
                                 <div className="text-sm">
                                     <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
+                                        forgot password?
                                     </a>
                                 </div>
                             </div>
@@ -99,15 +99,15 @@ function Login() {
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 onClick={handleLogin}
                             >
-                                Sign in
+                                Sign In
                             </button>
                         </div>
                     </form>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Hast du schon ein Benutzerkonto?{' '}
+                        Do you already have an account?{' '}
                         <a onClick={navigateToRegister} className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Registrie dich
+                            Sign up
                         </a>
                     </p>
                 </div>
