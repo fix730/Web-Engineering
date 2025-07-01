@@ -33,24 +33,29 @@ axiosInstance.interceptors.response.use(
     //Wenn ja dann Ausolggen
     if (error.response && error.response.status === 401) {
       console.warn("401 Unauthorized – Sitzung abgelaufen. Melde an globales System.");
+      // alert(error.response.data?.message);
+      if (error.response.data?.message == "Nicht Authentiert, User nicht gefunden" || error.response.data?.message == "Not authenticated: No token provided") {
+        // Ausslloggen
+        try {
+          await axiosInstance.post("api/auth/logout", {});
+          localStorage.removeItem("userInfo");
+          alert("Ihre Sitzung ist abgelaufen, sie werden Ausgeloggt");
+          // Weiterleitung zur Login-Seite
+          window.location.href = "/login"; // oder deine Login-Route
 
-      // Ausslloggen
-      try {
-        await axiosInstance.post("api/auth/logout", {});
-        localStorage.removeItem("userInfo");
-        alert("Ihre Sitzung ist abgelaufen, sie werden Ausgeloggt");
-        // Weiterleitung zur Login-Seite
-        window.location.href = "/login"; // oder deine Login-Route
+          return;
+        } catch (err) {
+          const error = err as AxiosError;
+          if (error.response) {
+            return console.log(error.response);
+          }
+          return console.log({ message: error.message || "Ein unbekannter Logout-Fehler ist aufgetreten." });
 
-        return;
-      } catch (err) {
-        const error = err as AxiosError;
-        if (error.response) {
-          return console.log(error.response);
         }
-        return  console.log({ message: error.message || "Ein unbekannter Logout-Fehler ist aufgetreten." });
 
       }
+
+
     }
     return Promise.reject(error);
   }
