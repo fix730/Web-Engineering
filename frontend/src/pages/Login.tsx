@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { login } from "../slices/authSlice";
@@ -19,21 +20,21 @@ function Login() {
     const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
     const navigate = useNavigate();
 
+    // --- Funktion zur Handhabung des Login-Vorgangs ---
+    // Versucht den Benutzer mit den eingegebenen Daten anzumelden.
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        //alert("Login button clicked" + email + " " + password);
         if (email && password) {
             try {
-                const resultAction = await dispatch(login({ email, password })).unwrap();
-                navigate('/');
+                await dispatch(login({ email, password })).unwrap();
+                navigate('/'); // Weiterleitung bei erfolgreichem Login
             } catch (e: any) {
                 console.error("Login fehlgeschlagen:", e);
 
                 let errorTitle = "Login fehlgeschlagen";
                 let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
 
-                // Da rejectWithValue jetzt die Backend-Daten direkt weitergibt,
-                // sollte `e` direkt das Objekt `{ message: "..." }` sein.
+                // Fehlermeldung aus der Redux-Action extrahieren
                 if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
                     errorMessage = e.message;
                 } else {
@@ -42,14 +43,16 @@ function Login() {
 
                 setTitleAlertWindow(errorTitle);
                 setTextAlertWindow(errorMessage);
-                setIsOpenAlertDialog(true); 
+                setIsOpenAlertDialog(true); // Alert-Fenster bei Fehler öffnen
             }
         } else {
             setTitleAlertWindow("Login fehlgeschlagen");
             setTextAlertWindow("Bitte fülle alle Felder aus.");
-            setIsOpenAlertDialog(true);
+            setIsOpenAlertDialog(true); // Alert-Fenster bei fehlenden Feldern öffnen
         }
     };
+
+    // --- Funktionen zur Aktualisierung der Eingabefelder ---
     const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
     };
@@ -57,13 +60,10 @@ function Login() {
         setPassword(e.target.value);
     };
 
-
+    // --- Funktion zur Navigation zur Registrierungsseite ---
     const navigateToRegister = () => {
         navigate("/register");
     }
-
-
-
 
     return (
         <>
@@ -111,9 +111,8 @@ function Login() {
                     </p>
                 </div>
             </div>
-            <DialogAlert open={isOpenAlertDialog} isOpen={() =>setIsOpenAlertDialog(false)} header={titleAlertWindow}  content={textAlertWindow}/>
+            <DialogAlert open={isOpenAlertDialog} isOpen={() => setIsOpenAlertDialog(false)} header={titleAlertWindow} content={textAlertWindow} />
         </>
-
     )
 }
 export default Login;

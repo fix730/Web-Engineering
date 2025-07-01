@@ -15,24 +15,13 @@ import PostClicked from "./components/Post/PostClicked";
 import PostLikes from "./components/Post/PostLikes"
 
 function Home() {
-  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [postClicked, setPostClicked] = useState(false);
-  const [isLikesOpen, setIsLikesOpen] = useState(false);
-  const [likesPostId, setLikesPostId] = useState<number | null>(null);
-  const handlePostClick = () => {
-    setPostClicked(true);
-    setCurrentPost(posts);
 
-  }
   console.log("Posts:", posts);
 
-  const handleViewAllLikes = (postId: number) => {
-    setLikesPostId(postId);
-    setIsLikesOpen(true);
-  };
+  
 
   // const dummyUSer = [
   //   {
