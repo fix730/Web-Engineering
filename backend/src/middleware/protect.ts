@@ -51,6 +51,7 @@ export const protect = async (req: AuthenticatedRequest, res: Response, next: Ne
                 email: true,
                 birthday: true,
                 image_idimage: true,
+                passwort:false
             }
         });
 

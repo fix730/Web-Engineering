@@ -167,6 +167,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
       const data = response.data;
 
       if (response.status === 200) {
+        closeAlert(); // Schließe das Alert-Fenster zum Bild Hochladen
         showSuccess("Erfolg", data.message || "Profilbild erfolgreich hochgeladen!");
         if (data.imageId) {
           setDisplayedImageUrl(URL.createObjectURL(selectedImageFile));
