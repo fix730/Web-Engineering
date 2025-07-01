@@ -86,7 +86,7 @@ function Login() {
 
                         <div>
                             <div className="flex items-center justify-between">
-                                <LabelOverInput>Passwort</LabelOverInput>
+                                <LabelOverInput>Password</LabelOverInput>
                                 <div className="text-sm">
                                     <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                                         Forgot password?
