@@ -39,7 +39,9 @@ axiosInstance.interceptors.response.use(
         await axiosInstance.post("api/auth/logout", {});
         localStorage.removeItem("userInfo");
         alert("Ihre Sitzung ist abgelaufen, sie werden Ausgeloggt");
-        authEventEmitter.emit("unauthorized");
+        // Weiterleitung zur Login-Seite
+        window.location.href = "/login"; // oder deine Login-Route
+
         return;
       } catch (err) {
         const error = err as AxiosError;
