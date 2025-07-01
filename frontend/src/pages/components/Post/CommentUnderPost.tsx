@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from "../../../api/axiosInstance";
-
-export interface User {
-  iduser: number;
-  name: string;
-  firstName: string;
-  image_idimage: number;
-  profileImageUrl?: string;
-}
-
+import { PostType } from './Post';
+import { User } from './Post'
+import PostLikes from './PostLikes';
+import PostClicked from './PostClicked';
 export interface Comment {
   idcomment: number;
   text: string;
@@ -19,27 +14,50 @@ export interface Comment {
   user: User;
 }
 
-interface CommentUnderPostProps {
-  postId: number;
-  onCommentSubmit?: (commentText: string) => void;
-  onViewAllComments?: (postId: number) => void;
-  onViewAllLikes?: (postId: number) => void;
-  handlePostClick?: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchComments?: () => void;
-}
 
-const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSubmit, onViewAllComments, onViewAllLikes, handlePostClick, fetchComments }) => {
+interface CommentUnderPostProps {
+  post: PostType
+  onCommentAdded?: () => void;
+
+}
+const CommentUnderPost = ({ post, onCommentAdded }: CommentUnderPostProps) => {
   const [commentText, setCommentText] = useState<string>('');
-  const [showPreview, setShowPreview] = useState(false)
+  const [showPreview, setShowPreview] = useState(false);
   const [likedNames, setLikedNames] = useState<string[]>([]);
+  const [postClicked, setPostClicked] = useState(false);
+  const [isLikesOpen, setIsLikesOpen] = useState(false); const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
   };
-  const handleViewAllLikesClick = () => {
-    if (onViewAllLikes) onViewAllLikes(postId);
-  };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'; // Reset height to auto
+      // Set the height based on scrollHeight, but clamp it to a max of two lines
+      const computedHeight = textareaRef.current.scrollHeight;
+      const singleLineHeight = textareaRef.current.clientHeight; // Get initial single line height
+      const twoLineHeight = singleLineHeight * 2; // Calculate height for two lines
+
+      textareaRef.current.style.height = `${Math.min(computedHeight, twoLineHeight)}px`;
+
+      // If content exceeds two lines, allow scrolling
+      if (computedHeight > twoLineHeight) {
+        textareaRef.current.style.overflowY = 'auto';
+      } else {
+        textareaRef.current.style.overflowY = 'hidden';
+      }
+    }
+  }, [commentText]);
+
+  const handleViewAllLikesClick = () => {
+    setIsLikesOpen(true);
+
+  };
+  const handlePostCLicked = () => {
+    setPostClicked(true)
+  };
   // Lade Kommentare beim Mounten und wenn postId sich ändert
 
   //Kommentar schreiben
@@ -48,49 +66,60 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
 
     if (commentText.trim() === '') return;
 
+    console.time("Comment Submission Process"); // Start timer for the whole process
+
     try {
+      console.time("API Post Request"); // Start timer for the API call
       const response = await axiosInstance.post(`/api/post/comment`, {
-        postId: postId,
+        postId: post.idpost,
         text: commentText,
       });
-      // setCommentText("");
+      console.timeEnd("API Post Request"); // End timer for the API call
 
-      if (response.status === 201) {
-        if (onCommentSubmit) onCommentSubmit(commentText);
-        setCommentText('');
+      if (response.status === 200) {
+        setCommentText(''); // Clear input immediately for user feedback
+        console.log("Comment submitted successfully to backend.");
+
+        console.time("Delay Before Reload"); // Start timer for the intentional delay
+        // Assuming 'delay' is a utility function that returns a Promise
+        await delay(500);
+        console.timeEnd("Delay Before Reload"); // End timer for the delay
+
+        console.time("Comments Reload Trigger"); // Start timer for triggering the reload
+        await onCommentAdded?.(); // This should trigger the parent to refetch comments
+        console.timeEnd("Comments Reload Trigger"); // End timer for triggering the reload
+
+        console.log("Reload of comments triggered after delay.");
+
       } else {
         console.error("Fehler beim Senden des Kommentars:", response.data);
+        console.log("Comment submission failed on backend.");
       }
     } catch (error: any) {
-      if (error.response) {
-        console.error("Server Fehler:", error.response.data);
-      } else if (error.request) {
-        console.error("Keine Antwort vom Server:", error.request);
-      } else {
-        console.error("Fehler:", error.message);
-      }
+      console.error("Error during comment submission:", error);
+      console.log("Comment submission failed due to network or unexpected error.");
+    } finally {
+      console.timeEnd("Comment Submission Process"); // End timer for the whole process
     }
   };
+
+
   // Alle Komments sejen
-  const handleViewAllCommentsClick = () => {
-    if (onViewAllComments) onViewAllComments(postId);
-    handlePostClick?.(true);
-  };
 
   const likedPreview = async () => {
     try {
-      const response = await axiosInstance.get(`/api/post/like/users?postId=${postId}`);
+      const response = await axiosInstance.get(`/api/post/like/users?postId=${post.idpost}`);
       const likedUsers = response.data.users || [];
       const names = likedUsers.map((user: any) => `${user.firstName} ${user.name}`);
       setLikedNames(names);
-      console.log("showPreview true gesetzt");
       setShowPreview(true);
     } catch (error) {
       console.error("Fehler beim Laden der Likes:", error);
     }
   };
+
   const formatLikedNames = (names: string[]) => {
-    if(names.length == 0){
+    if (names.length == 0) {
       return '...'
     }
     if (names.length <= 3) {
@@ -102,27 +131,24 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
     }
   };
 
-
-
-
   const isCommentEmpty = commentText.trim() === '';
 
   return (
     <div className="max-w-4xl mx-auto py-4">
       <button
-        onClick={handleViewAllCommentsClick}
+        onClick={handlePostCLicked}
         className="text-gray-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200"
-        onAuxClick={() => handlePostClick?.(true)}
+
       >
         Alle Kommentare anzeigen
       </button>
       <button
         onMouseEnter={likedPreview}
-        onMouseLeave={() => setShowPreview(false)} // Füge dies hinzu
+        onMouseLeave={() => setShowPreview(false)}
         className="relative text-red-400 px-1 py-2 rounded hover:text-gray-600 transition-colors duration-200" // Füge 'relative' hinzu
         onClick={handleViewAllLikesClick}
       >
-        Alle likes anzeigen
+        Alle Likes anzeigen
         {showPreview && (
           <p className="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap shadow-lg z-50">
             Geliked von: {formatLikedNames(likedNames)}
@@ -130,18 +156,36 @@ const CommentUnderPost: React.FC<CommentUnderPostProps> = ({ postId, onCommentSu
         )}
       </button>
 
+      {isLikesOpen == true && (
+        <PostLikes
+          post={post}
+          onClose={() => setIsLikesOpen(false)}
+        />
+      )}
+      {postClicked == true && (
+        <PostClicked
+          post={post}
+          onClose={() => setPostClicked(false)}
 
+        />
+      )}
 
       <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-20">
-        {/* <form onSubmit={handleSubmit} className="relative flex items-center mt-2 pr-[80px]">  You can also use pixel values if needed */}
         <label htmlFor="comment" className="sr-only">Your Comment</label>
         <textarea
+          ref={textareaRef}
           id="comment"
-          className="w-full p-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-none h-[40px] whitespace-nowrap overflow-x-hidden"
-          rows={1}
+          className="w-full p-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-none overflow-hidden"
+          rows={1} // S
           placeholder="Schreibe was nettes!"
           value={commentText}
           onChange={handleTextChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSubmit(e);
+            }
+          }}
           required
         ></textarea>
         {!isCommentEmpty && (

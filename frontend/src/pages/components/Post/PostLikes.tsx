@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../api/axiosInstance";
+import { PostType } from "./Post";
 
 interface UserType {
   iduser: number;
@@ -9,11 +10,11 @@ interface UserType {
 }
 
 interface PostLikesProps {
-  postId: number;
-  onClose: () => void; // Jetzt Pflicht für Modal-Schließen
+  post: PostType;
+  onClose: () => void; 
 }
 
-const PostLikes = ({ postId, onClose }: PostLikesProps) => {
+const PostLikes = ({ post, onClose }: PostLikesProps) => {
   const [likedUsers, setLikedUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,7 @@ const PostLikes = ({ postId, onClose }: PostLikesProps) => {
   const fetchLikes = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(`/api/post/like/users?postId=${postId}`);
+      const response = await axiosInstance.get(`/api/post/like/users?postId=${post.idpost}`);
       setLikedUsers(response.data.users || []);
       setError(null);
     } catch (err) {
@@ -34,7 +35,7 @@ const PostLikes = ({ postId, onClose }: PostLikesProps) => {
 
   useEffect(() => {
     fetchLikes();
-  }, [postId]);
+  }, [post.idpost]);
 
   return (
     <div
