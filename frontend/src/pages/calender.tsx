@@ -37,7 +37,7 @@ const Cal = () => {
   async function handleOnSelectEvent(event: EventType) {
     setShowModal(true);
     const response = await axiosInstance.get("/api/post/one", {
-      params: { postId: 12 },
+      params: { postId: 1 },
     });
 
     // setModalEvents(events.filter((e: EventType) => e.title === event.title));
@@ -64,11 +64,11 @@ const Cal = () => {
         onSelectEvent={(event)=>handleOnSelectEvent(event)}
         />
 
-        {currentPost && (
+        {currentPost&& showModal &&  (
           <PostClicked
             post={currentPost}
-            onClose={() => setPostClicked(false)}
-            handlePostClick={setPostClicked}
+            onClose={() => setShowModal(false)}
+            
           />
         )}
       </div>
