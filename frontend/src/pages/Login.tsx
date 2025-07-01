@@ -78,7 +78,7 @@ function Login() {
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
-                            <LabelOverInput>E-Mail</LabelOverInput>
+                            <LabelOverInput>Email</LabelOverInput>
                             <div className="mt-2">
                                 <Email email={email} handleChnceEmail={handleChnceEmail} />
                             </div>
