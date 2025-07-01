@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import { PostType } from "./Post";
-
+import { usePostDetails } from "./usePostDetails";
 interface UserType {
   iduser: number;
   firstName: string;
@@ -15,6 +15,7 @@ interface PostLikesProps {
 }
 
 const PostLikes = ({ post, onClose }: PostLikesProps) => {
+  const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
   const [likedUsers, setLikedUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +68,7 @@ const PostLikes = ({ post, onClose }: PostLikesProps) => {
             {likedUsers.map(user => (
               <div key={user.iduser} className="flex items-center gap-3">
                 <img
-                  src={`http://localhost:8000/api/image/${user.image_idimage}`}
+                  src={postImage}
                   alt={`${user.firstName} ${user.name}`}
                   className="w-10 h-10 rounded-full object-cover"
                 />
