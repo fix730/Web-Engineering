@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { LabelOverInput } from "./components/Label";
 import { Text, Email, Paasswort, DateInput } from "./components/Inputs";
 import DialogAlert from "../Pop-Up-Window/alert";
+import { startLoading, stopLoading } from "../slices/loadingSlice";
+
+
 
 
 function Register() {
@@ -25,6 +28,8 @@ function Register() {
     e.preventDefault();
     if (name && firstName && email && password && birthday && passwordConfirm && password === passwordConfirm) {
       try {
+        dispatch(startLoading());
+
         await dispatch(
           register({
             name,
@@ -52,11 +57,15 @@ function Register() {
         setTitleAlertWindow(errorTitle);
         setTextAlertWindow(errorMessage);
         setIsOpenAlertDialog(true);
+        } finally {
+        dispatch(stopLoading());
       }
     } else {
       setTitleAlertWindow("Registrieren fehlgeschlagen");
       setTextAlertWindow("Bitte fülle alle Felder aus.");
       setIsOpenAlertDialog(true);
+      
+
 
     }
   };

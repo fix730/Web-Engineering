@@ -18,38 +18,41 @@ function Login() {
     const [textAlertWindow, setTextAlertWindow] = useState("");
     const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        //alert("Login button clicked" + email + " " + password);
-        if (email && password) {
-            try {
-                const resultAction = await dispatch(login({ email, password })).unwrap();
-                navigate('/');
-            } catch (e: any) {
-                console.error("Login fehlgeschlagen:", e);
+    e.preventDefault();
 
-                let errorTitle = "Login fehlgeschlagen";
-                let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+    if (email && password) {
+        setIsLoading(true); // Ladeanzeige starten
 
-                // Da rejectWithValue jetzt die Backend-Daten direkt weitergibt,
-                // sollte `e` direkt das Objekt `{ message: "..." }` sein.
-                if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
-                    errorMessage = e.message;
-                } else {
-                    errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
-                }
+        try {
+            const resultAction = await dispatch(login({ email, password })).unwrap();
+            navigate('/');
+        } catch (e: any) {
+            console.error("Login fehlgeschlagen:", e);
 
-                setTitleAlertWindow(errorTitle);
-                setTextAlertWindow(errorMessage);
-                setIsOpenAlertDialog(true); 
+            let errorTitle = "Login fehlgeschlagen";
+            let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+
+            if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+                errorMessage = e.message;
+            } else {
+                errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
             }
-        } else {
-            setTitleAlertWindow("Login fehlgeschlagen");
-            setTextAlertWindow("Bitte fülle alle Felder aus.");
-            setIsOpenAlertDialog(true);
+
+            setTitleAlertWindow(errorTitle);
+            setTextAlertWindow(errorMessage);
+            setIsOpenAlertDialog(true); 
+        } finally {
+            setIsLoading(false); // Ladeanzeige beenden
         }
-    };
+    } else {
+        setTitleAlertWindow("Login fehlgeschlagen");
+        setTextAlertWindow("Bitte fülle alle Felder aus.");
+        setIsOpenAlertDialog(true);
+    }
+};
     const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
     };
@@ -62,7 +65,13 @@ function Login() {
         navigate("/register");
     }
 
-
+    if (isLoading) {
+    return (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+            <div className="spinner"></div>
+        </div>
+    );
+}
 
 
     return (
@@ -99,7 +108,9 @@ function Login() {
                         </div>
 
                         <div>
-                            <SubmitButton>Sign in</SubmitButton>
+                            <SubmitButton disabled={isLoading}>
+  {isLoading ? "Signing in..." : "Sign in"}
+</SubmitButton>
                         </div>
                     </form>
 

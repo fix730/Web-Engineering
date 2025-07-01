@@ -6,6 +6,7 @@ type ButtonProps = {
   color?: string;
   colorHover?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 export function Button() {

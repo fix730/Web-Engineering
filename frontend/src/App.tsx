@@ -17,26 +17,28 @@ import Cal from './pages/calender';
 
 function App() {
   return (
-    <ThemeProvider>
-      <Routes>
-       
-        <Route path="/posts" element={<Navigate to="/myposts" replace />} />
+    <>
+      
+      <ThemeProvider>
+        <Routes>
+          <Route path="/posts" element={<Navigate to="/myposts" replace />} />
 
-        {/* öffentlich */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+          {/* öffentlich */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* geschützt */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/myposts" element={<MyPosts />} />
-          <Route path="/posts/new" element={<PostNew />} />
-          <Route path="/posts/edit/:id" element={<EditPost />} />
-          <Route path="/einstellungen" element={<Einstellungen />} />
-          <Route path="/calender" element={<Cal/>} />
-        </Route>
-      </Routes>
-    </ThemeProvider>
+          {/* geschützt */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/myposts" element={<MyPosts />} />
+            <Route path="/posts/new" element={<PostNew />} />
+            <Route path="/posts/edit/:id" element={<EditPost />} />
+            <Route path="/einstellungen" element={<Einstellungen />} />
+            <Route path="/calender" element={<Cal />} />
+          </Route>
+        </Routes>
+      </ThemeProvider>
+    </>
   );
 }
 
