@@ -6,7 +6,7 @@ import { AllNavigationLinks, ProfileMenu } from "./elemnts";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
+    <header className="bg-gray-300 text-black shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 

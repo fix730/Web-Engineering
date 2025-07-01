@@ -71,8 +71,18 @@ function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8">
+    
+    
+    <div
+  className="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+  style={{ backgroundImage: "url('/bg-login.jpg')" }}>
+
+    <h1 className="absolute top-20 text-5xl font-bold drop-shadow-lg">
+  <span className="text-black">Find</span>
+  <span className="text-red-600">DHBW</span>
+</h1>
+
+      <div className="bg-white bg-opacity-90 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md space-y-8">
         <div>
           <h2 className="text-center text-3xl font-bold text-gray-900">Register</h2>
         </div>
@@ -122,6 +132,9 @@ function Register() {
           </span>
         </p>
       </div>
+
+      <img src="/dhbwlogo.jpg" alt="DHBW Logo" className="fixed bottom-4 right-4 w-32 opacity-90" />
+
       <DialogAlert open={isOpenAlertDialog} isOpen={() => setIsOpenAlertDialog(false)} header={titleAlertWindow} content={textAlertWindow} />
     </div>
   );

@@ -74,57 +74,63 @@ function Login() {
 }
 
 
-    return (
-        <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img alt="Login Logo" src={LogInIcon} className="mx-auto h-10 w-auto" />
-                    <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                        Sign in to your account
-                    </h2>
-                </div>
+   return (
+    <div
+      className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/bg-login.jpg')" }}>
 
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div>
-                            <LabelOverInput>Email</LabelOverInput>
-                            <div className="mt-2">
-                                <Email email={email} handleChnceEmail={handleChnceEmail} />
-                            </div>
-                        </div>
+        <h1 className="absolute top-20 text-5xl font-bold drop-shadow-lg">
+  <span className="text-black">Find</span>
+  <span className="text-red-600">DHBW</span>
+</h1>
 
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <LabelOverInput>Password</LabelOverInput>
-                                <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="mt-2">
-                                <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
-                            </div>
-                        </div>
+      <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
+        <div className="text-center mb-6">
+          <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
+          <h2 className="mt-4 text-2xl font-bold text-gray-800">Sign in to your account</h2>
+        </div>
 
-                        <div>
-                            <SubmitButton disabled={isLoading}>
-  {isLoading ? "Signing in..." : "Sign in"}
-</SubmitButton>
-                        </div>
-                    </form>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <LabelOverInput>Email</LabelOverInput>
+            <Email email={email} handleChnceEmail={handleChnceEmail} />
+          </div>
 
-                    <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Do you not yet have an account?{' '}
-                        <a href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                        Please register.
-                        </a>
-                    </p>
-                </div>
+          <div>
+            <LabelOverInput>Password</LabelOverInput>
+            <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
+            <div className="text-right text-sm mt-1">
+              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                Forgot password?
+              </a>
             </div>
-            <DialogAlert open={isOpenAlertDialog} isOpen={() =>setIsOpenAlertDialog(false)} header={titleAlertWindow}  content={textAlertWindow}/>
-        </>
+          </div>
 
-    )
+          <div>
+            <SubmitButton disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
+            </SubmitButton>
+          </div>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Do you not yet have an account?{" "}
+          <a onClick={navigateToRegister} className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-500">
+            Please register.
+          </a>
+        </p>
+      </div>
+
+      <img src="/dhbwlogo.jpg" alt="DHBW Logo" className="fixed bottom-4 right-4 w-32 opacity-90" />
+
+      <DialogAlert
+        open={isOpenAlertDialog}
+        isOpen={() => setIsOpenAlertDialog(false)}
+        header={titleAlertWindow}
+        content={textAlertWindow}
+      />
+    </div>
+  );
 }
+
 export default Login;

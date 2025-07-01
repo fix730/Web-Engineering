@@ -17,9 +17,9 @@ type AllNavigationLinksProps = {
 export const AllNavigationLinks = ({ className }: AllNavigationLinksProps) => {
     return (
         <>
-            <NavigationLink href="/" className={className}>Start</NavigationLink>
+            <NavigationLink href="/" className={className}>Startseite</NavigationLink>
             <NavigationLink href="/posts" className={className}>Meine Posts</NavigationLink>
-            <NavigationLink href="/posts/new" className={className}>Neuen Post hinzufügen</NavigationLink>
+            <NavigationLink href="/posts/new" className={className}>Post erstellen</NavigationLink>
             <NavigationLink href="/calender" className={className}>Kalender</NavigationLink>
      
 
