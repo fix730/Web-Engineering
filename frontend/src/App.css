@@ -1,38 +1,24 @@
-.App {
-  text-align: center;
+/* Custom styles for React Big Calendar events */
+
+/* Farbe für eigene Posts */
+.rbc-event.rbc-event-own {
+  background-color: #6200EE !important; /* Lila - !important kann notwendig sein, um die Standardstile zu überschreiben */
+  color: white !important;
+  border-radius: 4px !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Farbe für gelikte Posts */
+.rbc-event.rbc-event-liked {
+  background-color: #03DAC6 !important; /* Türkis - !important kann notwendig sein */
+  color: white !important;
+  border-radius: 4px !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Anpassungen für hover-Effekte (optional) */
+.rbc-event.rbc-event-own:hover {
+  background-color: #4B00AD !important; /* Dunkleres Lila beim Hover */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.rbc-event.rbc-event-liked:hover {
+  background-color: #02a392 !important; /* Dunkleres Türkis beim Hover */
 }
