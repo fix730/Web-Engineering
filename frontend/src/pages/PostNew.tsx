@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // useEffect hinzufügen
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation hinzufügen
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
 
-
+// MomentJS importieren, um Datums-Strings zu parsen und zu formatieren
+import moment from "moment";
 
 function PostNew() {
-
   const navigate = useNavigate();
+  const location = useLocation(); // useLocation Hook initialisieren
 
   const [title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
+  const [locationName, setLocationName] = useState(""); // Variable angepasst von 'location' zu 'locationName' um Namenskonflikt zu vermeiden
   const [image, setImage] = useState<File | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
@@ -23,25 +24,39 @@ function PostNew() {
   const [descriptionAlert, setDescriptionAlert] = useState("");
   const [isAlert, setIsAlert] = useState(false);
 
+  // Verwenden Sie useEffect, um die URL-Parameter beim Laden der Komponente zu prüfen
+  useEffect(() => {
+    if (location.state) {
+      const { startTime: initialStartTime, endTime: initialEndTime } =
+        location.state as { startTime: string; endTime: string };
 
-  //reagiert auf das submit event des Formulars
+      if (initialStartTime) {
+        setStartTime(new Date(initialStartTime));
+      }
+      if (initialEndTime) {
+        setEndTime(new Date(initialEndTime));
+      }
+    }
+  }, [location.state]); // Abhängigkeit auf location.state setzen, damit es bei Änderungen reagiert
+
+  // reagiert auf das submit event des Formulars
   // backend muss noch erstellt werden
 
   const newPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title && Description && location && image && startTime && endTime) {
+    if (title && Description && locationName && image && startTime && endTime) { // locationName verwenden
       try {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", Description);
-        formData.append("locationName", location);
+        formData.append("locationName", locationName); // locationName verwenden
         formData.append("imagePost", image);
         formData.append("start_time", startTime.toISOString());
         formData.append("end_time", endTime.toISOString());
 
-        const response = await axiosInstance.post("/api/post/new", formData, { // Hier geändert
+        const response = await axiosInstance.post("/api/post/new", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
         const data = response.data;
@@ -50,27 +65,35 @@ function PostNew() {
           setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
           setIsAlert(true);
           console.log("Post erfolgreich erstellt:", data);
-          navigate("/"); // Weiterleitung ins Hauptmenü
+          // Optional: Eine kurze Verzögerung, bevor navigiert wird, damit der Nutzer die Nachricht sehen kann
+          setTimeout(() => {
+            navigate("/"); // Weiterleitung ins Hauptmenü
+          }, 1500); // z.B. 1.5 Sekunden
         } else {
           setTitleAlert("Fehler beim Erstellen des Posts");
-          setDescriptionAlert(data.message || "Unbekannter Fehler beim Erstellen des Posts.");
+          setDescriptionAlert(
+            data.message || "Unbekannter Fehler beim Erstellen des Posts."
+          );
           setIsAlert(true);
           console.error("Fehler beim Erstellen des Posts:", data);
         }
       } catch (error) {
         console.error("Fehler beim Hochladen des Posts:", error);
         setTitleAlert("Fehler beim Hochladen des Posts");
-        setDescriptionAlert(error instanceof Error ? error.message : "Unbekannter Fehler beim Hochladen des Posts.");
+        setDescriptionAlert(
+          error instanceof Error
+            ? error.message
+            : "Unbekannter Fehler beim Hochladen des Posts."
+        );
         setIsAlert(true);
       }
-
     } else {
       setTitleAlert("Felder unvollständig");
       setDescriptionAlert("Bitte fülle alle Felder aus.");
       setIsAlert(true);
       console.error("Alle Felder müssen ausgefüllt sein.");
     }
-  }
+  };
 
   return (
     <>
@@ -78,11 +101,15 @@ function PostNew() {
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-md space-y-8">
           <div>
-            <h2 className="text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
+            <h2 className="text-center text-3xl font-bold text-gray-700">
+              Post erstellen
+            </h2>
           </div>
           <form className="space-y-4" onSubmit={newPost}>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Titel</label>
+              <label className="block text-xl font-medium text-gray-900">
+                Titel
+              </label>
               <input
                 type="text"
                 value={title}
@@ -92,7 +119,9 @@ function PostNew() {
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Beschreibung</label>
+              <label className="block text-xl font-medium text-gray-900">
+                Beschreibung
+              </label>
               <input
                 type="text"
                 value={Description}
@@ -102,37 +131,47 @@ function PostNew() {
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Ort</label>
+              <label className="block text-xl font-medium text-gray-900">
+                Ort
+              </label>
               <input
                 type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={locationName} // locationName verwenden
+                onChange={(e) => setLocationName(e.target.value)} // setLocationName verwenden
                 className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Startzeit</label>
+              <label className="block text-xl font-medium text-gray-900">
+                Startzeit
+              </label>
               <input
                 type="datetime-local"
-                value={startTime ? startTime.toISOString().slice(0, 16) : ""}
+                // Formatieren des Date-Objekts für den datetime-local Input
+                value={startTime ? moment(startTime).format("YYYY-MM-DDTHH:mm") : ""}
                 onChange={(e) => setStartTime(new Date(e.target.value))}
                 className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Endzeit</label>
+              <label className="block text-xl font-medium text-gray-900">
+                Endzeit
+              </label>
               <input
                 type="datetime-local"
-                value={endTime ? endTime.toISOString().slice(0, 16) : ""}
+                // Formatieren des Date-Objekts für den datetime-local Input
+                value={endTime ? moment(endTime).format("YYYY-MM-DDTHH:mm") : ""}
                 onChange={(e) => setEndTime(new Date(e.target.value))}
                 className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-700 mb-2">Bild</label>
+              <label className="block text-xl font-medium text-gray-700 mb-2">
+                Bild
+              </label>
               <div
                 onClick={() => document.getElementById("fileInput")?.click()}
                 className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition"
@@ -142,7 +181,6 @@ function PostNew() {
                     src={URL.createObjectURL(image)}
                     alt="Preview"
                     className="w-full h-full object-contain rounded-md"
-
                   />
                 ) : (
                   <span className="text-4xl text-gray-400">+</span>
@@ -163,10 +201,15 @@ function PostNew() {
 
             <SubmitButton>Hochladen</SubmitButton>
           </form>
-
         </div>
       </div>
-      <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
+      <DialogAlert
+        open={isAlert}
+        isOpen={() => setIsAlert(false)}
+        header={titleAlert}
+        content={descriptionAlert}
+        buttonText="Schließen"
+      />
     </>
   );
 }
