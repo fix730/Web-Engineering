@@ -104,7 +104,7 @@ const Cal = () => {
           localizer={localizer}
           events={events as EventType[]}
           step={60}
-          views={allViews}
+          views={[Views.MONTH, Views.WEEK, Views.DAY]}
           defaultDate={new Date(2025, 7, 10)}
           popup={false}
           onShowMore={(events: EventType[], date: Date) => {
