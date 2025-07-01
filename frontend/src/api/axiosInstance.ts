@@ -38,6 +38,7 @@ axiosInstance.interceptors.response.use(
       try {
         await axiosInstance.post("api/auth/logout", {});
         localStorage.removeItem("userInfo");
+        alert("Ihre Sitzung ist abgelaufen, sie werden Ausgeloggt");
         authEventEmitter.emit("unauthorized");
         return;
       } catch (err) {
