@@ -77,13 +77,17 @@ function Login() {
    return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{ backgroundImage: "url('/bg-login.jpg')" }}>
+      style={{ backgroundImage: "url('/bg-login1.jpg')" }}>
 
-        <h1 className="absolute top-20 text-5xl font-bold drop-shadow-lg">
-  <span className="text-black">Find</span>
-  <span className="text-red-600">DHBW</span>
-</h1>
-
+        <div className="absolute top-20 flex items-center justify-center w-full">
+  <div className="flex items-center space-x-4">
+    <h1 className="text-5xl font-bold drop-shadow-lg">
+      <span className="text-black">Find</span>
+      <span className="text-red-600">DHBW</span>
+    </h1>
+    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto" />
+  </div>
+</div>
       <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
         <div className="text-center mb-6">
           <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
@@ -121,7 +125,6 @@ function Login() {
         </p>
       </div>
 
-      <img src="/dhbwlogo.jpg" alt="DHBW Logo" className="fixed bottom-4 right-4 w-32 opacity-90" />
 
       <DialogAlert
         open={isOpenAlertDialog}
