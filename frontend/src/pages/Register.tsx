@@ -65,27 +65,27 @@ function Register() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900">Registrieren</h2>
+          <h2 className="text-center text-3xl font-bold text-gray-900">Register</h2>
         </div>
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
-            <LabelOverInput>Vorname</LabelOverInput>
+            <LabelOverInput>First Name</LabelOverInput>
             <Text handleChnceText={(e: any) => setFirstName(e.target.value)} text={firstName} />
           </div>
           <div>
-            <LabelOverInput>Nachname</LabelOverInput>
+            <LabelOverInput>Last Name</LabelOverInput>
             <Text handleChnceText={(e: any) => setName(e.target.value)} text={name} />
           </div>
           <div>
-            <LabelOverInput>E-Mail</LabelOverInput>
+            <LabelOverInput>Email</LabelOverInput>
             <Email handleChnceEmail={(e: any) => setEmail(e.target.value)} email={email} />
           </div>
           <div>
-            <LabelOverInput>Passwort</LabelOverInput>
+            <LabelOverInput>Password</LabelOverInput>
             <Paasswort handleChncePassword={(e: any) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
           </div>
           <div>
-            <LabelOverInput>Passwort bestätigen</LabelOverInput>
+            <LabelOverInput>Confirm password</LabelOverInput>
             <Paasswort
               handleChncePassword={(e: any) => setPasswordConfirm(e.target.value)}
               password={passwordConfirm}
@@ -93,23 +93,23 @@ function Register() {
             />
           </div>
           <div>
-            <LabelOverInput>Geburtsdatum</LabelOverInput>
+            <LabelOverInput>Date of birth</LabelOverInput>
             <DateInput handleChnceDate={(e: any) => setBirthday(e.target.value)} date={birthday} />
           </div>
           <button
             type="submit"
             className="w-full rounded-md bg-indigo-600 px-4 py-2 text-white font-semibold hover:bg-indigo-500"
           >
-            Registrieren
+            Register
           </button>
         </form>
         <p className="text-center text-sm text-gray-600">
-          Bereits ein Konto?{" "}
+          Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
             className="cursor-pointer text-indigo-600 hover:underline"
           >
-            Anmelden
+            Sign in
           </span>
         </p>
       </div>
