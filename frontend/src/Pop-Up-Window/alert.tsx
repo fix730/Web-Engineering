@@ -28,8 +28,8 @@ const DialogAlert: React.FC<DialogAlertProps> = ({ open, isOpen, header, content
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">  {/* Äußere div für den Hintergrunf */}
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6"> {/* Inner Div definiert das Pop-Up Window */}
         <h2 className="text-xl font-bold mb-4 text-red-500">{header}</h2>
         <p className="text-gray-700 mb-6">{content}</p>
         <div className="flex justify-end">
