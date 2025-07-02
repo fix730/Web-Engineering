@@ -94,7 +94,7 @@ function Login() {
       <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
         <div className="text-center mb-6">
           <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
-          <h2 className="mt-4 text-2xl font-bold text-gray-800">Sign in to your account</h2>
+          <h2 className="mt-4 text-2xl font-bold text-gray-800">Login</h2>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
@@ -104,26 +104,26 @@ function Login() {
           </div>
 
           <div>
-            <LabelOverInput>Password</LabelOverInput>
+            <LabelOverInput>Passwort</LabelOverInput>
             <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
             <div className="text-right text-sm mt-1">
               <a href="#" className="text-indigo-600 hover:text-indigo-500">
-                Forgot password?
+                Passwort vergessen?
               </a>
             </div>
           </div>
 
           <div>
             <SubmitButton disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Signing in..." : "In ihr Konto einloggen"}
             </SubmitButton>
           </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Do you not yet have an account?{" "}
+          Noch kein Konto?{" "}
           <a onClick={navigateToRegister} className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-500">
-            Please register.
+            Hier registrieren.
           </a>
         </p>
       </div>
