@@ -29,8 +29,6 @@ export interface PostsResponse {
 
 const Cal = () => {
   const [showModal, setShowModal] = useState(false);
-  const [modalEvents, setModalEvents] = useState<EventType[]>([]);
-  const [modalDate, setModalDate] = useState<Date | null>(null);
   const [currentPost, setCurrentPost] = useState<PostType | undefined>(undefined);
 
   const [allLoadedEvents, setAllLoadedEvents] = useState<EventType[]>([]);
@@ -54,7 +52,7 @@ const Cal = () => {
       const response = await axiosInstance.get<PostsResponse>("/api/post/all");
       return response.data.posts || [];
     } catch (error) {
-      console.error("❌ Fehler beim Laden aller sichtbaren Ereignisse:", error);
+      console.error("Fehler beim Laden aller sichtbaren Ereignisse:", error);
       return [];
     }
   };
@@ -64,7 +62,7 @@ const Cal = () => {
       const response = await axiosInstance.get<PostsResponse>("/api/post/user");
       return response.data.posts || [];
     } catch (error) {
-      console.error("❌ Fehler beim Laden der eigenen Ereignisse:", error);
+      console.error("Fehler beim Laden der eigenen Ereignisse:", error);
       return [];
     }
   };
@@ -74,7 +72,7 @@ const Cal = () => {
       const response = await axiosInstance.get<PostsResponse>("/api/post/user/liked");
       return response.data.posts || [];
     } catch (error) {
-      console.error("❌ Fehler beim Laden der gelikten Ereignisse:", error);
+      console.error("Fehler beim Laden der gelikten Ereignisse:", error);
       return [];
     }
   };
@@ -230,11 +228,11 @@ const Cal = () => {
             onSelecting={(range) => false} // Verhindert das Standard-Prompt beim Ziehen eines Auswahlbereichs
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleOnSelectEvent}
-            onShowMore={(events: EventType[], date: Date) => {
-              setModalEvents(events);
-              setModalDate(date);
-              setShowModal(true);
-            }}
+            // onShowMore={(events: EventType[], date: Date) => {
+            //   setModalEvents(events);
+            //   setModalDate(date);
+            //   setShowModal(true);
+            // }}
             eventPropGetter={eventPropGetter}
             messages={{
               today: "Heute",

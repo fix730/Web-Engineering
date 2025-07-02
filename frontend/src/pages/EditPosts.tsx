@@ -5,6 +5,7 @@ import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
 import { AxiosError } from "axios";
+import { fetchProfileImage } from "../utils/image";
 
 function EditPost() {
   const { id } = useParams<{ id: string }>(); // Holt die Post-ID aus den URL-Parametern
@@ -16,7 +17,8 @@ function EditPost() {
   const [locationName, setLocationName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageId, setImageId] = useState<number>(1);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   // --- Zustandsvariablen für Alert-Dialoge ---
@@ -39,7 +41,12 @@ function EditPost() {
           setStartTime(new Date(data.start_time).toISOString().slice(0, 16));
         if (data.end_time)
           setEndTime(new Date(data.end_time).toISOString().slice(0, 16));
-        if (data.imageUrl) setImageUrl(data.imageUrl);
+        if (data.image_idimage){
+          setImageId(data.image_idimage);
+          fetchProfileImage({
+                    onSetImageUrl: setImageUrl, imageId: data.image_idimage, profilePlaceholder: undefined //Weil Hook ist kann man es nicht direkt von Hook nehmen
+                  });
+        } 
       } catch (error: any) {
         let msg = "Kann den Post nicht laden.";
         if (error.isAxiosError && (error as AxiosError).response?.data) {

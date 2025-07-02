@@ -463,6 +463,7 @@ export async function isPasswordValid(password: string, userId: number): Promise
 //Tut einen Post updaten
 export async function updatePost(postId: number, locationName: string, title: string, description: string, imageId: number, start_time: Date | null, end_time: Date | null, imageData?: Buffer, imageMimeType?: string, imageName?: string) {
     if (imageData && imageMimeType && imageName) {
+        console.log("Hallo");
         await updateImageById(imageId, imageData, imageMimeType, imageName);
     }
 

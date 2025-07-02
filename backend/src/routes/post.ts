@@ -326,12 +326,12 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
             if(!change){
                 return res.status(200).json({ message: "Keine Änderungen erkannt oder übermittelt." });
             }
-            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time);
+            newPost = await updatePost(Number(data.postId), locationName, title , description, currentPost.image_idimage || 1, start_time, end_time);
         } else {
             imageData = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageName = req.file.originalname;
-            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time, imageData, imageMimeType, imageName);
+            newPost = await updatePost(Number(data.postId), locationName, title, description, currentPost.image_idimage || 1, start_time, end_time, imageData, imageMimeType, imageName);
         }
 
         res.status(200).json({
