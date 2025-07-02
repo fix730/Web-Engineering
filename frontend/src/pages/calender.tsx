@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-import "moment/locale/de"; // Stellt sicher, dass die deutsche Lokalisierung geladen ist
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Header from "./components/Header/Header";
 import axiosInstance from "../api/axiosInstance";
 import { PostType } from "./components/Post/Post";
-import { useNavigate } from "react-router-dom"; // Importieren von useNavigate
+import PostClicked from "./components/Post/PostClicked";
+import axios from "axios";
 
-// Lokalisierung auf Deutsch setzen
-moment.locale("de");
+// Moment.js für Lokalisierung
+moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
+const allViews = Object.values(Views);
 
 // --- Interface-Definitionen ---
 
 export interface EventType {
   id: number;
   title: string;
-  allDay: boolean; // allDay kann auch false sein, wenn es um spezifische Uhrzeiten geht
+  allDay: true;
   start: Date;
   end: Date;
 }
@@ -26,81 +27,86 @@ export interface PostsResponse {
   posts: PostType[];
 }
 
+// --- Hauptkomponente des Kalenders ---
 const Cal = () => {
+  // --- Zustandsvariablen ---
+  const [showModal, setShowModal] = useState(false);
+  const [modalEvents, setModalEvents] = useState<EventType[]>([]);
+  const [modalDate, setModalDate] = useState<Date | null>(null);
+  const [postClicked, setPostClicked] = useState(false);
+  const [currentPost, setCurrentPost] = useState<PostType>();
+  const [x, setX] = useState<boolean>(false); // Unbenutzt
   const [events, setEvents] = useState<EventType[]>([]);
-  const navigate = useNavigate(); // Initialisieren des navigate Hooks
 
   // --- Initiales Laden der Events beim Mounten der Komponente ---
   useEffect(() => {
-    // Diese Konsolenlogs sind hilfreich zur Debugging der Moment.js Lokalisierung
-    console.log("Moment Spracheinstellung:", moment.locale());
-    console.log("Beispiel Datum (Moment):", moment().format("dddd, D. MMMM YYYY, HH:mm"));
     fetchEvents();
   }, []);
 
+  // --- Event-Handler: Wird aufgerufen, wenn ein Event im Kalender ausgewählt wird ---
+  async function handleOnSelectEvent(event: EventType) {
+    setShowModal(true);
+    const response = await axiosInstance.get("/api/post/one", {
+      params: { postId: event.id },
+    });
+    setCurrentPost(response.data.post);
+    setPostClicked(true);
+  }
+
+  // --- Funktion zum Abrufen der Events von der API ---
   const fetchEvents = async () => {
     try {
       const response = await axiosInstance.get<PostsResponse>("/api/post/all");
-
-      setEvents(
-        response.data.posts.map((post) => ({
-          id: post.idpost,
-          title: post.title,
-          allDay: false, // Setzen Sie dies auf false, da Sie spezifische Start- und Endzeiten haben
-          start: new Date(post.start_time),
-          end: new Date(post.end_time),
-        }))
-      );
+      setEvents(response.data.posts.map((post) => ({
+        id: post.idpost,
+        title: post.title,
+        allDay: true,
+        start: new Date(post.start_time),
+        end: new Date(post.end_time),
+      })));
     } catch (error) {
-      console.error("Fehler beim Laden der Ereignisse:", error);
-      // Optional: Eine Benachrichtigung für den Benutzer anzeigen
+      console.error("Fehler beim Abrufen der Events:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Nachricht:", error.message);
+        if (error.response) {
+          console.error("Status:", error.response.status);
+          console.error("Daten:", error.response.data);
+        } else if (error.request) {
+          console.error("Keine Antwort erhalten. Serverstatus oder Netzwerk prüfen.");
+        }
+      }
     }
   };
 
   return (
     <>
       <Header />
-      <div style={{ height: 700, padding: '20px' }}> {/* Etwas Padding hinzufügen für bessere Optik */}
+      <div style={{ height: 700 }}>
         <Calendar
           localizer={localizer}
           events={events as EventType[]}
-          step={60} // Standard-Schrittweite in Minuten für die Tages- und Wochenansicht
-          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]} // Agenda-Ansicht hinzugefügt
-          defaultView={Views.MONTH}
-          defaultDate={new Date()} // Setzt das Standarddatum auf das aktuelle Datum
-          popup={false} // Verhindert das Standard-Popup von react-big-calendar
-          selectable // Aktiviert die Auswahl von Zeitfenstern
-          onSelectSlot={(slotInfo) => {
-            // Beim Auswählen eines Zeitfensters zur Post-Erstellungsseite navigieren
-            navigate("/posts/new", {
-              state: {
-                // Übergeben der Start- und Endzeiten als ISO-Strings
-                startTime: slotInfo.start.toISOString(),
-                endTime: slotInfo.end.toISOString(),
-              },
-            });
+          step={60}
+          views={[Views.MONTH, Views.WEEK, Views.DAY]}
+          defaultDate={new Date(2025, 7, 10)}
+          popup={false}
+          onShowMore={(events: EventType[], date: Date) => {
+            setModalEvents(events);
+            setModalDate(date);
+            setShowModal(true);
           }}
-          // Optional: onSelectEvent, wenn Sie beim Klicken auf ein bestehendes Ereignis etwas tun wollen
-          onSelectEvent={(event) => {
-            console.log("Ereignis angeklickt:", event);
-            // Beispiel: Zu einer Detailseite des Posts navigieren
-            // navigate(`/posts/${event.id}`);
-          }}
-          messages={{
-            today: "Heute",
-            previous: "Zurück",
-            next: "Weiter",
-            month: "Monat",
-            week: "Woche",
-            day: "Tag",
-            agenda: "Agenda",
-            date: "Datum",
-            time: "Uhrzeit",
-            event: "Ereignis",
-            noEventsInRange: "Keine Ereignisse im gewählten Zeitraum.",
-            showMore: (total) => `+${total} mehr`,
-          }}
+          onSelectEvent={(event) => handleOnSelectEvent(event)}
         />
+
+        {/* PostClicked Modal: Wird angezeigt, wenn ein Post ausgewählt wurde */}
+        {currentPost && showModal && (
+          <PostClicked
+            post={currentPost}
+            onClose={() => {
+              setShowModal(false);
+              setCurrentPost(undefined);
+            }}
+          />
+        )}
       </div>
     </>
   );
