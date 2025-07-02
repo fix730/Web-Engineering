@@ -1,58 +1,81 @@
-/* Custom styles for React Big Calendar events */
-
-/* Farbe für eigene Posts */
-.rbc-event.rbc-event-own {
-  background-color: #6200EE !important; /* Lila - !important kann notwendig sein, um die Standardstile zu überschreiben */
-  color: white !important;
-  border-radius: 4px !important;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Farbe für gelikte Posts */
-.rbc-event.rbc-event-liked {
-  background-color: #03DAC6 !important; /* Türkis - !important kann notwendig sein */
-  color: white !important;
-  border-radius: 4px !important;
-}
-
-/* NEU: Farbe für Andere Posts (fremde, nicht gelikte) */
-.rbc-event.rbc-event-other {
-  background-color: #A0A0A0 !important; /* Ein neutrales Grau */
-  color: white !important;
-  border-radius: 4px !important;
-}
-
-/* Anpassungen für hover-Effekte (optional) */
-.rbc-event.rbc-event-own:hover {
-  background-color: #4B00AD !important; /* Dunkleres Lila beim Hover */
-}
-
-.rbc-event.rbc-event-liked:hover {
-  background-color: #02a392 !important; /* Dunkleres Türkis beim Hover */
-}
-
-/* NEU: Hover-Effekt für andere Posts */
-.rbc-event.rbc-event-other:hover {
-  background-color: #808080 !important; /* Dunkleres Grau beim Hover */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
 /* ------------------------------------------- */
-/* NEU: Filter-Indikatoren und Checkbox-Styles */
+/* React Big Calendar spezifische Styles */
+/* ------------------------------------------- */
+
+/* Standard Event Hintergrundfarbe (kann überschrieben werden) */
+.rbc-event {
+  border-radius: 4px;
+  border: none; /* Entfernt den Standardrand */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Leichter Schatten für Tiefe */
+  color: white; /* Standardtextfarbe für Events */
+  font-size: 0.85em; /* Etwas kleinere Schrift */
+  padding: 2px 5px; /* Innenabstand */
+  line-height: 1.2;
+}
+
+/* Farbe für Eigene Posts */
+.rbc-event.rbc-event-own {
+  background-color: #4A90E2 !important; /* Klares Blau */
+}
+
+/* Farbe für Gelikte Posts */
+.rbc-event.rbc-event-liked {
+  background-color: #50E3C2 !important; /* Aquamarin/Mintgrün */
+}
+
+/* Farbe für Andere Posts (fremde, nicht gelikte) */
+.rbc-event.rbc-event-other {
+  background-color: #FF6B6B !important; /* Korallenrot */
+}
+
+/* Hover-Effekte für Events */
+.rbc-event.rbc-event-own:hover {
+  background-color: #357ABD !important; /* Dunkleres Blau beim Hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rbc-event.rbc-event-liked:hover {
+  background-color: #3CB7A0 !important; /* Dunkleres Aquamarin beim Hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rbc-event.rbc-event-other:hover {
+  background-color: #E05A5A !important; /* Dunkleres Korallenrot beim Hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ------------------------------------------- */
+/* Filter-Indikatoren und Checkbox-Styles */
 /* ------------------------------------------- */
 
 /* Farben für die Farbindikatoren neben den Checkboxen */
 .bg-own-color {
-  background-color: #6200EE; /* Entspricht der Farbe von .rbc-event-own */
+  background-color: #4A90E2; /* Entspricht der Farbe von .rbc-event-own */
 }
 
 .bg-liked-color {
-  background-color: #03DAC6; /* Entspricht der Farbe von .rbc-event-liked */
+  background-color: #50E3C2; /* Entspricht der Farbe von .rbc-event-liked */
 }
 
 .bg-other-color {
-  background-color: #A0A0A0; /* Entspricht der Farbe von .rbc-event-other */
+  background-color: #FF6B6B; /* Entspricht der Farbe von .rbc-event-other */
 }
 
-/* Grundlegendes Styling für Checkboxen, wenn Tailwind's form plugin nicht verwendet wird */
+/* Grundlegendes Styling für Checkboxen */
 .form-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -69,7 +92,7 @@
 }
 
 .form-checkbox:checked {
-  background-color: #4F46E5; /* indigo-600 */
+  background-color: #4F46E5; /* Ein Indigo-Blau für den Haken (Tailwind default) */
   border-color: #4F46E5;
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 00-1.414 0L6.5 9.086 4.207 6.793a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l5-5a1 1 0 000-1.414z'/%3e%3c/svg%3e");
   background-size: 100% 100%;
@@ -79,5 +102,5 @@
 
 .form-checkbox:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* indigo-500 with opacity */
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* Ein leichter Fokus-Schatten */
 }
