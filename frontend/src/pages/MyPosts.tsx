@@ -21,7 +21,7 @@ const MyPosts = () => {
   const [dialogConfirmColor, setDialogConfirmColor] = useState("");
   const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
-   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
   // Post-Details Modal
   const [postClicked, setPostClicked] = useState(false);
@@ -59,33 +59,33 @@ const MyPosts = () => {
   };
 
   const deletePost = async () => {
-  setIsOpenDialog(false);
-  if (postToDeleteId == null) return;
-  try {
-    // Post löschen
-    await axiosInstance.delete(`/api/post/`, {
-      params: { postId: postToDeleteId }
-    });
+    setIsOpenDialog(false);
+    if (postToDeleteId == null) return;
+    try {
+      // Post löschen
+      await axiosInstance.delete(`/api/post/`, {
+        params: { postId: postToDeleteId }
+      });
 
-    // Warten, damit Backend sicher löschen kann
-    await delay(500);
+      // Warten, damit Backend sicher löschen kann
+      await delay(500);
 
-    // Posts neu laden, um UI zu aktualisieren
-    await getUserPosts();
+      // Posts neu laden, um UI zu aktualisieren
+      await getUserPosts();
 
-    // Modal schließen, falls aktueller Post gelöscht wurde
-    setPostClicked(false);
-  } catch (error) {
-    console.error("Fehler beim Löschen des Posts:", error);
-  }
-};
+      // Modal schließen, falls aktueller Post gelöscht wurde
+      setPostClicked(false);
+    } catch (error) {
+      console.error("Fehler beim Löschen des Posts:", error);
+    }
+  };
 
-  
+
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen"> 
       <Header />
-      <main className="max-w-4xl mx-auto p-4 space-y-6">
+      <main className="flex-grow max-w-4xl mx-auto p-4 space-y-6"> 
         <h1 className="text-3xl font-bold text-center mb-12">Meine Posts</h1>
         {posts.length === 0 && (
           <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
@@ -93,10 +93,7 @@ const MyPosts = () => {
         <div className="space-y-8">
           {posts.map((post) => (
             <div key={post.idpost} className="relative">
-              <Post
-                post={post}
-
-              />
+              <Post post={post} />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
                   onClick={() => handleEdit(post.idpost)}
@@ -105,7 +102,7 @@ const MyPosts = () => {
                   <Pencil size={16} />
                   <span className="text-sm">Bearbeiten</span>
                 </button>
-                <button 
+                <button
                   onClick={() => handleDeleteClick(post.idpost)}
                   className="flex items-center space-x-1 text-red-600 hover:text-red-800 transition-colors"
                 >
@@ -117,9 +114,6 @@ const MyPosts = () => {
           ))}
         </div>
       </main>
-      <Footer />
-
-
 
       <DialogQuestion
         open={isOpenDialog}
@@ -132,8 +126,11 @@ const MyPosts = () => {
         colorOnHover={dialogHoverColor}
         colorConfirm={dialogConfirmColor}
       />
-    </>
+
+      
+      <Footer />
+    </div>
   );
-};
+}
 
 export default MyPosts;

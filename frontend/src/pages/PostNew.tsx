@@ -43,6 +43,7 @@ function PostNew() {
         });
 
         if (response.status === 200) {
+          
           setTitleAlert("Post erfolgreich erstellt");
           setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
           setIsAlert(true);
@@ -69,10 +70,10 @@ function PostNew() {
     <>
       <Header />
       <div>
-            <h2 className="mt-4 mb-0 text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
-          </div>
+        <h2 className="mt-4 mb-0 text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
+      </div>
       <div className="flex min-h-screen items-center justify-center bg-gray-200 px-4">
-  <div className="w-full max-w-2xl bg-white p-10 rounded-xl shadow-2xl space-y-8">
+        <div className="w-full max-w-2xl bg-white p-10 rounded-xl shadow-2xl space-y-8">
           <form className="space-y-4" onSubmit={newPost}>
             <div>
               <label className="block text-xl font-medium text-gray-900">Titel</label>

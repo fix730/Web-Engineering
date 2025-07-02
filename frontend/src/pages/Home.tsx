@@ -125,6 +125,7 @@ function Home() {
 
 
       {/* <Comment comment={dummyComment[0]} /> */}
+      
       <Footer />
     </>
 

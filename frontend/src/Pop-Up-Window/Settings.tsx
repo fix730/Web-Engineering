@@ -148,6 +148,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
 
   // Handler für Bild-Upload (mit Axios)
   const handleImageUpload = async () => {
+    
     if (!selectedImageFile) {
       showAlert("Fehler", "Bitte wählen Sie ein Bild zum Hochladen aus.");
       return;

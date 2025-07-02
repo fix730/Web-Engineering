@@ -177,92 +177,89 @@ const Cal = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen"> 
       <Header />
-      <div style={{ padding: '20px' }}>
-        {/* Filter-UI über dem Kalender */}
-        <div className="flex justify-center mb-4 space-x-4">
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600"
-              checked={filters.own}
-              onChange={() => handleFilterChange('own')}
-            />
-            <span className="ml-2 text-gray-700 font-medium">Eigene Posts</span>
-            <span className="w-4 h-4 ml-2 rounded-full bg-own-color"></span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600"
-              checked={filters.liked}
-              onChange={() => handleFilterChange('liked')}
-            />
-            <span className="ml-2 text-gray-700 font-medium">Geliked Posts</span>
-            <span className="w-4 h-4 ml-2 rounded-full bg-liked-color"></span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600"
-              checked={filters.other}
-              onChange={() => handleFilterChange('other')}
-            />
-            <span className="ml-2 text-gray-700 font-medium">Andere Posts</span>
-            <span className="w-4 h-4 ml-2 rounded-full bg-other-color"></span>
-          </label>
-        </div>
+      <main className="flex-grow"> 
+        <div style={{ padding: '20px' }}>
+          {/* Filter-UI über dem Kalender */}
+          <div className="flex justify-center mb-4 space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-indigo-600"
+                checked={filters.own}
+                onChange={() => handleFilterChange('own')}
+              />
+              <span className="ml-2 text-gray-700 font-medium">Eigene Posts</span>
+              <span className="w-4 h-4 ml-2 rounded-full bg-own-color"></span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-indigo-600"
+                checked={filters.liked}
+                onChange={() => handleFilterChange('liked')}
+              />
+              <span className="ml-2 text-gray-700 font-medium">Geliked Posts</span>
+              <span className="w-4 h-4 ml-2 rounded-full bg-liked-color"></span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-indigo-600"
+                checked={filters.other}
+                onChange={() => handleFilterChange('other')}
+              />
+              <span className="ml-2 text-gray-700 font-medium">Andere Posts</span>
+              <span className="w-4 h-4 ml-2 rounded-full bg-other-color"></span>
+            </label>
+          </div>
 
-        {/* Kalender-Container */}
-        <div style={{ height: 700 }}>
-          <Calendar
-            localizer={localizer}
-            events={filteredEvents} //HIER werden die GEFILTERTEN Events übergeben
-            step={60}
-            views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
-            defaultView={Views.MONTH}
-            defaultDate={new Date()}
-            popup={false}
-            selectable
-            onSelecting={(range) => false} // Verhindert das Standard-Prompt beim Ziehen eines Auswahlbereichs
-            onSelectSlot={handleSelectSlot}
-            onSelectEvent={handleOnSelectEvent}
-            // onShowMore={(events: EventType[], date: Date) => {
-            //   setModalEvents(events);
-            //   setModalDate(date);
-            //   setShowModal(true);
-            // }}
-            eventPropGetter={eventPropGetter}
-            messages={{
-              today: "Heute",
-              previous: "Zurück",
-              next: "Weiter",
-              month: "Monat",
-              week: "Woche",
-              day: "Tag",
-              agenda: "Agenda",
-              date: "Datum",
-              time: "Uhrzeit",
-              event: "Ereignis",
-              noEventsInRange: "Keine Ereignisse im gewählten Zeitraum.",
-              showMore: (total) => `+${total} mehr`,
-            }}
-          />
-        </div>
+          {/* Kalender-Container */}
+          <div style={{ height: 700 }}>
+            <Calendar
+              localizer={localizer}
+              events={filteredEvents} //HIER werden die GEFILTERTEN Events übergeben
+              step={60}
+              views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+              defaultView={Views.MONTH}
+              defaultDate={new Date()}
+              popup={false}
+              selectable
+              onSelecting={(range) => false} // Verhindert das Standard-Prompt beim Ziehen eines Auswahlbereichs
+              onSelectSlot={handleSelectSlot}
+              onSelectEvent={handleOnSelectEvent}
+              eventPropGetter={eventPropGetter}
+              messages={{
+                today: "Heute",
+                previous: "Zurück",
+                next: "Weiter",
+                month: "Monat",
+                week: "Woche",
+                day: "Tag",
+                agenda: "Agenda",
+                date: "Datum",
+                time: "Uhrzeit",
+                event: "Ereignis",
+                noEventsInRange: "Keine Ereignisse im gewählten Zeitraum.",
+                showMore: (total) => `+${total} mehr`,
+              }}
+            />
+          </div>
 
-        {currentPost && showModal && (
-          <PostClicked
-            post={currentPost}
-            onClose={() => {
-              setShowModal(false);
-              setCurrentPost(undefined);
-            }}
-          />
-        )}
-      </div>
-      <Footer /> 
-    </>
+          {currentPost && showModal && (
+            <PostClicked
+              post={currentPost}
+              onClose={() => {
+                setShowModal(false);
+                setCurrentPost(undefined);
+              }}
+            />
+          )}
+        </div>
+      </main> 
+      <Footer />
+    </div>
   );
 };
 
