@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <>
-      <footer className="bg-white text-center text-xs text-gray-500 py-6">
+      <footer className="bg-gray-400 text-center text-xs text-black py-6">
         <nav className="flex flex-wrap justify-center space-x-4 mb-4">
           <button onClick={() => navigate("/")} className="font-semibold hover:underline">
             Start

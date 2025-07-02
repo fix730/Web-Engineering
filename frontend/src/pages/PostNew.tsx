@@ -4,6 +4,7 @@ import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
+import Footer from "./components/Footer/Footer";
 
 function PostNew() {
   const navigate = useNavigate();
@@ -67,11 +68,11 @@ function PostNew() {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-md space-y-8">
-          <div>
-            <h2 className="text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
+      <div>
+            <h2 className="mt-4 mb-0 text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
           </div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-200 px-4">
+  <div className="w-full max-w-2xl bg-white p-10 rounded-xl shadow-2xl space-y-8">
           <form className="space-y-4" onSubmit={newPost}>
             <div>
               <label className="block text-xl font-medium text-gray-900">Titel</label>
@@ -79,7 +80,7 @@ function PostNew() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
@@ -89,7 +90,7 @@ function PostNew() {
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
@@ -99,7 +100,7 @@ function PostNew() {
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
@@ -109,7 +110,7 @@ function PostNew() {
                 type="datetime-local"
                 value={startTime ? startTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => setStartTime(new Date(e.target.value))}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
@@ -119,7 +120,7 @@ function PostNew() {
                 type="datetime-local"
                 value={endTime ? endTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => setEndTime(new Date(e.target.value))}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
@@ -127,7 +128,7 @@ function PostNew() {
               <label className="block text-xl font-medium text-gray-700 mb-2">Bild</label>
               <div
                 onClick={() => document.getElementById("fileInput")?.click()}
-                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition"
+                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition bg-gray-300"
               >
                 {image ? (
                   <img
@@ -158,6 +159,7 @@ function PostNew() {
         </div>
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
+      <Footer />
     </>
   );
 }

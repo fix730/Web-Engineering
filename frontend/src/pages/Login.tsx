@@ -19,40 +19,43 @@ function Login() {
     const [textAlertWindow, setTextAlertWindow] = useState("");
     const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     // --- Funktion zur Handhabung des Login-Vorgangs ---
     // Versucht den Benutzer mit den eingegebenen Daten anzumelden.
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (email && password) {
-            try {
-                await dispatch(login({ email, password })).unwrap();
-                navigate('/'); // Weiterleitung bei erfolgreichem Login
-            } catch (e: any) {
-                console.error("Login fehlgeschlagen:", e);
+    e.preventDefault();
 
-                let errorTitle = "Login fehlgeschlagen";
-                let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+    if (email && password) {
+        setIsLoading(true); // Ladeanzeige starten
 
-                // Fehlermeldung aus der Redux-Action extrahieren
-                if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
-                    errorMessage = e.message;
-                } else {
-                    errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
-                }
+        try {
+            const resultAction = await dispatch(login({ email, password })).unwrap();
+            navigate('/');
+        } catch (e: any) {
+            console.error("Login fehlgeschlagen:", e);
 
-                setTitleAlertWindow(errorTitle);
-                setTextAlertWindow(errorMessage);
-                setIsOpenAlertDialog(true); // Alert-Fenster bei Fehler öffnen
+            let errorTitle = "Login fehlgeschlagen";
+            let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+
+            if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+                errorMessage = e.message;
+            } else {
+                errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
             }
-        } else {
-            setTitleAlertWindow("Login fehlgeschlagen");
-            setTextAlertWindow("Bitte fülle alle Felder aus.");
-            setIsOpenAlertDialog(true); // Alert-Fenster bei fehlenden Feldern öffnen
-        }
-    };
 
-    // --- Funktionen zur Aktualisierung der Eingabefelder ---
+            setTitleAlertWindow(errorTitle);
+            setTextAlertWindow(errorMessage);
+            setIsOpenAlertDialog(true); 
+        } finally {
+            setIsLoading(false); // Ladeanzeige beenden
+        }
+    } else {
+        setTitleAlertWindow("Login fehlgeschlagen");
+        setTextAlertWindow("Bitte fülle alle Felder aus.");
+        setIsOpenAlertDialog(true);
+    }
+};
     const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
     };
@@ -65,54 +68,75 @@ function Login() {
         navigate("/register");
     }
 
+    if (isLoading) {
     return (
-        <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img alt="Login Logo" src={LogInIcon} className="mx-auto h-10 w-auto" />
-                    <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                        Sign in to your account
-                    </h2>
-                </div>
-
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div>
-                            <LabelOverInput>E-Mail</LabelOverInput>
-                            <div className="mt-2">
-                                <Email email={email} handleChnceEmail={handleChnceEmail} />
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <LabelOverInput>Passwort</LabelOverInput>
-                                <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="mt-2">
-                                <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <SubmitButton>Sign in</SubmitButton>
-                        </div>
-                    </form>
-
-                    <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Hast du schon ein Benutzerkonto?{' '}
-                        <a href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Registrie dich
-                        </a>
-                    </p>
-                </div>
-            </div>
-            <DialogAlert open={isOpenAlertDialog} isOpen={() => setIsOpenAlertDialog(false)} header={titleAlertWindow} content={textAlertWindow} />
-        </>
-    )
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+            <div className="spinner"></div>
+        </div>
+    );
 }
+
+
+   return (
+    <div
+      className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/bg-login1.jpg')" }}>
+
+        <div className="absolute top-20 flex items-center justify-center w-full">
+  <div className="flex items-center space-x-4">
+    <h1 className="text-5xl font-bold drop-shadow-lg">
+      <span className="text-black">Find</span>
+      <span className="text-red-600">DHBW</span>
+    </h1>
+    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto" />
+  </div>
+</div>
+      <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
+        <div className="text-center mb-6">
+          <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
+          <h2 className="mt-4 text-2xl font-bold text-gray-800">Sign in to your account</h2>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <LabelOverInput>Email</LabelOverInput>
+            <Email email={email} handleChnceEmail={handleChnceEmail} />
+          </div>
+
+          <div>
+            <LabelOverInput>Password</LabelOverInput>
+            <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
+            <div className="text-right text-sm mt-1">
+              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                Forgot password?
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <SubmitButton disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
+            </SubmitButton>
+          </div>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Do you not yet have an account?{" "}
+          <a onClick={navigateToRegister} className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-500">
+            Please register.
+          </a>
+        </p>
+      </div>
+
+
+      <DialogAlert
+        open={isOpenAlertDialog}
+        isOpen={() => setIsOpenAlertDialog(false)}
+        header={titleAlertWindow}
+        content={textAlertWindow}
+      />
+    </div>
+  );
+}
+
 export default Login;
