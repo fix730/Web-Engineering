@@ -298,15 +298,17 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"> 
+        <button
+          onClick={isOpen}
+          className="text-gray-600 hover:text-gray-900 text-3xl font-semibold absolute top-4 right-4" 
+          aria-label="Close post"
+        >
+          &times;
+        </button>
         <h2 className="text-xl font-bold mb-4 text-black">Einstellungen</h2>
-        {/* KEINE direkte Anzeige von Nachrichten hier */}
         <TabsWithIcon tabContent={myTabData} />
-        <div className="flex justify-end mt-4">
-          <button onClick={isOpen} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Schließen
-          </button>
-        </div>
+        
       </div>
       {/* Das DialogAlert-Fenster wird hier gerendert */}
       <DialogAlert

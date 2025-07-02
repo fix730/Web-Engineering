@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Settings from "../../../Pop-Up-Window/Settings";
+import {Help} from "../../../Pop-Up-Window/Help";
 
 const Footer = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -20,7 +22,7 @@ const Footer = () => {
           <button onClick={() => setSettingsOpen(true)} className="font-semibold hover:underline">
             Einstellungen
           </button>
-          <button className="font-semibold hover:underline">
+          <button onClick={() => setHelpOpen(true)} className="font-semibold hover:underline">
             Hilfe
           </button>
         </nav>
@@ -34,6 +36,10 @@ const Footer = () => {
         isOpen={() => setSettingsOpen(false)}
         currentImageId={null}
         onImageUploadSuccess={() => {}}
+      />
+      <Help 
+        open={helpOpen}
+        isOpen={() => setHelpOpen(false)}
       />
     </>
   );
