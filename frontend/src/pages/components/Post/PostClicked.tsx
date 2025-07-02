@@ -73,7 +73,7 @@ const PostClicked = ({ post, onClose,  }: PostClickedProps) => {
                             </p>
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={"http://localhost:8000/api/image/" + post.user.image_idimage}
+                                    src={postImage}
                                     alt={`${post.user?.firstName} ${post.user?.name}`}
                                     className="w-16 h-16 rounded-full object-cover"
                                 />

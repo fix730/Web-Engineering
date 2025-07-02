@@ -7,9 +7,10 @@ import axiosInstance from "../api/axiosInstance";
 import { AxiosError } from "axios";
 
 function EditPost() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>(); // Holt die Post-ID aus den URL-Parametern
+  const navigate = useNavigate(); // Hook zur Navigation
 
+  // --- Zustandsvariablen für die Post-Daten ---
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [locationName, setLocationName] = useState("");
@@ -18,10 +19,13 @@ function EditPost() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  // --- Zustandsvariablen für Alert-Dialoge ---
   const [alertTitle, setAlertTitle] = useState("");
   const [alertText, setAlertText] = useState("");
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
+  // --- useEffect Hook zum Laden der Post-Daten beim Komponenten-Mount ---
+  // Lädt die Details des zu bearbeitenden Posts von der API.
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -47,8 +51,10 @@ function EditPost() {
         setIsAlertOpen(true);
       }
     })();
-  }, [id]);
+  }, [id]); // Abhängigkeit: Lädt Daten neu, wenn sich die Post-ID ändert
 
+  // --- Funktion zum Absenden des Formulars (Post bearbeiten) ---
+  // Verarbeitet die Formularübermittlung und sendet die aktualisierten Post-Daten an die API.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !title || !description || !locationName || !startTime || !endTime) {

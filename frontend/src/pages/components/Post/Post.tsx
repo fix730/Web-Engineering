@@ -28,30 +28,23 @@ export type PostType = {
 }
 export type PostProps = {
   post: PostType;
-  
+
 };
 
+// formatiert das Datum
 const formatDate = (dateString: string) => {
   const d = new Date(dateString);
-  // Tag, Monat (plus 1, da nullbasiert), Jahr
   return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 };
 
 
 
 
-const Post = ({ post}: PostProps) => {
+const Post = ({ post }: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
   const [sameDate, setSameDate] = useState(false)
 
-  
-
-  const handleDescriptionlentgh = (dateString: string) => {
-  const d = new Date(dateString);
-  // Tag, Monat (plus 1, da nullbasiert), Jahr
-  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
-};
-  
+  // prüft ob  zwei   strings denselben Werrt habe
   const handleDoubleDate = (dateStringStart: string, dateStringEnd: string) => {
     const dS = formatDate(dateStringStart);
     const dE = formatDate(dateStringEnd);
@@ -62,7 +55,7 @@ const Post = ({ post}: PostProps) => {
       setSameDate(false)
     )
   };
-
+  //Wird ausgeführt wenn sich das datum ändert
   useEffect(() => {
     handleDoubleDate(post.start_time, post.end_time);
   }, [post.start_time, post.end_time]);
@@ -72,7 +65,7 @@ const Post = ({ post}: PostProps) => {
       key={post.idpost}
       className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 flex flex-col md:flex-row border border-gray-200 h-96"
     >
-      {/* Bild auf der linken Seite */}
+      {/* Beitragsbild auf der linken Seite */}
       <div className="md:w-1/3 w-full h-full">
         <img src={postImage} alt={post.title} className="w-full h-full object-cover" />
       </div>
@@ -82,6 +75,7 @@ const Post = ({ post}: PostProps) => {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description} </p>
 
+        
         {sameDate == true && <p className="text-gray-700 mb-2">Am {formatDate(post.end_time)} </p>}
         {sameDate == false && (
           <p className="text-gray-700 mb-2">
@@ -92,26 +86,20 @@ const Post = ({ post}: PostProps) => {
         <p className="text-gray-500">Location: {post.locationName}</p>
         <p className="mb-2">Likes: {countLikes}</p>
 
-        {/* NEUER BEREICH FÜR DEN FOOTER / INTERAKTION */}
-        {/* Dieser div nimmt den gesamten verfügbaren vertikalen Raum ein und schiebt den Footer nach unten */}
+        {/* Fußzeile für Interaktionen (Kommentare und Likes) */}
         <div className="flex flex-grow items-end mt-auto w-full">
-          {/* Der CommentUnderPost muss hier in einem Wrapper sein,
-          damit er nicht mit dem Like-Button in Konkurrenz tritt */}
-
+          {/* Kommentarbereich */}
           <div className="flex-grow w-10/12 mr-auto">
-            {/* 'mt-auto' hier entfernt, da der übergeordnete flex-container das übernimmt */}
-            <CommentUnderPost
-              post={post}
-              
-            />
+            <CommentUnderPost post={post} />
           </div>
+          {/* Like-Button */}
           <div className="ml-auto py-5">
             <img
               onClick={(e) => {
-                e.stopPropagation(); // Verhindert das Bubbling zum Post-Klick
+                e.stopPropagation(); // Verhindert, dass das Klickereignis zum übergeordneten Beitrag "hochblubbert"
                 toggleLike();
               }}
-              className="w-10 h-10 flex-shrink-0 cursor-pointer ml-4 " // ml-4 für Abstand zum Kommentarfeld
+              className="w-10 h-10 flex-shrink-0 cursor-pointer ml-4 "
               src={liked ? heartLiked : heartNotLiked}
               alt="Like"
             />
