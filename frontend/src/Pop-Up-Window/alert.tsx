@@ -24,7 +24,7 @@ type DialogQuestionProps = {
   colorConfirm?: string;
 
 }
-const DialogAlert: React.FC<DialogAlertProps> = ({ open, isOpen, header, content, buttonText = "Schliesen" }) => {
+const DialogAlert: React.FC<DialogAlertProps> = ({ open, isOpen, header, content, buttonText = "Schliessen" }) => {
   if (!open) return null;
 
   return (

@@ -67,7 +67,7 @@ export function SearchBar({ setPosts }: SearchBarProps)  {
         <form
             className="
             
-                flex flex-col items-center p-4 bg-gray-100 gap-y-3 mb-8  // Mobile: untereinander, vertikaler Abstand
+                flex flex-col items-center p-4 bg-gray gap-y-3 mb-8  // Mobile: untereinander, vertikaler Abstand
                 sm:flex-row sm:justify-center sm:space-x-0 sm:items-stretch // Desktop: nebeneinander, KEIN Abstand, gleiche Höhe
                 relative
             "

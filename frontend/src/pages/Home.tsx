@@ -14,6 +14,7 @@ import Footer from "./components/Footer/Footer";
 import PostClicked from "./components/Post/PostClicked";
 import PostLikes from "./components/Post/PostLikes"
 
+
 function Home() {
   const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
   const dispatch = useAppDispatch();
@@ -116,12 +117,27 @@ function Home() {
     }
   };
 
-
+ useEffect(() => {
+	document.title = "Startseite - FindDHBW";
+}, []);
 
   return (
-    <>
+    <div
+    className="min-h-screen bg-cover bg-center"
+    style={{ backgroundImage: "url('/bg-postnew1.jpg')" }}
+  >
       <Header />
       <SearchBar setPosts={setPosts} />
+      <h1 className="text-5xl underline font-bold text-center mb-5 mt-10">
+  Willkommen auf der Startseite von{" "}
+  <span className="text-black">Find</span>
+  <span className="text-red-600">DHBW</span>
+</h1>
+      <h3 className="text-2xl font-bold text-black text-center mb-16">
+  Hier finden Sie die aktuellen Beiträge von{" "}
+  <span className="text-red-600">DHBW-Studierenden</span>
+  <span className="text-black">.</span>
+</h3>
 
       {posts.map((post) => (
         <>
@@ -152,10 +168,10 @@ function Home() {
         />
       )}
 
-
-      <Comment comment={dummyComment[0]} />
+      <div className="mt-16"></div>
+      
       <Footer />
-    </>
+    </div>
 
   )
 }

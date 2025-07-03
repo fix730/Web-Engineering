@@ -7,6 +7,7 @@ import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
 import Footer from "./components/Footer/Footer";
+import { useEffect } from "react";
 
 
 
@@ -73,67 +74,76 @@ function PostNew() {
     }
   }
 
+ useEffect(() => {
+	document.title = "Post erstellen - FindDHBW";
+}, []);
+
   return (
-    <>
-      <Header />
-      <div>
-            <h2 className="mt-4 mb-0 text-center text-3xl font-bold text-gray-700">Post erstellen</h2>
-          </div>
-      <div className="flex min-h-screen items-center justify-center bg-gray-200 px-4">
-  <div className="w-full max-w-2xl bg-white p-10 rounded-xl shadow-2xl space-y-8">
+   <div
+    className="min-h-screen bg-cover bg-center"
+    style={{ backgroundImage: "url('/bg-postnew1.jpg')" }}
+  >
+    <Header />
+
+    <div className="mt-20"></div>
+
+    <h2 className="mt-4 mb-16 text-center text-4xl underline font-bold ">Post erstellen</h2>
+    
+      <div className="flex min-h-screen items-center justify-center px-4 pb-20">
+  <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl space-y-1">
           <form className="space-y-4" onSubmit={newPost}>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Titel</label>
+              <label className="block text-md font-medium text-gray-900">Titel:</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Beschreibung</label>
+              <label className="block text-md font-medium text-gray-900">Beschreibung:</label>
               <input
                 type="text"
                 value={Description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Ort</label>
+              <label className="block text-md font-medium text-gray-900">Ort:</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Startzeit</label>
+              <label className="block text-md font-medium text-gray-900">Startzeit:</label>
               <input
                 type="datetime-local"
                 value={startTime ? startTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => setStartTime(new Date(e.target.value))}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Endzeit</label>
+              <label className="block text-md font-medium text-gray-900">Endzeit:</label>
               <input
                 type="datetime-local"
                 value={endTime ? endTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => setEndTime(new Date(e.target.value))}
-                className="mt-1 w-full rounded-md border px-4 py-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-700 mb-2">Bild</label>
+              <label className="block text-md font-medium text-gray-700 mb-2">Bild einfügen:</label>
               <div
                 onClick={() => document.getElementById("fileInput")?.click()}
                 className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition bg-gray-300"
@@ -169,7 +179,7 @@ function PostNew() {
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
       <Footer />
-    </>
+    </div>
   );
 }
 

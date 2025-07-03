@@ -13,12 +13,13 @@ import ProtectedRoute from './pages/components/ProtectedRoute';
 import EditPost from './pages/EditPosts';
 import { Calendar } from 'lucide-react';
 import Cal from './pages/calender';
+import PageLoader from "./pages/components/PageLoader";
 
 
 function App() {
   return (
     <>
-      
+      <PageLoader />
       <ThemeProvider>
         <Routes>
           <Route path="/posts" element={<Navigate to="/myposts" replace />} />

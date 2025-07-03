@@ -5,6 +5,7 @@ import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Header from "./components/Header/Header";
+import { useEffect } from "react";
 
 moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
@@ -16,6 +17,10 @@ const Cal = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalEvents, setModalEvents] = useState<EventType[]>([]);
   const [modalDate, setModalDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    document.title = "Kalender - FindDHBW";
+  }, []);
 
   return (
     <>

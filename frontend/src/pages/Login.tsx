@@ -11,6 +11,10 @@ import { AxiosError } from "axios";
 
 
 function Login() {
+  useEffect(() => {
+    document.title = "Login - FindDHBW";
+  }, []);
+
     const dispatch = useAppDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -22,6 +26,8 @@ function Login() {
 
     const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    
 
     if (email && password) {
         setIsLoading(true); // Ladeanzeige starten
@@ -73,7 +79,7 @@ function Login() {
     );
 }
 
-
+ 
    return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -81,14 +87,14 @@ function Login() {
 
         <div className="absolute top-20 flex items-center justify-center w-full">
   <div className="flex items-center space-x-4">
-    <h1 className="text-5xl font-bold drop-shadow-lg">
-      <span className="text-black">Find</span>
+    <h1 className="text-5xl mb-40 font-bold drop-shadow-lg">
+      <span className="text-white">Find</span>
       <span className="text-red-600">DHBW</span>
     </h1>
-    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto" />
+    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto mb-40" />
   </div>
 </div>
-      <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
+      <div className="bg-white bg-opacity-80 mt-20 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
         <div className="text-center mb-6">
           <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
           <h2 className="mt-4 text-2xl font-bold text-gray-800">Sign in to your account</h2>

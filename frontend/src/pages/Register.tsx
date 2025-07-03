@@ -6,11 +6,16 @@ import { LabelOverInput } from "./components/Label";
 import { Text, Email, Paasswort, DateInput } from "./components/Inputs";
 import DialogAlert from "../Pop-Up-Window/alert";
 import { startLoading, stopLoading } from "../slices/loadingSlice";
+import { useEffect } from "react";
 
 
 
 
 function Register() {
+  useEffect(() => {
+    document.title = "Register - FindDHBW";
+  }, []);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -73,25 +78,14 @@ function Register() {
   return (
     
     
-    <div
+  <div
   className="min-h-screen bg-cover bg-center flex items-center justify-center relative"
   style={{ backgroundImage: "url('/bg-login1.jpg')" }}>
+  
 
-  <div className="absolute top-20 flex items-center justify-center w-full">
-  <div className="flex items-center space-x-4">
-    <h1 className="text-5xl font-bold drop-shadow-lg">
-      <span className="text-black">Find</span>
-      <span className="text-red-600">DHBW</span>
-    </h1>
-    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto" />
-  </div>
-</div>
-
-        
-
-      <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md space-y-8">
+      <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 w-full max-w-md backdrop-blur-md space-y-1 mt-16 mb-16">
         <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900">Register</h2>
+          <h2 className="text-center text-2xl font-bold text-gray-900">Register now</h2>
         </div>
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>

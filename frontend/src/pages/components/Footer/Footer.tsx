@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Settings from "../../../Pop-Up-Window/Settings";
 
+
 const Footer = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -12,10 +13,14 @@ const Footer = () => {
 
   return (
     <>
-      <footer className="bg-gray-400 text-center text-xs text-black py-6">
+      <footer className="bg-black text-center text-xs text-white py-6">
         <nav className="flex flex-wrap justify-center space-x-4 mb-4">
+          <div className="flex items-center">
+    </div>
+
+
           <button onClick={() => navigate("/")} className="font-semibold hover:underline">
-            Start
+            Startseite
           </button>
           <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline">
             Post erstellen
@@ -42,10 +47,11 @@ const Footer = () => {
           </button>
         </div>
 
+
         {menuOpen && (
           <nav className="flex flex-col space-y-2 mb-4">
             <button onClick={() => navigate("/")} className="font-semibold hover:underline text-left w-full">
-              Start
+              Startseite
             </button>
             <button onClick={() => navigate("/posts/new")} className="font-semibold hover:underline text-left w-full">
               Post erstellen

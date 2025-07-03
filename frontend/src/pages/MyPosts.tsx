@@ -85,11 +85,19 @@ const MyPosts = () => {
     setIsLikesOpen(true);
   };
 
+  useEffect(() => {
+	document.title = "Meine Posts - FindDHBW";
+}, []);
+
   return (
-    <>
-      <Header />
+    <div
+    className="min-h-screen bg-cover bg-center"
+    style={{ backgroundImage: "url('/bg-postnew1.jpg')" }}
+  >
+    <Header />
+    <div className="mt-16"></div>
       <main className="max-w-4xl mx-auto p-4 space-y-6">
-        <h1 className="text-3xl font-bold text-center mb-12">Meine Posts</h1>
+        <h1 className="text-4xl font-bold text-center underline mb-16">Meine Posts</h1>
         {posts.length === 0 && (
           <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
         )}
@@ -122,6 +130,7 @@ const MyPosts = () => {
           ))}
         </div>
       </main>
+      <div className="mt-16"></div>
       <Footer />
 
       {postClicked && currentPost && (
@@ -148,8 +157,10 @@ const MyPosts = () => {
         colorOnHover={dialogHoverColor}
         colorConfirm={dialogConfirmColor}
       />
-    </>
+    </div>
   );
+  
+  
 };
 
 export default MyPosts;

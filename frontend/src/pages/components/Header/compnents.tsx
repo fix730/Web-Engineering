@@ -10,7 +10,7 @@ type NavigationLinkProps = {
 
 export const NavigationLink = ({ href, children, className }: NavigationLinkProps) => {
   return (
-    <a href={href} className={"text-gray-600 hover:text-blue-600" + (className ? ` ${className}` : "")}>
+    <a href={href} className={"text-white hover:scale-110 transition-transform duration-200" + (className ? ` ${className}` : "")}>
       {children}
     </a>
   );
