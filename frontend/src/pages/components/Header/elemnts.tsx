@@ -131,7 +131,7 @@ export const ProfileMenu = () => {
 
                 {open && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-                        <button onClick={() => setIsOpenSettings(true)} className="w-full text-left px-4 py-2 text-white hover:bg-gray-100">
+                        <button onClick={() => setIsOpenSettings(true)} className="w-full text-left px-4 py-2 text-black hover:bg-gray-100">
                             <div className="flex items-center space-x-2">
                                 <img src={settingIcon} className="w-5 h-5" alt="Einstellungen" />
                                 <span>Einstellungen</span>

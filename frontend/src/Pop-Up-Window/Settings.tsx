@@ -297,7 +297,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+      <div className="bg-white rounded-lg text-black shadow-lg w-full max-w-md p-6">
         <h2 className="text-xl font-bold mb-4 text-black">Einstellungen</h2>
         {/* KEINE direkte Anzeige von Nachrichten hier */}
         <TabsWithIcon tabContent={myTabData} />
