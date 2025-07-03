@@ -128,7 +128,7 @@ function Home() {
   <span className="text-black">.</span>
 </h3>
 
-      {posts.map((post) => (
+      {posts.slice().reverse().map((post) => (
         <>
           <Post
             post={post}
