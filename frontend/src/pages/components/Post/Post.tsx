@@ -63,7 +63,7 @@ const Post = ({ post }: PostProps) => {
   return (
     <div
       key={post.idpost}
-      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 flex flex-col md:flex-row border border-gray-200 h-96"
+      className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mb-6 flex flex-col md:flex-row border border-gray-200 md:h-96"
     >
       {/* Beitragsbild auf der linken Seite */}
       <div className="md:w-1/3 w-full h-full">
