@@ -85,15 +85,15 @@ function Register() {
 
       <div className="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 w-full max-w-md backdrop-blur-md space-y-1 mt-16 mb-16">
         <div>
-          <h2 className="text-center text-2xl font-bold text-gray-900">Register now</h2>
+          <h2 className="text-center text-3xl font-bold text-gray-900">Registrieren</h2>
         </div>
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
-            <LabelOverInput>First Name</LabelOverInput>
+            <LabelOverInput>Vorname</LabelOverInput>
             <Text handleChnceText={(e: any) => setFirstName(e.target.value)} text={firstName} />
           </div>
           <div>
-            <LabelOverInput>Last Name</LabelOverInput>
+            <LabelOverInput>Nachname</LabelOverInput>
             <Text handleChnceText={(e: any) => setName(e.target.value)} text={name} />
           </div>
           <div>
@@ -101,11 +101,11 @@ function Register() {
             <Email handleChnceEmail={(e: any) => setEmail(e.target.value)} email={email} />
           </div>
           <div>
-            <LabelOverInput>Password</LabelOverInput>
+            <LabelOverInput>Passwort</LabelOverInput>
             <Paasswort handleChncePassword={(e: any) => setPassword(e.target.value)} password={password} autoComplete="new-password" />
           </div>
           <div>
-            <LabelOverInput>Confirm password</LabelOverInput>
+            <LabelOverInput>Passwort bestätigen</LabelOverInput>
             <Paasswort
               handleChncePassword={(e: any) => setPasswordConfirm(e.target.value)}
               password={passwordConfirm}
@@ -113,23 +113,23 @@ function Register() {
             />
           </div>
           <div>
-            <LabelOverInput>Date of birth</LabelOverInput>
+            <LabelOverInput>Geburtsdatum</LabelOverInput>
             <DateInput handleChnceDate={(e: any) => setBirthday(e.target.value)} date={birthday} />
           </div>
           <button
             type="submit"
             className="w-full rounded-md bg-indigo-600 px-4 py-2 text-white font-semibold hover:bg-indigo-500"
           >
-            Register
+            Registrieren 
           </button>
         </form>
         <p className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Haben sie schon einen Account?{" "}
           <span
             onClick={() => navigate("/login")}
             className="cursor-pointer text-indigo-600 hover:underline"
           >
-            Sign in
+            Hier einloggen
           </span>
         </p>
       </div>

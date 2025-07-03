@@ -16,76 +16,65 @@ import PostLikes from "./components/Post/PostLikes"
 
 
 function Home() {
-  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [postClicked, setPostClicked] = useState(false);
-  const [isLikesOpen, setIsLikesOpen] = useState(false);
-  const [likesPostId, setLikesPostId] = useState<number | null>(null);
-  const handlePostClick = () => {
-    setPostClicked(true);
-    setCurrentPost(posts);
 
-  }
   console.log("Posts:", posts);
 
-  const handleViewAllLikes = (postId: number) => {
-    setLikesPostId(postId);
-    setIsLikesOpen(true);
-  };
+  
 
-  const dummyUSer = [
-    {
-      iduser: 123,
-      name: "Klaus Schwab",
-      firstName: "Klaus",
-      image_idimage: 123,
-      profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
-    }
+  // const dummyUSer = [
+  //   {
+  //     iduser: 123,
+  //     name: "Klaus Schwab",
+  //     firstName: "Klaus",
+  //     image_idimage: 123,
+  //     profileImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7s3fqLo-RhkovR9huKwI9-QXsPCi2LcTbnQ&s", // Falls Bild-URL kommt, sonst musst du es separat holen
+  //   }
 
-  ];
-  const dummyComment = [
-    {
-      idcomment: 123,
-      text: "Colles Bild",
-      date: "string", // Oder Date, wenn du willst kannst du in Date umwandeln
-      commentcol: null,
-      user_iduser: 23,
-      post_idpost: 123,
-      user: dummyUSer[0],
+  // ];
+  // const dummyComment = [
+  //   {
+  //     idcomment: 123,
+  //     text: "Colles Bild",
+  //     date: "string", // Oder Date, wenn du willst kannst du in Date umwandeln
+  //     commentcol: null,
+  //     user_iduser: 23,
+  //     post_idpost: 123,
+  //     user: dummyUSer[0],
 
-    },
+  //   },
 
 
-  ];
+  // ];
 
-  // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
-  const dummyPosts = [
-    {
-      id: 1,
-      title: "Sonnenuntergang am Seweewew",
-      description: "Wunderschöner Sonnenuntergang am nächsten Seweewe",
-      location: "München",
-      imageUrl: "https://ih1.redbubble.net/image.4665578724.8271/raf,360x360,075,t,fafafa:ca443f4786.jpg",
-    },
-    {
-      id: 2,
-      title: "Städtetrip nach Berlin",
-      description: "Cooler Trip mit vielen Sehenswürdigkeiten",
-      location: "Berlin",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1XrdeEkDoqLOfAoDB5ZqEeVxZ4PS6D1qV_g&s",
-    },
-    {
-      id: 3,
-      title: "Wanderung in den Alpen",
-      description: "Natur pur und frische Luft",
-      location: "Alpen",
-      imageUrl: "https://www.comingsoon.net/wp-content/uploads/sites/3/2025/05/Johnny-Dang-Net-Worth-2025How-Much-Money-Does-He-Make.jpg",
-    },
+  // // Erstmal wirklich nur dummy posts ohne wirklichen Inhalt oder Backend nur zum Fühlen
+  // const dummyPosts = [
+  //   {
+  //     id: 1,
+  //     title: "Sonnenuntergang am Seweewew",
+  //     description: "Wunderschöner Sonnenuntergang am nächsten Seweewe",
+  //     location: "München",
+  //     imageUrl: "https://ih1.redbubble.net/image.4665578724.8271/raf,360x360,075,t,fafafa:ca443f4786.jpg",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Städtetrip nach Berlin",
+  //     description: "Cooler Trip mit vielen Sehenswürdigkeiten",
+  //     location: "Berlin",
+  //     imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1XrdeEkDoqLOfAoDB5ZqEeVxZ4PS6D1qV_g&s",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Wanderung in den Alpen",
+  //     description: "Natur pur und frische Luft",
+  //     location: "Alpen",
+  //     imageUrl: "https://www.comingsoon.net/wp-content/uploads/sites/3/2025/05/Johnny-Dang-Net-Worth-2025How-Much-Money-Does-He-Make.jpg",
+  //   },
 
 
-  ];
+  // ];
   const [currentPost, setCurrentPost] = useState<any>(null);
 
 
@@ -142,33 +131,16 @@ function Home() {
       {posts.map((post) => (
         <>
           <Post
-            key={post.idpost}
             post={post}
-            onClick={() => setCurrentPost(post)}
-            handlePostClick={handlePostClick}
-            onViewAllLikes={handleViewAllLikes}  // Hier weitergeben!
+
           />
           
         </>
       ))}
-      {/* Für das Anschauen von den Posts / draufclicken */}
-      {postClicked && currentPost && (
-        <PostClicked
-          handlePostClick={handlePostClick}
-          post={currentPost}
-          onClose={() => setPostClicked(false)}
-          onViewAllLikes={handleViewAllLikes}
-        />
-      )}
-      {isLikesOpen && likesPostId !== null && (
+      
 
-        <PostLikes
-          postId={likesPostId}
-          onClose={() => setIsLikesOpen(false)}
-        />
-      )}
 
-      <div className="mt-16"></div>
+      {/* <Comment comment={dummyComment[0]} /> */}
       
       <Footer />
     </div>

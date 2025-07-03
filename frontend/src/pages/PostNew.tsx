@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useAppDispatch } from "../hooks/redux-hooks";
-import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
@@ -9,55 +7,52 @@ import axiosInstance from "../api/axiosInstance";
 import Footer from "./components/Footer/Footer";
 import { useEffect } from "react";
 
-
-
 function PostNew() {
-
   const navigate = useNavigate();
 
+  // --- Zustandsvariablen für Formularfelder ---
   const [title, setTitle] = useState("");
-  const [Description, setDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
+
+  // --- Zustandsvariablen für Alert-Dialoge ---
   const [titleAlert, setTitleAlert] = useState("");
   const [descriptionAlert, setDescriptionAlert] = useState("");
   const [isAlert, setIsAlert] = useState(false);
 
-
-  //reagiert auf das submit event des Formulars
-  // backend muss noch erstellt werden
-
+  // --- Funktion zum Erstellen eines neuen Posts ---
+  // Behandelt das Absenden des Formulars und sendet die Post-Daten an die API.
   const newPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title && Description && location && image && startTime && endTime) {
+    if (title && description && location && image && startTime && endTime) {
       try {
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("description", Description);
+        formData.append("description", description);
         formData.append("locationName", location);
         formData.append("imagePost", image);
         formData.append("start_time", startTime.toISOString());
         formData.append("end_time", endTime.toISOString());
 
-        const response = await axiosInstance.post("/api/post/new", formData, { // Hier geändert
+        const response = await axiosInstance.post("/api/post/new", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        const data = response.data;
+
         if (response.status === 200) {
+          
           setTitleAlert("Post erfolgreich erstellt");
           setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
           setIsAlert(true);
-          console.log("Post erfolgreich erstellt:", data);
-          navigate("/"); // Weiterleitung ins Hauptmenü
+          navigate("/"); // Weiterleitung bei Erfolg
         } else {
           setTitleAlert("Fehler beim Erstellen des Posts");
-          setDescriptionAlert(data.message || "Unbekannter Fehler beim Erstellen des Posts.");
+          setDescriptionAlert(response.data.message || "Unbekannter Fehler beim Erstellen des Posts.");
           setIsAlert(true);
-          console.error("Fehler beim Erstellen des Posts:", data);
         }
       } catch (error) {
         console.error("Fehler beim Hochladen des Posts:", error);
@@ -65,14 +60,12 @@ function PostNew() {
         setDescriptionAlert(error instanceof Error ? error.message : "Unbekannter Fehler beim Hochladen des Posts.");
         setIsAlert(true);
       }
-
     } else {
       setTitleAlert("Felder unvollständig");
       setDescriptionAlert("Bitte fülle alle Felder aus.");
       setIsAlert(true);
-      console.error("Alle Felder müssen ausgefüllt sein.");
     }
-  }
+  };
 
  useEffect(() => {
 	document.title = "Post erstellen - FindDHBW";
@@ -106,7 +99,7 @@ function PostNew() {
               <label className="block text-md font-medium text-gray-900">Beschreibung:</label>
               <input
                 type="text"
-                value={Description}
+                value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
@@ -153,7 +146,6 @@ function PostNew() {
                     src={URL.createObjectURL(image)}
                     alt="Preview"
                     className="w-full h-full object-contain rounded-md"
-
                   />
                 ) : (
                   <span className="text-4xl text-gray-400">+</span>
@@ -169,12 +161,12 @@ function PostNew() {
                   }
                 }}
                 className="hidden"
+                required
               />
             </div>
 
             <SubmitButton>Hochladen</SubmitButton>
           </form>
-
         </div>
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />

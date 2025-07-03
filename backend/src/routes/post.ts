@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/protect";
-import { addComment, addLikePost, addLocation, deleteLikePost, deletePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showLikedUser, showPost, showUserPosts, updatePost } from "../utils/dbQuery";
+import { addComment, addLikePost, addLocation, deleteLikePost, deletePost, getAllLocation, getImageById, getLikesByPostId, getLikesByUserIdPost, getPostComment, newPost, showAllPosts, showFilterPosts, showLikedUser, showPost, showUserLikedPosts, showUserPosts, updatePost } from "../utils/dbQuery";
 import { upload } from "./user";
 
 
@@ -326,12 +326,12 @@ router.patch("/", protect, upload.single('imagePost'), async (req: any, res: any
             if(!change){
                 return res.status(200).json({ message: "Keine Änderungen erkannt oder übermittelt." });
             }
-            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time);
+            newPost = await updatePost(Number(data.postId), locationName, title , description, currentPost.image_idimage || 1, start_time, end_time);
         } else {
             imageData = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageName = req.file.originalname;
-            newPost = await updatePost(Number(data.postId), title, title, description, currentPost.idpost || 1, start_time, end_time, imageData, imageMimeType, imageName);
+            newPost = await updatePost(Number(data.postId), locationName, title, description, currentPost.image_idimage || 1, start_time, end_time, imageData, imageMimeType, imageName);
         }
 
         res.status(200).json({
@@ -374,6 +374,7 @@ router.delete("/", protect, async (req: any, res: any) => {
 
 });
 
+//Gibt zurück welche Posts der Benutzer geliked hat
 router.get("/like/users", protect, async (req: any, res: any) => {
     const { postId } = req.query;
     if (!postId) {
@@ -392,6 +393,7 @@ router.get("/like/users", protect, async (req: any, res: any) => {
 }
 );
 
+//Gibt die Posts der der Benutzer hochggeladen hat zurück
 router.get("/user", protect, async (req:any, res: any)=>{
     const user = req.user;
     if (!user || !user.iduser) {
@@ -412,4 +414,23 @@ router.get("/user", protect, async (req:any, res: any)=>{
 
 });
 
+//alle Posts zurückgeben, die der Benutzer geliked hat
+router.get("/user/liked", protect, async (req:any, res: any)=>{
+    const user = req.user;
+    if (!user || !user.iduser) {
+        return res.status(401).json({ message: "Benutzer nicht authentifiziert" });
+    }
+
+    const iduser = Number(user.iduser);
+    try {
+        const posts = await showUserLikedPosts(iduser);
+        // console.log(posts);
+        res.status(200).json({
+            posts: posts
+        });
+    } catch (error) {
+        console.error("Fehler beim Abrufen des Posts:", error);
+        return res.status(500).json({ message: "Interner Serverfehler beim Abrufen des Posts." });
+    }
+});
 export default router;

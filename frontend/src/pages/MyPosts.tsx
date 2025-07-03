@@ -21,6 +21,7 @@ const MyPosts = () => {
   const [dialogConfirmColor, setDialogConfirmColor] = useState("");
   const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
   // Post-Details Modal
   const [postClicked, setPostClicked] = useState(false);
@@ -61,29 +62,25 @@ const MyPosts = () => {
     setIsOpenDialog(false);
     if (postToDeleteId == null) return;
     try {
-      await axiosInstance.delete("/api/post/", { params: { postId: postToDeleteId } });
+      // Post löschen
+      await axiosInstance.delete(`/api/post/`, {
+        params: { postId: postToDeleteId }
+      });
+
+      // Warten, damit Backend sicher löschen kann
+      await delay(500);
+
+      // Posts neu laden, um UI zu aktualisieren
       await getUserPosts();
-      setPostClicked(false);  // Modal schließen, falls aktueller Post gelöscht wurde
+
+      // Modal schließen, falls aktueller Post gelöscht wurde
+      setPostClicked(false);
     } catch (error) {
       console.error("Fehler beim Löschen des Posts:", error);
     }
   };
 
-  // Aktuellen Post setzen
-  const handlePostSelect = (post: PostType) => {
-    setCurrentPost(post);
-  };
 
-  // Post-Details öffnen
-  const handlePostClick = () => {
-    setPostClicked(true);
-  };
-
-  // Likes öffnen
-  const handleViewAllLikes = (postId: number) => {
-    setLikesPostId(postId);
-    setIsLikesOpen(true);
-  };
 
   useEffect(() => {
 	document.title = "Meine Posts - FindDHBW";
@@ -104,12 +101,7 @@ const MyPosts = () => {
         <div className="space-y-8">
           {posts.map((post) => (
             <div key={post.idpost} className="relative">
-              <Post
-                post={post}
-                onClick={() => handlePostSelect(post)}
-                handlePostClick={handlePostClick}
-                onViewAllLikes={handleViewAllLikes}
-              />
+              <Post post={post} />
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
                   onClick={() => handleEdit(post.idpost)}
@@ -130,21 +122,6 @@ const MyPosts = () => {
           ))}
         </div>
       </main>
-      <div className="mt-16"></div>
-      <Footer />
-
-      {postClicked && currentPost && (
-        <PostClicked
-          post={currentPost}
-          handlePostClick={() => setPostClicked(false)}
-          onClose={() => setPostClicked(false)}
-          onViewAllLikes={handleViewAllLikes}
-        />
-      )}
-
-      {isLikesOpen && likesPostId !== null && (
-        <PostLikes postId={likesPostId} onClose={() => setIsLikesOpen(false)} />
-      )}
 
       <DialogQuestion
         open={isOpenDialog}
@@ -157,10 +134,11 @@ const MyPosts = () => {
         colorOnHover={dialogHoverColor}
         colorConfirm={dialogConfirmColor}
       />
+
+      
+      <Footer />
     </div>
   );
-  
-  
-};
+}
 
 export default MyPosts;

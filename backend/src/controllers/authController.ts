@@ -1,15 +1,15 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import prisma from '../config/prisma';
-import { Prisma } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { checkEMail } from "../utils/dbQuery";
 
-// let currentUser: any = null;
 
+//Token erstellen
 export const createToken = (user: any): string => { // user ist hier das Objekt mit den User-Daten
   const secret = process.env.JWT_SECRET;
   const expiresIn = process.env.JWT_EXPIRES_IN || "1h";
+
 
   if (!secret) {
     throw new Error("JWT_SECRET is not set");
@@ -24,7 +24,7 @@ export const createToken = (user: any): string => { // user ist hier das Objekt 
     }
   );
 };
-
+//Benuter Registrieren
 export const registerUser: RequestHandler = async (req: any, res: any) => {
   const { name, firstName, email, password, birthday } = req.body;
 
@@ -37,6 +37,7 @@ export const registerUser: RequestHandler = async (req: any, res: any) => {
   }
 
   try {
+    //Passwort Hashen mit bcrypt Bibliothek
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const newUserImage = await prisma.image.create({
@@ -95,7 +96,7 @@ export const authenticateUser: RequestHandler = async (req: any, res: any) => {
   }
   try {
     const user = await prisma.user.findFirst({
-      where: { email: email }
+      where: { email: email },
     });
     if (!user) {
       return res.status(401).json({ message: 'Ungültige Anmeldeinformationen (E-Mail nicht gefunden).' });
@@ -107,7 +108,7 @@ export const authenticateUser: RequestHandler = async (req: any, res: any) => {
     const token = createToken(user);
     return res
       .status(200)
-      .cookie("token", token, { httpOnly: true })
+      .cookie("token", token, { httpOnly: true }) //Token übertragen 
       .json({ user: user });
   } catch (error) {
     console.error('Login-Fehler:', error);
