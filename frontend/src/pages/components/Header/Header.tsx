@@ -10,13 +10,16 @@ const Header = () => {
     <header className="bg-black text-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center h-20">
-          <Link to="/">
-  <img
-    src="/finddhbwlogo.png"
-    alt="Logo"
-    className="h-14 w-auto mr-20 hover:scale-110 transition-transform duration-200"
-  />
-</Link>
+          <div className="hidden md:block">
+            <Link to="/">
+              <img
+                src="/finddhbwlogo.png"
+                alt="Logo"
+                className="h-14 w-auto mr-20 hover:scale-110 transition-transform duration-200"
+              />
+            </Link>
+          </div>
+
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex space-x-8 mr-auto"> {/*mr-auto bedeutet nach links ausrichten */}
