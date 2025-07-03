@@ -11,9 +11,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './pages/components/ProtectedRoute';
 import EditPost from './pages/EditPosts';
-import { Calendar } from 'lucide-react';
 import Cal from './pages/calender';
-import PageLoader from "./pages/components/PageLoader";
+import PageLoader from './pages/components/PageLoader';
 
 
 function App() {
