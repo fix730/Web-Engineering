@@ -19,6 +19,10 @@ type DialogAlertProps = {
   onImageUploadSuccess?: (newImageId: number) => void;
 };
 
+
+
+
+
 const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, onImageUploadSuccess }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
@@ -43,7 +47,7 @@ const Settings: React.FC<DialogAlertProps> = ({ open, isOpen, currentImageId, on
     setIsAlertOpen(true);
   };
 
-  const showSuccess = (header: string, content: string) => {
+   const showSuccess = (header: string, content: string) => {
     setSuccessHeader(header);
     setSuccessContent(content);
     setIsSuccesstOpen(true);

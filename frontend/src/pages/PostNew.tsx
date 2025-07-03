@@ -168,6 +168,7 @@ function PostNew() {
             <SubmitButton>Hochladen</SubmitButton>
           </form>
         </div>
+        
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
       <Footer />

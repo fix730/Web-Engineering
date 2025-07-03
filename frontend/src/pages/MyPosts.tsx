@@ -6,8 +6,8 @@ import Footer from "./components/Footer/Footer";
 import Post, { PostType } from "./components/Post/Post";
 import axiosInstance from "../api/axiosInstance";
 import { DialogQuestion } from "../Pop-Up-Window/alert";
-import PostClicked from "./components/Post/PostClicked";
-import PostLikes from "./components/Post/PostLikes";
+
+
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -22,14 +22,6 @@ const MyPosts = () => {
   const [dialogHoverColor, setDialogHoverColor] = useState("");
   const [postToDeleteId, setPostToDeleteId] = useState<number | null>(null);
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
-  // Post-Details Modal
-  const [postClicked, setPostClicked] = useState(false);
-  const [currentPost, setCurrentPost] = useState<PostType | null>(null);
-
-  // Likes Modal
-  const [isLikesOpen, setIsLikesOpen] = useState(false);
-  const [likesPostId, setLikesPostId] = useState<number | null>(null);
 
   useEffect(() => {
     getUserPosts();
@@ -74,7 +66,7 @@ const MyPosts = () => {
       await getUserPosts();
 
       // Modal schließen, falls aktueller Post gelöscht wurde
-      setPostClicked(false);
+      
     } catch (error) {
       console.error("Fehler beim Löschen des Posts:", error);
     }
