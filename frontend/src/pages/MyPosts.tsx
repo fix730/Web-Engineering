@@ -99,7 +99,7 @@ const MyPosts = () => {
           <p className="text-gray-600 text-center">Du hast noch keine Posts.</p>
         )}
         <div className="space-y-8">
-          {posts.map((post) => (
+          {posts.slice().reverse().map((post) => (
             <div key={post.idpost} className="relative">
               <Post post={post} />
               <div className="absolute top-2 right-2 flex space-x-2">
