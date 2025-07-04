@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";

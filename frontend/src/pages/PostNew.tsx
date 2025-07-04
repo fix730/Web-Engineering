@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
 import DialogAlert from "../Pop-Up-Window/alert";
@@ -10,13 +10,17 @@ import { useEffect } from "react";
 function PostNew() {
   const navigate = useNavigate();
 
+  const locationNavigate = useLocation();
+  const { startTimeParameter, endTimeParameter } = locationNavigate.state as { startTimeParameter?: string; endTimeParameter?: string } || {};
+
+
   // --- Zustandsvariablen für Formularfelder ---
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const [startTime, setStartTime] = useState<Date | null>(null);
-  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<Date | null>(startTimeParameter ? new Date(startTimeParameter) : null);
+  const [endTime, setEndTime] = useState<Date | null>(endTimeParameter ? new Date(endTimeParameter) : null);
 
   // --- Zustandsvariablen für Alert-Dialoge ---
   const [titleAlert, setTitleAlert] = useState("");

@@ -155,8 +155,8 @@ const Cal = () => {
   const handleSelectSlot = useCallback((slotInfo: { start: Date; end: Date; }) => {
     navigate("/posts/new", {
       state: {
-        startTime: slotInfo.start.toISOString(),
-        endTime: slotInfo.end.toISOString(),
+        startTimeParameter: slotInfo.start.toISOString(),
+        endTimeParameter: slotInfo.end.toISOString(),
       },
     });
   }, [navigate]);
