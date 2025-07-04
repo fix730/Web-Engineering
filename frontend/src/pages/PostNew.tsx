@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import { SubmitButton } from "./components/Button";
-import DialogAlert from "../Pop-Up-Window/alert";
+import DialogAlert, { DialogSuccess } from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
 import Footer from "./components/Footer/Footer";
 import { useEffect } from "react";
@@ -26,6 +26,13 @@ function PostNew() {
   const [titleAlert, setTitleAlert] = useState("");
   const [descriptionAlert, setDescriptionAlert] = useState("");
   const [isAlert, setIsAlert] = useState(false);
+  
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  function handlePostUploadSuccess() {
+    setIsSuccess(false);
+    navigate("/"); // Weiterleitung bei Erfolg
+  }
 
   // --- Funktion zum Erstellen eines neuen Posts ---
   // Behandelt das Absenden des Formulars und sendet die Post-Daten an die API.
@@ -51,8 +58,8 @@ function PostNew() {
           
           setTitleAlert("Post erfolgreich erstellt");
           setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
-          setIsAlert(true);
-          navigate("/"); // Weiterleitung bei Erfolg
+          setIsSuccess(true);
+          
         } else {
           setTitleAlert("Fehler beim Erstellen des Posts");
           setDescriptionAlert(response.data.message || "Unbekannter Fehler beim Erstellen des Posts.");
@@ -175,6 +182,7 @@ function PostNew() {
         
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
+      <DialogSuccess open={isSuccess} isOpen={handlePostUploadSuccess} header={titleAlert} content={descriptionAlert} buttonText="OK" />
       <Footer />
     </div>
   );

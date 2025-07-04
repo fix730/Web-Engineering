@@ -27,9 +27,9 @@ const Footer = () => {
           <button onClick={() => setSettingsOpen(true)} className="font-semibold hover:underline">
             Einstellungen
           </button>
-          <button onClick={() => setHelpOpen(true)} className="font-semibold hover:underline">
+          {/* <button onClick={() => setHelpOpen(true)} className="font-semibold hover:underline">
             Hilfe
-          </button>
+          </button> */}
         </nav>
         <div>
           © 2025 FindDHBW

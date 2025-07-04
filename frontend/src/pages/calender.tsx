@@ -70,6 +70,7 @@ const Cal = () => {
   const fetchLikedPosts = async (): Promise<PostType[]> => {
     try {
       const response = await axiosInstance.get<PostsResponse>("/api/post/user/liked");
+      // console.log("Geladene gelikte Posts:", response.data.posts);
       return response.data.posts || [];
     } catch (error) {
       console.error("Fehler beim Laden der gelikten Ereignisse:", error);
@@ -83,6 +84,9 @@ const Cal = () => {
       fetchUserOwnPosts(),
       fetchLikedPosts(),
     ]);
+    // console.log("Rohe eigene Posts:", userOwnPosts);
+    // console.log("Rohe gelikte Posts:", likedPosts);
+    // console.log("Rohe alle sichtbaren Posts:", allVisiblePosts);
 
     const finalEventsMap = new Map<number, EventType>();
 
@@ -181,9 +185,9 @@ const Cal = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen"> 
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow"> 
+      <main className="flex-grow">
         <div style={{ padding: '20px' }}>
           {/* Filter-UI über dem Kalender */}
           <div className="flex justify-center mb-4 space-x-4">
@@ -261,7 +265,7 @@ const Cal = () => {
             />
           )}
         </div>
-      </main> 
+      </main>
       <Footer />
     </div>
   );

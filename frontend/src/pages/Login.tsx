@@ -16,87 +16,87 @@ function Login() {
     document.title = "Login - FindDHBW";
   }, []);
 
-    const dispatch = useAppDispatch();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [titleAlertWindow, setTitleAlertWindow] = useState("");
-    const [textAlertWindow, setTextAlertWindow] = useState("");
-    const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [titleAlertWindow, setTitleAlertWindow] = useState("");
+  const [textAlertWindow, setTextAlertWindow] = useState("");
+  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState(false);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-    // --- Funktion zur Handhabung des Login-Vorgangs ---
-    // Versucht den Benutzer mit den eingegebenen Daten anzumelden.
-    const handleLogin = async (e: React.FormEvent) => {
+  // --- Funktion zur Handhabung des Login-Vorgangs ---
+  // Versucht den Benutzer mit den eingegebenen Daten anzumelden.
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    
+
 
     if (email && password) {
-        setIsLoading(true); // Ladeanzeige starten
+      setIsLoading(true); // Ladeanzeige starten
 
-        try {
-            const resultAction = await dispatch(login({ email, password })).unwrap();
-            navigate('/');
-        } catch (e: any) {
-            console.error("Login fehlgeschlagen:", e);
+      try {
+        const resultAction = await dispatch(login({ email, password })).unwrap();
+        navigate('/');
+      } catch (e: any) {
+        console.error("Login fehlgeschlagen:", e);
 
-            let errorTitle = "Login fehlgeschlagen";
-            let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
+        let errorTitle = "Login fehlgeschlagen";
+        let errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
 
-            if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
-                errorMessage = e.message;
-            } else {
-                errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
-            }
-
-            setTitleAlertWindow(errorTitle);
-            setTextAlertWindow(errorMessage);
-            setIsOpenAlertDialog(true); 
-        } finally {
-            setIsLoading(false); // Ladeanzeige beenden
+        if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+          errorMessage = e.message;
+        } else {
+          errorMessage = "Ein unerwarteter Fehler ist aufgetreten (unbekanntes Format).";
         }
-    } else {
-        setTitleAlertWindow("Login fehlgeschlagen");
-        setTextAlertWindow("Bitte fülle alle Felder aus.");
+
+        setTitleAlertWindow(errorTitle);
+        setTextAlertWindow(errorMessage);
         setIsOpenAlertDialog(true);
+      } finally {
+        setIsLoading(false); // Ladeanzeige beenden
+      }
+    } else {
+      setTitleAlertWindow("Login fehlgeschlagen");
+      setTextAlertWindow("Bitte fülle alle Felder aus.");
+      setIsOpenAlertDialog(true);
     }
-};
-    const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    };
-    const handleChncePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-    };
+  };
+  const handleChnceEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handleChncePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
 
-    // --- Funktion zur Navigation zur Registrierungsseite ---
-    const navigateToRegister = () => {
-        navigate("/register");
-    }
+  // --- Funktion zur Navigation zur Registrierungsseite ---
+  const navigateToRegister = () => {
+    navigate("/register");
+  }
 
-    if (isLoading) {
+  if (isLoading) {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-            <div className="spinner"></div>
-        </div>
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+        <div className="spinner"></div>
+      </div>
     );
-}
+  }
 
- 
-   return (
+
+  return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
       style={{ backgroundImage: "url('/bg-login1.jpg')" }}>
 
-        <div className="absolute top-20 flex items-center justify-center w-full">
-  <div className="flex items-center space-x-4">
-    <h1 className="text-5xl mb-40 font-bold drop-shadow-lg">
-      <span className="text-white">Find</span>
-      <span className="text-red-600">DHBW</span>
-    </h1>
-    <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto mb-40" />
-  </div>
-</div>
+      <div className="absolute top-20 flex items-center justify-center w-full">
+        <div className="flex items-center space-x-4">
+          <h1 className="text-5xl mb-40 font-bold drop-shadow-lg">
+            <span className="text-white">Find</span>
+            <span className="text-red-600">DHBW</span>
+          </h1>
+          <img src="/finddhbwlogob.jpg" alt="DHBW Logo" className="h-16 w-auto mb-40" />
+        </div>
+      </div>
       <div className="bg-white bg-opacity-80 mt-20 rounded-xl shadow-lg p-10 w-full max-w-md backdrop-blur-md">
         <div className="text-center mb-6">
           <img src={LogInIcon} alt="Login Icon" className="mx-auto h-12 w-12" />
