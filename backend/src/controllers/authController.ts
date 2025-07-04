@@ -106,10 +106,23 @@ export const authenticateUser: RequestHandler = async (req: any, res: any) => {
       return res.status(401).json({ message: 'Ungültige Anmeldeinformationen (Passwort inkorrekt).' });
     }
     const token = createToken(user);
+    const userWithoutPasssword = await prisma.user.findUnique({
+            where: { iduser: user.iduser },
+            select: {
+                iduser: true,
+                name: true,
+                firstName: true,
+                email: true,
+                birthday: true,
+                image_idimage: true,
+                passwort:false
+            }
+        });
+
     return res
       .status(200)
       .cookie("token", token, { httpOnly: true }) //Token übertragen 
-      .json({ user: user });
+      .json({ user: userWithoutPasssword });
   } catch (error) {
     console.error('Login-Fehler:', error);
     res.status(500).json({ message: 'Login fehlgeschlagen. Interner Serverfehler.' });
