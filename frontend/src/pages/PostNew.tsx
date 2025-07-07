@@ -26,7 +26,7 @@ function PostNew() {
   const [titleAlert, setTitleAlert] = useState("");
   const [descriptionAlert, setDescriptionAlert] = useState("");
   const [isAlert, setIsAlert] = useState(false);
-  
+
   const [isSuccess, setIsSuccess] = useState(false);
 
   function handlePostUploadSuccess() {
@@ -55,11 +55,11 @@ function PostNew() {
         });
 
         if (response.status === 200) {
-          
+
           setTitleAlert("Post erfolgreich erstellt");
           setDescriptionAlert("Dein Post wurde erfolgreich erstellt.");
           setIsSuccess(true);
-          
+
         } else {
           setTitleAlert("Fehler beim Erstellen des Posts");
           setDescriptionAlert(response.data.message || "Unbekannter Fehler beim Erstellen des Posts.");
@@ -78,23 +78,23 @@ function PostNew() {
     }
   };
 
- useEffect(() => {
-	document.title = "Post erstellen - FindDHBW";
-}, []);
+  useEffect(() => {
+    document.title = "Post erstellen - FindDHBW";
+  }, []);
 
   return (
-   <div
-    className="min-h-screen bg-cover bg-center"
-    style={{ backgroundImage: "url('/bg-postnew1.jpg')" }}
-  >
-    <Header />
+    <div
+      className="min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-postnew1.jpg')" }}
+    >
+      <Header />
 
-    <div className="mt-20"></div>
+      <div className="mt-20"></div>
 
-    <h2 className="mt-4 mb-16 text-center text-4xl underline font-bold ">Post erstellen</h2>
-    
+      <h2 className="mt-4 mb-16 text-center text-4xl underline font-bold ">Post erstellen</h2>
+
       <div className="flex min-h-screen items-center justify-center px-4 pb-20">
-  <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl space-y-1">
+        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl space-y-1">
           <form className="space-y-4" onSubmit={newPost}>
             <div>
               <label className="block text-md font-medium text-gray-900">Titel:</label>
@@ -131,7 +131,11 @@ function PostNew() {
               <input
                 type="datetime-local"
                 value={startTime ? startTime.toISOString().slice(0, 16) : ""}
-                onChange={(e) => setStartTime(new Date(e.target.value))}
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value);
+                  selectedDate.setHours(selectedDate.getHours() + 2);
+                  setStartTime(selectedDate);
+                }}
                 className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
@@ -141,7 +145,11 @@ function PostNew() {
               <input
                 type="datetime-local"
                 value={endTime ? endTime.toISOString().slice(0, 16) : ""}
-                onChange={(e) => setEndTime(new Date(e.target.value))}
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value);
+                  selectedDate.setHours(selectedDate.getHours() + 2);
+                  setEndTime(selectedDate);
+                }}
                 className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
               />
@@ -179,7 +187,7 @@ function PostNew() {
             <SubmitButton>Hochladen</SubmitButton>
           </form>
         </div>
-        
+
       </div>
       <DialogAlert open={isAlert} isOpen={() => setIsAlert(false)} header={titleAlert} content={descriptionAlert} buttonText="Schließen" />
       <DialogSuccess open={isSuccess} isOpen={handlePostUploadSuccess} header={titleAlert} content={descriptionAlert} buttonText="OK" />
