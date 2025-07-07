@@ -55,6 +55,14 @@ const PostClicked = ({ post, onClose, }: PostClickedProps) => {
                         // Bild nimmt ganze Fläche ein, Zuschneiden bei Überschuss
                         className="w-full h-full object-cover"
                     />
+
+                    <button
+                        onClick={onClose}
+                        className="absolute top-1 right-4 text-gray-600 hover:text-gray-900 text-3xl font-semibold z-10"
+                        aria-label="Close post"
+                    >
+                        &times;
+                    </button>
                 </div>
 
                 {/* Rechte Seite: Inhalt-Container */}
@@ -65,13 +73,7 @@ const PostClicked = ({ post, onClose, }: PostClickedProps) => {
 
                     {/* Close Button */}
                     
-                    <button
-                        onClick={onClose}
-                        className="absolute top-1 right-4 text-gray-600 hover:text-gray-900 text-3xl font-semibold z-10"
-                        aria-label="Close post"
-                    >
-                        &times;
-                    </button>
+                    
 
                     {/* Obere Info-Leiste */}
                    
