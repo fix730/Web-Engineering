@@ -33,8 +33,10 @@ export type PostProps = {
 
 // formatiert das Datum
 const formatDate = (dateString: string) => {
-  const d = new Date(dateString);
-  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
+  const d = new Date();
+  const dateTimeString = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+  return dateTimeString;
+
 };
 
 
@@ -75,7 +77,7 @@ const Post = ({ post }: PostProps) => {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h2>
         <p className="text-gray-700 mb-2">{post.description} </p>
 
-        
+
         {sameDate == true && <p className="text-gray-700 mb-2">Am {formatDate(post.end_time)} </p>}
         {sameDate == false && (
           <p className="text-gray-700 mb-2">
