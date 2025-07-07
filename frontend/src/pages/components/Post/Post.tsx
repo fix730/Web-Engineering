@@ -79,7 +79,7 @@ const Post = ({ post }: PostProps) => {
         {sameDate == true && <p className="text-gray-700 mb-2">Am {formatDate(post.end_time)} </p>}
         {sameDate == false && (
           <p className="text-gray-700 mb-2">
-            Vom {formatDate(post.start_time)} bis {formatDate(post.end_time)}{" "}
+            Datum: {formatDate(post.start_time)} {" "}
           </p>
         )}
 
