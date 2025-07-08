@@ -42,12 +42,12 @@ function EditPost() {
           setStartTime(new Date(data.start_time).toISOString().slice(0, 16));
         if (data.end_time)
           setEndTime(new Date(data.end_time).toISOString().slice(0, 16));
-        if (data.image_idimage){
+        if (data.image_idimage) {
           setImageId(data.image_idimage);
           fetchProfileImage({
-                    onSetImageUrl: setImageUrl, imageId: data.image_idimage, profilePlaceholder: undefined //Weil Hook ist kann man es nicht direkt von Hook nehmen
-                  });
-        } 
+            onSetImageUrl: setImageUrl, imageId: data.image_idimage, profilePlaceholder: undefined //Weil Hook ist kann man es nicht direkt von Hook nehmen
+          });
+        }
       } catch (error: any) {
         let msg = "Kann den Post nicht laden.";
         if (error.isAxiosError && (error as AxiosError).response?.data) {
@@ -126,13 +126,14 @@ function EditPost() {
             </div>
             <div>
               <label className="block text-md font-medium text-gray-900">Beschreibung:</label>
-              <input
-                type="text"
+              <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                rows={5} // Legt die anfängliche Höhe in Zeilen fest
                 required
-              />
+              ></textarea>
+
             </div>
             <div>
               <label className="block text-md font-medium text-gray-900">Ort:</label>
