@@ -14,36 +14,13 @@ function PostNew() {
   const { startTimeParameter, endTimeParameter } = locationNavigate.state as { startTimeParameter?: string; endTimeParameter?: string } || {};
 
 
-
   // --- Zustandsvariablen für Formularfelder ---
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const [startTime, setStartTime] = useState<Date | null>(
-    (startTimeParameter) ? new Date(startTimeParameter!) : null
-  );
-  const [endTime, setEndTime] = useState<Date | null>(
-    (endTimeParameter) ? new Date(endTimeParameter!) : null
-  );
-
-  //Überprüfen, ob die Zeitangaben gültig sind richtiges Format haben und wandelt es in aktuelle Zeitzone um
-  const parseDateInput = (dateString: string | undefined): Date | null => {
-    if (!dateString) {
-      return null;
-    }
-    const date = new Date(dateString); // Interpretiert die Zeichenkette in der lokalen Zeitzone (Deutschlands)
-
-    // Überprüfen, ob das erstellte Datum gültig ist (nicht "Invalid Date")
-    if (isNaN(date.getTime())) {
-      return null;
-    }
-
-    return date;
-  };
-
-
-
+  const [startTime, setStartTime] = useState<Date | null>(startTimeParameter ? new Date(startTimeParameter) : null);
+  const [endTime, setEndTime] = useState<Date | null>(endTimeParameter ? new Date(endTimeParameter) : null);
 
   // --- Zustandsvariablen für Alert-Dialoge ---
   const [titleAlert, setTitleAlert] = useState("");
@@ -61,7 +38,7 @@ function PostNew() {
   // Behandelt das Absenden des Formulars und sendet die Post-Daten an die API.
   const newPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title && description && location && image && startTime instanceof Date && endTime instanceof Date) {
+    if (title && description && location && image && startTime && endTime) {
       try {
         const formData = new FormData();
         formData.append("title", title);
@@ -155,7 +132,9 @@ function PostNew() {
                 type="datetime-local"
                 value={startTime ? startTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => {
-                  setStartTime(parseDateInput(e.target.value));
+                  const selectedDate = new Date(e.target.value);
+                  selectedDate.setHours(selectedDate.getHours() + 2);
+                  setStartTime(selectedDate);
                 }}
                 className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
@@ -167,7 +146,9 @@ function PostNew() {
                 type="datetime-local"
                 value={endTime ? endTime.toISOString().slice(0, 16) : ""}
                 onChange={(e) => {
-                  setStartTime(parseDateInput(e.target.value));
+                  const selectedDate = new Date(e.target.value);
+                  selectedDate.setHours(selectedDate.getHours() + 2);
+                  setEndTime(selectedDate);
                 }}
                 className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
                 required
