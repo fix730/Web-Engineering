@@ -6,6 +6,7 @@ import DialogAlert from "../Pop-Up-Window/alert";
 import axiosInstance from "../api/axiosInstance";
 import { AxiosError } from "axios";
 import { fetchProfileImage } from "../utils/image";
+import Footer from "./components/Footer/Footer";
 
 function EditPost() {
   const { id } = useParams<{ id: string }>(); // Holt die Post-ID aus den URL-Parametern
@@ -100,65 +101,81 @@ function EditPost() {
   };
 
   return (
-    <>
+    <div
+      className="min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-postnew1.jpg')" }} // Using the same background as PostNew
+    >
       <Header />
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-md space-y-8">
-          <h2 className="text-center text-3xl font-bold text-gray-700">Post bearbeiten</h2>
+
+      <div className="mt-20"></div>
+
+      <h2 className="mt-4 mb-16 text-center text-4xl underline font-bold">Post bearbeiten</h2>
+
+      <div className="flex min-h-screen items-center justify-center px-4 pb-20">
+        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl space-y-1">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xl font-medium text-gray-900">Titel</label>
+              <label className="block text-md font-medium text-gray-900">Titel:</label>
               <input
                 type="text"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-2"
+                onChange={(e) => setTitle(e.target.value)}
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Beschreibung</label>
+              <label className="block text-md font-medium text-gray-900">Beschreibung:</label>
               <input
                 type="text"
                 value={description}
-                onChange={e => setDescription(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-2"
+                onChange={(e) => setDescription(e.target.value)}
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Ort</label>
+              <label className="block text-md font-medium text-gray-900">Ort:</label>
               <input
                 type="text"
                 value={locationName}
-                onChange={e => setLocationName(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-2"
+                onChange={(e) => setLocationName(e.target.value)}
+                className="mt-1 w-full rounded-md border px-1 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Startzeit</label>
+              <label className="block text-md font-medium text-gray-900">Startzeit:</label>
               <input
                 type="datetime-local"
                 value={startTime}
-                onChange={e => setStartTime(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-2"
+                onChange={(e) => setStartTime(e.target.value)}
+                className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Endzeit</label>
+              <label className="block text-md font-medium text-gray-900">Endzeit:</label>
               <input
                 type="datetime-local"
                 value={endTime}
-                onChange={e => setEndTime(e.target.value)}
-                className="mt-1 w-full rounded-md border px-4 py-2"
+                onChange={(e) => setEndTime(e.target.value)}
+                className="mt-1 w-full rounded-md border px-2 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-300"
+                required
               />
             </div>
             <div>
-              <label className="block text-xl font-medium text-gray-900">Bild</label>
+              <label className="block text-md font-medium text-gray-700 mb-2">Bild einfügen:</label>
               <div
                 onClick={() => document.getElementById("fileInput")?.click()}
-                className="mt-1 w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer"
+                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-indigo-500 transition bg-gray-300"
               >
                 {imageUrl ? (
-                  <img src={imageUrl} alt="Preview" className="w-full h-full object-contain" />
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="w-full h-full object-contain rounded-md"
+                  />
                 ) : (
                   <span className="text-4xl text-gray-400">+</span>
                 )}
@@ -168,7 +185,7 @@ function EditPost() {
                 id="fileInput"
                 accept="image/*"
                 className="hidden"
-                onChange={e => {
+                onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
                     setImageFile(e.target.files[0]);
                     setImageUrl(URL.createObjectURL(e.target.files[0]));
@@ -187,7 +204,8 @@ function EditPost() {
         content={alertText}
         buttonText="Schließen"
       />
-    </>
+      <Footer />
+    </div>
   );
 }
 
