@@ -82,11 +82,11 @@ const PostLikes = ({ post, onClose }: PostLikesProps) => {
           <div className="flex flex-col gap-4">
             {likedUsers.map(user => (
               <div key={user.iduser} className="flex items-center gap-3">
-                <img
+                {/* <img
                   src={postImage} // Hier wird die Post-Bild-URL verwendet, sollte aber eher die Benutzerbild-URL sein
                   alt={`${user.firstName} ${user.name}`}
                   className="w-10 h-10 rounded-full object-cover"
-                />
+                /> */}
                 <p className="text-gray-800 font-medium">
                   {user.firstName} {user.name}
                 </p>

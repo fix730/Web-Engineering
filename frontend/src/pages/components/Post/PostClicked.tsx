@@ -6,6 +6,7 @@ import { usePostDetails } from "../Post/usePostDetails"; // Pfad anpassen
 import axiosInstance from "../../../api/axiosInstance"; // Pfad anpassen
 import CommentSocial, { CommentType } from "../Comment/CommentSocial";
 import CommentUnderPost from "./CommentUnderPost";
+import { fetchProfileImage } from "../../../utils/image";
 
 interface PostClickedProps {
     post: PostType;
@@ -16,7 +17,7 @@ interface PostClickedProps {
 
 const PostClicked = ({ post, onClose, }: PostClickedProps) => {
     const { liked, postImage, countLikes, toggleLike } = usePostDetails(post);
-
+    const [imageUrlProfile, onSetImageUrlProfile] = useState<string | undefined>();
     const [comments, setComments] = useState<CommentType[]>([]);
 
     // Kommentare laden
@@ -34,6 +35,11 @@ const PostClicked = ({ post, onClose, }: PostClickedProps) => {
     useEffect(() => {
         fetchComments();
     }, [post.idpost]);
+    useEffect(()=>{
+        fetchProfileImage({
+                  onSetImageUrl: onSetImageUrlProfile, imageId: post.user.image_idimage, profilePlaceholder: undefined
+                });
+    })
 
     return (
         <div
@@ -87,7 +93,7 @@ const PostClicked = ({ post, onClose, }: PostClickedProps) => {
                             </p>
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={postImage}
+                                    src={imageUrlProfile}
                                     alt={`${post.user?.firstName} ${post.user?.name}`}
                                     className="w-16 h-16 rounded-full object-cover"
                                 />

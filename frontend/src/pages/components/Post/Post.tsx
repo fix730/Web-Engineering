@@ -33,7 +33,7 @@ export type PostProps = {
 
 // formatiert das Datum
 const formatDate = (dateString: string) => {
-  const d = new Date();
+  const d = new Date(dateString);
   const dateTimeString = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
   return dateTimeString;
 
@@ -44,7 +44,7 @@ const formatDate = (dateString: string) => {
 
 const Post = ({ post }: PostProps) => {
   const { liked, postImage, countLikes, toggleLike, } = usePostDetails(post);
-  const [sameDate, setSameDate] = useState(false)
+  const [sameDate, setSameDate] = useState(false);
 
   // prüft ob  zwei   strings denselben Werrt habe
   const handleDoubleDate = (dateStringStart: string, dateStringEnd: string) => {
