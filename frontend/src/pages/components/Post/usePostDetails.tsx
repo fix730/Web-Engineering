@@ -10,7 +10,7 @@ interface UsePostDetailsResult {
   postImage: string | undefined; 
   countLikes: number; // Die Gesamtzahl der Likes für den Post
   toggleLike: () => Promise<void>; 
-  aktualisierenLikeStatus: () => Promise<void>; // Funktion zum Aktualisieren nur der Like-Anzahl
+  
   checkLikeStatus: () => Promise<void>; // Funktion zum Überprüfen des initialen Like-Status und der Anzahl
 }
 
@@ -59,21 +59,7 @@ export const usePostDetails = (post: PostType): UsePostDetailsResult => {
   // --- Funktion: aktualisierenLikeStatus (Nur Like-Anzahl aktualisieren) ---
   // Diese asynchrone Funktion dient dazu, nur die aktuelle Anzahl der Likes vom Server neu zu laden.
   // Nützlich, um die Anzeige nach einem optimistischen Update zu synchronisieren oder externe Änderungen zu erfassen.
-  const aktualisierenLikeStatus = async () => {
-    try {
-      // Führt einen GET-Request aus, um die aktuelle Like-Anzahl für den Post zu erhalten
-      const getCountLikes = await axiosInstance.get(`/api/post/like/count`, {
-        params: {
-          postId: post.idpost,
-        },
-      });
-      // Aktualisiert den 'countLikes'-Zustand mit der neuen Anzahl vom Server
-      setCountLikes(Number(getCountLikes.data.likes));
-    } catch (error) {
-      // Fehlerbehandlung: Gibt eine Fehlermeldung in der Konsole aus
-      console.error("Fehler beim Aktualisieren des Like-Status:", error);
-    }
-  };
+  
 
   // --- Funktion: toggleLike (Like-Status umschalten) ---
   // Diese asynchrone Funktion handhabt das Hinzufügen oder Entfernen eines Likes für den Post.
@@ -132,11 +118,11 @@ export const usePostDetails = (post: PostType): UsePostDetailsResult => {
   // die eine Komponente benötigt, um Post-Details anzuzeigen und zu interagieren.
   return {
     liked, // Der aktuelle Like-Status des Benutzers
-    setLiked, // Setter-Funktion für den 'liked'-Status (meist intern verwendet)
-    postImage, // Die URL des Post-Bildes
+    setLiked, // Setter-Funktion für den 'liked'-Status 
+    postImage, // Id vom Image
     countLikes, // Die Gesamtzahl der Likes des Posts
     toggleLike, // Funktion zum Hinzufügen oder Entfernen eines Likes
-    aktualisierenLikeStatus, // Funktion zum Aktualisieren nur der Like-Anzahl
+    
     checkLikeStatus, // Funktion zum erneuten Abrufen aller Like-Informationen
   };
 };
