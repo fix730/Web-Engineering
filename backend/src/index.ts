@@ -10,16 +10,16 @@ import post from './routes/post';
 import user from './routes/user';
 import image from './routes/image'
 
-dotenv.config();
+dotenv.config(); //Lädt die Datei aus der .env Datei
 
 const app = express();
 const port = process.env.PORT || 8000;
 
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Liest Cookies aus HTTP-Anfragen
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); //Erlaubt Formulardaten
 
 // Routen
 app.use("/api/auth", authRouter);

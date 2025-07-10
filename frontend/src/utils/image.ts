@@ -13,7 +13,7 @@ export async function fetchProfileImage({ onSetImageUrl, imageId, profilePlaceho
         });
         if (response.status === 200) {
             const blob = response.data;
-            const url = URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob); // heruntergeladenes Bild (Blob) in eine temporäre URL um
             onSetImageUrl(url);
         } else {
             console.error("Fehler beim Laden des Bilds:", response.status, response.data);
