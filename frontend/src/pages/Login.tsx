@@ -112,11 +112,13 @@ function Login() {
           <div>
             <LabelOverInput>Passwort</LabelOverInput>
             <Paasswort password={password} handleChncePassword={handleChncePassword} autoComplete="currentPassword" />
+            {/*
             <div className="text-right text-sm mt-1">
               <a href="#" className="text-indigo-600 hover:text-indigo-500">
                 Passwort vergessen?
               </a>
             </div>
+            */ }
           </div>
 
           <div>
