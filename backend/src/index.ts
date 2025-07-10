@@ -32,7 +32,7 @@ app.use("/api", protectedRouter);
 
 app.get("/", async (req, res) => {
     try {
-        // Nutze den Prisma Client, um auf deine 'user'-Tabelle zuzugreifen
+        // Nutze den Prisma Client, um auf 'user'-Tabelle zuzugreifen
         const user = await prisma.user.findFirst(); // Findet den ersten Benutzer
         res.status(200).json({ backend: 'Herzlich Willkommen im Backend', message: 'Datenbankverbindung erfolgreich (Prisma)!', user: user });
     } catch (error) {

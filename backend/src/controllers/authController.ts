@@ -88,7 +88,7 @@ export const registerUser: RequestHandler = async (req: any, res: any) => {
   }
 };
 
-export const authenticateUser: RequestHandler = async (req: any, res: any) => {
+export const authenticateUser: RequestHandler = async (req: any, res: any) => { //Wir beim Login aufgerufen
   const { email, password } = req.body;
 
   if (!email || !password) {
